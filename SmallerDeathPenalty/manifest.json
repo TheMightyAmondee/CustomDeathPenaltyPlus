@@ -1,0 +1,9 @@
+﻿{
+	"Name":"SmallerDeathPenalty",
+	"Author":"TheMightyAmondee",
+	"Version":"1.0.0",
+	"Description":"Lowers the death penalty",
+	"UniqueID": "TheMightyAmondee.SmallerDeathPenalty",
+	"EntryDll":"SmallerDeathPenalty.dll",
+	"UpdateKeys":[]
+}
