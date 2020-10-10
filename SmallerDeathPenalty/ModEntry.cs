@@ -36,18 +36,24 @@ namespace SmallerDeathPenalty
         {
             if(System.Diagnostics.Debugger.IsAttached == false)
             {
-                System.Diagnostics.Debugger.Launch();
+                //System.Diagnostics.Debugger.Launch();
             }
 
             var editor = asset.AsDictionary<string, string>().Data;
-            //Get data key and change value
-            //editor["Event.cs.1068"] = "Dr. Harvey charged me 25g for the hospital visit. ";
-            var keys = new List<string>(editor.Keys);
 
-            foreach(var k in keys)
+            //Does the PlayerStateSaver not exist or is the player's money greater than 10,000g?
+            if (PlayerStateSaver.state == null || Game1.player.Money > 10000)
             {
-                editor[k] = "Amelie";
+                //Edit events to reflect capped amount lost, default
+                editor["Event.cs.1068"] = "Dr. Harvey charged me 500g for the hospital visit. ";
+                editor["Event.cs.1058"] = "I seem to have lost 500g";
             }
+            else
+            {
+                //Edit events to reflect discounted amount lost
+                editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g for the hospital visit. ";
+                editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g";
+            }           
         }
 
         public override void Entry(IModHelper helper)
@@ -64,6 +70,8 @@ namespace SmallerDeathPenalty
                 if (PlayerStateSaver.state == null && Game1.killScreen)
                 {
                     PlayerStateSaver.Save();
+                    //Reload asset upon death to reflect amount lost
+                    Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
 
                     this.Monitor.Log($"Money saved, amount {PlayerStateSaver.state.money}g");
 
@@ -80,7 +88,7 @@ namespace SmallerDeathPenalty
                 }
             }
             //Restore money after event ends
-            else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove && Game1.player.spouse == "Harvey")
+            else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
                 //capped (lose 500)
                 if (Game1.player.Money > 10000)
@@ -97,7 +105,7 @@ namespace SmallerDeathPenalty
 
                 this.Monitor.Log("Half health restored. You did almost die after all...", LogLevel.Debug);
 
-               //Reset state saver
+               //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;
             }
         }
