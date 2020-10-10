@@ -91,7 +91,7 @@ namespace SmallerDeathPenalty
             else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
                 //capped (lose 500)
-                if (Game1.player.Money > 10000)
+                if (PlayerStateSaver.state.money > 10000)
                 {
                     PlayerStateSaver.LoadCapped();
                     this.Monitor.Log("Money restored, minus 500g...", LogLevel.Debug);
