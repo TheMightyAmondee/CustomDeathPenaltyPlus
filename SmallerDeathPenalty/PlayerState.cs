@@ -5,13 +5,17 @@ using System.Collections.Generic;
 namespace SmallerDeathPenalty
 {
     //Tracks player's funds
+    //Double is necessary for calculating money loss
     internal class PlayerState
     {
-        public int money;
+        public double money;
 
-        public PlayerState(int m)
+        public int health;
+
+        public PlayerState(double m, int h)
         {
             this.money = m;
+            this.health = h;
         }
     }
 }
