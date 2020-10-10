@@ -94,18 +94,18 @@ namespace SmallerDeathPenalty
                 if (Game1.player.Money > 10000)
                 {
                     PlayerStateSaver.LoadCapped();
-                    this.Monitor.Log("Money restored, to a point... Isn't Harvey nice?", LogLevel.Debug);
+                    this.Monitor.Log("Money restored, minus 500g...", LogLevel.Debug);
                 }
                 //discounted (lose 5%)
                 else
                 {
                     PlayerStateSaver.LoadDiscounted();
-                    this.Monitor.Log("Money restored, excluding 5%... rebates don't cover everything", LogLevel.Debug);
+                    this.Monitor.Log("Money restored, excluding 5%...", LogLevel.Debug);
                 }
 
                 this.Monitor.Log("Half health restored. You did almost die after all...", LogLevel.Debug);
 
-               //Reset PlayerStateSaver
+                //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;
             }
         }

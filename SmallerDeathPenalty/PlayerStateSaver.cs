@@ -17,7 +17,7 @@ namespace SmallerDeathPenalty
         //Load funds (discounted), restore 95% of player's money
         public static void LoadDiscounted()
         {
-            Game1.player.Money =  (int)(Math.Round(state.money * 0.95));
+            Game1.player.Money =  (int)Math.Round(state.money * 0.95);
             //Restore half the players health
             Game1.player.health = Game1.player.maxHealth / 2;
         }
