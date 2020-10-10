@@ -8,6 +8,7 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Locations;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SmallerDeathPenalty
 {
@@ -33,9 +34,20 @@ namespace SmallerDeathPenalty
         //Edit asset if asset name matches
         public void Edit<T>(IAssetData asset)
         {
+            if(System.Diagnostics.Debugger.IsAttached == false)
+            {
+                System.Diagnostics.Debugger.Launch();
+            }
+
             var editor = asset.AsDictionary<string, string>().Data;
             //Get data key and change value
-            editor["Event.cs.1068"] = "Dr. Harvey charged me 25g for the hospital visit. ";
+            //editor["Event.cs.1068"] = "Dr. Harvey charged me 25g for the hospital visit. ";
+            var keys = new List<string>(editor.Keys);
+
+            foreach(var k in keys)
+            {
+                editor[k] = "Amelie";
+            }
         }
 
         public override void Entry(IModHelper helper)
