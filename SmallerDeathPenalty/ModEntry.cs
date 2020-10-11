@@ -75,7 +75,7 @@ namespace SmallerDeathPenalty
 
                     this.Monitor.Log($"Money saved, amount {PlayerStateSaver.state.money}g");
 
-                    if(Game1.player.Money <= 10000)
+                    if(Game1.player.Money < 10000)
                     {
                         //amount lost (discounted)
                         this.Monitor.Log($"Lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g"); 
@@ -90,15 +90,17 @@ namespace SmallerDeathPenalty
             //Restore money after event ends
             else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
-                //capped (lose 500)
+                //Is the player money greater than 10,000g?
                 if (PlayerStateSaver.state.money > 10000)
                 {
+                    //Yes, capped (lose 500)
                     PlayerStateSaver.LoadCapped();
                     this.Monitor.Log("Money restored, minus 500g...", LogLevel.Debug);
                 }
-                //discounted (lose 5%)
+
                 else
                 {
+                    //No, discounted (lose 5%)
                     PlayerStateSaver.LoadDiscounted();
                     this.Monitor.Log("Money restored, excluding 5%...", LogLevel.Debug);
                 }
