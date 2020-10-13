@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SmallerDeathPenalty
 {
-    //Tracks player's funds
+    //Stores player's funds and health
     //Double type is necessary for calculating money loss
     internal class PlayerState
     {

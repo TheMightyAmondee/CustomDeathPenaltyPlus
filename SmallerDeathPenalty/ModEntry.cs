@@ -15,9 +15,6 @@ namespace SmallerDeathPenalty
     public class ModEntry
         : Mod, IAssetEditor
     {
-
-        private uint halfsecond = 30;
-
         //Can the asset be editted?
         public bool CanEdit<T>(IAssetInfo asset)
         {
@@ -34,7 +31,7 @@ namespace SmallerDeathPenalty
         //Edit asset if asset name matches
         public void Edit<T>(IAssetData asset)
         {
-            if(System.Diagnostics.Debugger.IsAttached == false)
+            if (System.Diagnostics.Debugger.IsAttached == false)
             {
                 //System.Diagnostics.Debugger.Launch();
             }
@@ -53,7 +50,7 @@ namespace SmallerDeathPenalty
                 //Edit events to reflect discounted amount lost
                 editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g for the hospital visit. ";
                 editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g";
-            }           
+            }
         }
 
         public override void Entry(IModHelper helper)
@@ -64,49 +61,21 @@ namespace SmallerDeathPenalty
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             //Check if player died each half second
-            if (e.IsMultipleOf(this.halfsecond))
+            if (e.IsMultipleOf(30))
             {
                 //Save funds upon death
                 if (PlayerStateSaver.state == null && Game1.killScreen)
                 {
                     PlayerStateSaver.Save();
+
                     //Reload asset upon death to reflect amount lost
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
-
-                    this.Monitor.Log($"Money saved, amount {PlayerStateSaver.state.money}g");
-
-                    if(Game1.player.Money < 10000)
-                    {
-                        //amount lost (discounted)
-                        this.Monitor.Log($"Lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g"); 
-                        
-                    }
-
-                    else
-                    //amount lost (capped)
-                    this.Monitor.Log("Lost 500g");
                 }
             }
             //Restore money after event ends
             else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
-                //Is the player money greater than 10,000g?
-                if (PlayerStateSaver.state.money > 10000)
-                {
-                    //Yes, capped (lose 500)
-                    PlayerStateSaver.LoadCapped();
-                    this.Monitor.Log("Money restored, minus 500g...", LogLevel.Debug);
-                }
-
-                else
-                {
-                    //No, discounted (lose 5%)
-                    PlayerStateSaver.LoadDiscounted();
-                    this.Monitor.Log("Money restored, excluding 5%...", LogLevel.Debug);
-                }
-
-                this.Monitor.Log("Half health restored. You did almost die after all...", LogLevel.Debug);
-
+                PlayerStateSaver.Load();
                 //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;
             }
