@@ -51,6 +51,12 @@ namespace SmallerDeathPenalty
                 editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g for the hospital visit. ";
                 editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g";
             }
+            //Remove unnecessary strings
+            editor["Event.cs.1060"] = "";
+            editor["Event.cs.1061"] = "";
+            editor["Event.cs.1062"] = "";
+            editor["Event.cs.1071"] = "";
+
         }
 
         public override void Entry(IModHelper helper)
@@ -72,12 +78,13 @@ namespace SmallerDeathPenalty
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
                 }
             }
-            //Restore money after event ends
+            //Restore state after event ends
             else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
                 PlayerStateSaver.Load();
                 //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;
+                this.Monitor.Log("Player state restored, check inventory if hotbar items are missing",LogLevel.Debug);
             }
         }
 
