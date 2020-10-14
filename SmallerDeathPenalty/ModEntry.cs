@@ -87,6 +87,5 @@ namespace SmallerDeathPenalty
                 this.Monitor.Log("Player state restored, check inventory if hotbar items are missing",LogLevel.Debug);
             }
         }
-
     }
 }
