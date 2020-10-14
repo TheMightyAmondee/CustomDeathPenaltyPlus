@@ -15,7 +15,7 @@ namespace SmallerDeathPenalty
     public class ModEntry
         : Mod, IAssetEditor
     {
-        //Can the asset be editted?
+        //Allow asset to be editted if name matches
         public bool CanEdit<T>(IAssetInfo asset)
         {
             if (asset.AssetNameEquals("Strings\\StringsFromCSFiles"))
@@ -28,15 +28,9 @@ namespace SmallerDeathPenalty
             }
         }
 
-
-        //Edit asset if asset name matches
+        //Edit asset
         public void Edit<T>(IAssetData asset)
         {
-            if (System.Diagnostics.Debugger.IsAttached == false)
-            {
-                //System.Diagnostics.Debugger.Launch();
-            }
-
             var editor = asset.AsDictionary<string, string>().Data;
 
             //Does the PlayerStateSaver not exist or is the player's money greater than 10,000g?
@@ -58,10 +52,15 @@ namespace SmallerDeathPenalty
             editor["Event.cs.1062"] = "";
             editor["Event.cs.1071"] = "";
         }
-
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
+            helper.Events.GameLoop.GameLaunched += this.GameLaunched;
+        }
+
+        private void GameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            Helper.Content.AssetEditors.Add(new UIFixes(Helper));
         }
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
@@ -83,7 +82,7 @@ namespace SmallerDeathPenalty
                 PlayerStateSaver.Load();
                 //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;
-                this.Monitor.Log("Player state restored, check inventory if hotbar items are missing",LogLevel.Debug);
+                this.Monitor.Log("Player state restored...",LogLevel.Debug);
             }
         }
     }

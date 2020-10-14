@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace SmallerDeathPenalty
 {
+    /// <summary>
+    /// Saves the specified player state
+    /// </summary>
     internal class PlayerStateSaver
     {
         public static PlayerState state;
@@ -29,17 +32,17 @@ namespace SmallerDeathPenalty
                 //No, restore 95% of money
                 Game1.player.Money = (int)Math.Round(state.money * 0.95);
             }
-            //Restore lost items, on the ground...
+            //Restore lost items
             foreach(Item item in Game1.player.itemsLostLastDeath)
             {
                 Game1.player.addItemToInventory(item);
             }
-            //Clears items lost prevents being purchasable at Guild
+            //Clears items lost, prevents being purchasable at Guild
             Game1.player.itemsLostLastDeath.Clear();
             //Restore half health
             Game1.player.health = Game1.player.maxHealth / 2;
             //Restore some energy
-            Game1.player.stamina = 100;
+            Game1.player.stamina = 50;
 
         }
     }

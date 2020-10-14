@@ -52,6 +52,7 @@
     <Compile Include="PlayerState.cs" />
     <Compile Include="PlayerStateSaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIFixes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />
