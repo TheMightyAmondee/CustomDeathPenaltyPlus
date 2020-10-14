@@ -28,6 +28,7 @@ namespace SmallerDeathPenalty
             }
         }
 
+
         //Edit asset if asset name matches
         public void Edit<T>(IAssetData asset)
         {
@@ -56,14 +57,12 @@ namespace SmallerDeathPenalty
             editor["Event.cs.1061"] = "";
             editor["Event.cs.1062"] = "";
             editor["Event.cs.1071"] = "";
-
         }
 
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
         }
-
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             //Check if player died each half second

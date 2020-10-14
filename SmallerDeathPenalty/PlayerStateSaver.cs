@@ -29,16 +29,16 @@ namespace SmallerDeathPenalty
                 //No, restore 95% of money
                 Game1.player.Money = (int)Math.Round(state.money * 0.95);
             }
-            //Restore lost items
+            //Restore lost items, on the ground...
             foreach(Item item in Game1.player.itemsLostLastDeath)
             {
-                Game1.player.Items.Add(item);
+                Game1.player.addItemToInventory(item);
             }
             //Clears items lost prevents being purchasable at Guild
             Game1.player.itemsLostLastDeath.Clear();
             //Restore half health
             Game1.player.health = Game1.player.maxHealth / 2;
-            //Stamina = 100
+            //Restore some energy
             Game1.player.stamina = 100;
 
         }
