@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace SmallerDeathPenalty
 {
     /// <summary>
-    /// Saves the specified player state
+    /// Contains the playerstate for saving and loading
     /// </summary>
     internal class PlayerStateSaver
     {
