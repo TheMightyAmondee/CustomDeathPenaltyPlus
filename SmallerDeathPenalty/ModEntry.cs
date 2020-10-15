@@ -37,19 +37,20 @@ namespace SmallerDeathPenalty
             if (PlayerStateSaver.state == null || Game1.player.Money > 10000)
             {
                 //Edit events to reflect capped amount lost, default
-                editor["Event.cs.1068"] = "Dr. Harvey charged me 500g for the hospital visit. ";
+                editor["Event.cs.1068"] = "Dr. Harvey charged me 500g for the hospital visit.";
                 editor["Event.cs.1058"] = "I seem to have lost 500g";
             }
             else
             {
                 //Edit events to reflect discounted amount lost
-                editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g for the hospital visit. ";
-                editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g";
+                editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g for the hospital visit.";
+                editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g.";
             }
             //Remove unnecessary strings
             editor["Event.cs.1060"] = "";
             editor["Event.cs.1061"] = "";
             editor["Event.cs.1062"] = "";
+            editor["Event.cs.1063"] = "";
             editor["Event.cs.1071"] = "";
         }
         public override void Entry(IModHelper helper)
