@@ -34,23 +34,18 @@ namespace SmallerDeathPenalty
         {
             var editor = asset.AsDictionary<string, string>().Data;
 
-            //Does the PlayerStateSaver not exist or is MoneyLossCap invalid?
-            if (PlayerStateSaver.state == null || config.MoneyLossCap < 0)
+            //Does the PlayerStateSaver exist?
+            if (PlayerStateSaver.state == null)
             {
                 editor["Event.cs.1068"] = "Dr. Harvey charged me 500g for the hospital visit. ";
                 editor["Event.cs.1058"] = "I seem to have lost 500g";
             }
-            //Is the RestoreMoneyPercentage invalid?
-            else if(config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
-            {
-                editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g for the hospital visit. ";
-                editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * 0.95)}g";
-            }
             
-            //Edit strings to reflect restored money
+            //Edit strings to reflect restored money, also check config values
             else
             {
-                if(config.MoneyLossCap == 0)
+                PlayerStateSaver.CheckConfig();
+                if (config.MoneyLossCap == 0)
                 {
                     editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
                     editor["Event.cs.1058"] = "Fortunately, I still have all my money";
@@ -106,30 +101,31 @@ namespace SmallerDeathPenalty
                 {
                     PlayerStateSaver.Save();
 
-                    //Reload asset upon death to reflect amount lost
+                    //Display in monitor if config values are invalid
+                    if (config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
+                    {
+                        this.Monitor.Log("RestoreMoneyPercentage is an invalid value, default value will be used instead... (Is the value a decimal between 0 and 1?)", LogLevel.Debug);
+                    }
+                    if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
+                    {
+                        this.Monitor.Log("EnergytoRestorePercentage is an invalid value, default value will be used instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
+                    }
+                    if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
+                    {
+                        this.Monitor.Log("HealthtoRestorePercentage is an invalid value, default value will be used instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
+                    }
+                    if (config.MoneyLossCap < 0)
+                    {
+                        this.Monitor.Log("MoneyLossCap is an invalid value, default value will be used instead, (Using a negative number won't add money, nice try though)", LogLevel.Debug);
+                    }
+
+                    //Reload asset upon death to reflect amount lost, config is checked and fixed here
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
                 }
             }
             //Restore state after event ends
             else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
-                //Display in monitor if config values are invalid
-                if (config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
-                {
-                    this.Monitor.Log("RestoreMoneyPercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1?)", LogLevel.Debug);
-                }
-                else if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
-                {
-                    this.Monitor.Log("EnergytoRestorePercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
-                }
-                else if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
-                {
-                    this.Monitor.Log("HealthtoRestorePercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
-                }
-                else if (config.MoneyLossCap < 0)
-                {
-                    this.Monitor.Log("MoneyLossCap is an invalid value, using default instead, (Using a negative number won't add money, nice try though)", LogLevel.Debug);
-                }
                 //Restore Player state
                 PlayerStateSaver.Load();
 
