@@ -2,7 +2,7 @@
 	"Name":"SmallerDeathPenalty",
 	"Author":"TheMightyAmondee",
 	"Version":"1.0.0",
-	"Description":"Customisable death penalty. Smaller by default",
+	"Description":"Smaller penalty for dying. Fully customisable",
 	"UniqueID": "TheMightyAmondee.SmallerDeathPenalty",
 	"EntryDll":"SmallerDeathPenalty.dll",
 	"UpdateKeys":[]
