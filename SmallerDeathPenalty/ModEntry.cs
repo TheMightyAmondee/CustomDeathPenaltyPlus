@@ -15,7 +15,7 @@ namespace SmallerDeathPenalty
     public class ModEntry
         : Mod, IAssetEditor
     {
-        private ModConfig Config;
+        private ModConfig config;
         //Allow asset to be editted if name matches
         public bool CanEdit<T>(IAssetInfo asset)
         {
@@ -35,7 +35,7 @@ namespace SmallerDeathPenalty
             var editor = asset.AsDictionary<string, string>().Data;
 
             //Does the PlayerStateSaver not exist or is the config invalid?
-            if (PlayerStateSaver.state == null || Config.RestoreMoneyPercentage > 1 || Config.RestoreMoneyPercentage < 0)
+            if (PlayerStateSaver.state == null || config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
             {
                 editor["Event.cs.1068"] = "Dr. Harvey charged me 500g for the hospital visit. ";
                 editor["Event.cs.1058"] = "I seem to have lost 500g";
@@ -44,20 +44,20 @@ namespace SmallerDeathPenalty
             //Edit strings to refernce objects
             else
             {
-                if (PlayerStateSaver.state.money * (1 - Config.RestoreMoneyPercentage) > Config.MoneyLossCap)
+                if (PlayerStateSaver.state.money * (1 - config.RestoreMoneyPercentage) > config.MoneyLossCap)
                 {
                     //Edit events to reflect capped amount lost
-                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {Config.MoneyLossCap}g for the hospital visit. ";
-                    editor["Event.cs.1058"] = $"I seem to have lost {Config.MoneyLossCap}g";
+                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {config.MoneyLossCap}g for the hospital visit. ";
+                    editor["Event.cs.1058"] = $"I seem to have lost {config.MoneyLossCap}g";
                 }
                 else
                 {
                     //Edit events to reflect discounted amount lost
-                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * Config.RestoreMoneyPercentage)}g for the hospital visit. ";
-                    editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * Config.RestoreMoneyPercentage)}g.";
+                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.RestoreMoneyPercentage)}g for the hospital visit. ";
+                    editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.RestoreMoneyPercentage)}g.";
                 }
 
-                if (Config.RestoreItems == true)
+                if (config.RestoreItems == true)
                 {
                     //Remove unnecessary strings
                     editor["Event.cs.1060"] = "";
@@ -72,14 +72,15 @@ namespace SmallerDeathPenalty
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
-            var config = this.Helper.ReadConfig<ModConfig>();
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-            PlayerStateSaver.SetConfig(config);
+            
+            this.config = this.Helper.ReadConfig<ModConfig>();
+
+            PlayerStateSaver.SetConfig(this.config);
         }
 
         private void GameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            if(Config.RestoreItems == true)
+            if(config.RestoreItems == true)
             {
                 Helper.Content.AssetEditors.Add(new UIFixes(Helper));
             }
@@ -106,17 +107,17 @@ namespace SmallerDeathPenalty
                 PlayerStateSaver.state = null;
 
                 //Show if config values are invalid
-                if (Config.RestoreMoneyPercentage > 1 || Config.RestoreMoneyPercentage < 0)
+                if (config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
                 {
                     this.Monitor.Log("RestoreMoneyPercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1?)", LogLevel.Debug);
                 }
-                if (Config.EnergytoRestorePercentage > 1)
+                else if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
                 {
-                    this.Monitor.Log("EnergytoRestorePercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1?)", LogLevel.Debug);
+                    this.Monitor.Log("EnergytoRestorePercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
                 }
-                if (Config.HealthtoRestorePercentage > 1 || Config.HealthtoRestorePercentage < 0)
+                else if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
                 {
-                    this.Monitor.Log("HealthtoRestorePercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1?)", LogLevel.Debug);
+                    this.Monitor.Log("HealthtoRestorePercentage is an invalid value, using default instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
                 }
 
                 this.Monitor.Log("Player state restored...", LogLevel.Debug);

@@ -61,7 +61,7 @@ namespace SmallerDeathPenalty
 
             //Restore stamina
             //Use default values if config has invalid values
-            if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage < 0)
+            if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
             {
                 Game1.player.stamina = (int)(Game1.player.maxStamina * 0.10);
             }
@@ -74,7 +74,7 @@ namespace SmallerDeathPenalty
 
             //Restore health
             //Use default values if config has invalid values
-            if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage < 0)
+            if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
             {
                 Game1.player.health = (int)(Game1.player.maxHealth * 0.50);
             }
