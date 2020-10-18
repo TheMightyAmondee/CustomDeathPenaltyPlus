@@ -10,6 +10,7 @@ namespace SmallerDeathPenalty
     class UIFixes: IAssetEditor
     {
         private IModHelper modHelper;
+
         public UIFixes(IModHelper helper)
         {
             modHelper = helper;
@@ -30,7 +31,6 @@ namespace SmallerDeathPenalty
         //Edit asset
         public void Edit<T>(IAssetData asset)
         {
-           
             var UIeditor = asset.AsDictionary<string, string>().Data;
 
             UIeditor["ItemList_ItemsLost"] = "Items recovered:";

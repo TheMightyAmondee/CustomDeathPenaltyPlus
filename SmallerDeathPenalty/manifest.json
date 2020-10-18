@@ -2,7 +2,7 @@
 	"Name":"SmallerDeathPenalty",
 	"Author":"TheMightyAmondee",
 	"Version":"1.0.0",
-	"Description":"Lowers monetary penalty, keeps items and restores some health and energy",
+	"Description":"Lowers monetary penalty, keeps items (configurable) and restores some health and energy",
 	"UniqueID": "TheMightyAmondee.SmallerDeathPenalty",
 	"EntryDll":"SmallerDeathPenalty.dll",
 	"UpdateKeys":[]
