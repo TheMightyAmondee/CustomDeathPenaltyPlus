@@ -29,61 +29,44 @@ namespace SmallerDeathPenalty
         //Reloads state
         public static void Load()
         {
-            //Use default values if config has invalid values
-            if(config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
+            //Use respective default values if config has invalid values
+            if(config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0 || config.MoneyLossCap < 0 || config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0 || config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
             {
-                if (state.money * 0.95 > 500)
+                if(config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
                 {
-                    //Yes, restore money minus capped amount
-                    Game1.player.Money = (int)state.money - 500;
+                    config.RestoreMoneyPercentage = 0.95;
                 }
-                else
+                else if(config.MoneyLossCap < 0)
                 {
-                    //No, restore specified percentage of money
-                    Game1.player.Money = (int)Math.Round(state.money * 0.95);
+                    config.MoneyLossCap = 500;
+                }
+                else if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
+                {
+                    config.EnergytoRestorePercentage = 0.10;
+                }
+                else if(config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
+                {
+                    config.HealthtoRestorePercentage = 0.50;
                 }
             }
 
+            //Is lost percentage of funds more than capped amount?
+            if (state.money * (1 - config.RestoreMoneyPercentage) > config.MoneyLossCap)
+            {
+                //Yes, restore money minus capped amount
+                Game1.player.Money = (int)state.money - config.MoneyLossCap;
+            }
             else
             {
-                //Is lost percentage of funds more than capped amount?
-                if (state.money * (1 - config.RestoreMoneyPercentage) > config.MoneyLossCap)
-                {
-                    //Yes, restore money minus capped amount
-                    Game1.player.Money = (int)state.money - config.MoneyLossCap;
-                }
-                else
-                {
-                    //No, restore specified percentage of money
-                    Game1.player.Money = (int)Math.Round(state.money * config.RestoreMoneyPercentage);
-                }
+                //No, restore specified percentage of money
+                Game1.player.Money = (int)Math.Round(state.money * config.RestoreMoneyPercentage);
             }
 
             //Restore stamina
-            //Use default values if config has invalid values
-            if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
-            {
-                Game1.player.stamina = (int)(Game1.player.maxStamina * 0.10);
-            }
-            //Use config values
-            else
-            {
-                //Restore some energy
-                Game1.player.stamina = (int)(Game1.player.maxStamina * config.EnergytoRestorePercentage);
-            }
+            Game1.player.stamina = (int)(Game1.player.maxStamina * config.EnergytoRestorePercentage);
 
             //Restore health
-            //Use default values if config has invalid values
-            if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
-            {
-                Game1.player.health = (int)(Game1.player.maxHealth * 0.50);
-            }
-            //Use config values
-            else
-            {
-                //Restore some health
-                Game1.player.health = (int)(Game1.player.maxHealth * config.HealthtoRestorePercentage);
-            }
+            Game1.player.health = (int)(Game1.player.maxHealth * config.HealthtoRestorePercentage);
 
             //Restore items
             if (config.RestoreItems == true)
