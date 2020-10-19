@@ -44,13 +44,12 @@ namespace SmallerDeathPenalty
             //Edit strings to reflect restored money, also check config values
             else
             {
-                PlayerStateSaver.CheckConfig();
-                if (config.MoneyLossCap == 0)
+                if (config.MoneyLossCap == 0 || config.MoneytoRestorePercentage == 1)
                 {
                     editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
                     editor["Event.cs.1058"] = "Fortunately, I still have all my money";
                 }
-                else if (PlayerStateSaver.state.money * (1 - config.RestoreMoneyPercentage) > config.MoneyLossCap)
+                else if (PlayerStateSaver.state.money * (1 - config.MoneytoRestorePercentage) > config.MoneyLossCap)
                 {
                     //Edit events to reflect capped amount lost
                     editor["Event.cs.1068"] = $"Dr. Harvey charged me {config.MoneyLossCap}g for the hospital visit. ";
@@ -59,8 +58,8 @@ namespace SmallerDeathPenalty
                 else
                 {
                     //Edit events to reflect discounted amount lost
-                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.RestoreMoneyPercentage)}g for the hospital visit. ";
-                    editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.RestoreMoneyPercentage)}g";
+                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.MoneytoRestorePercentage)}g for the hospital visit. ";
+                    editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.MoneytoRestorePercentage)}g";
                 }
             }
 
@@ -74,6 +73,41 @@ namespace SmallerDeathPenalty
                 editor["Event.cs.1071"] = "";
             }
         }
+
+        /// <summary>
+        /// Checks to see if config values are valid
+        /// </summary>
+        private void CheckConfig()
+        {
+            //Use respective default values if config has invalid values
+            if (config.MoneytoRestorePercentage > 1 || config.MoneytoRestorePercentage < 0 || config.MoneyLossCap < 0 || config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0 || config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
+            {
+                if (config.MoneytoRestorePercentage > 1 || config.MoneytoRestorePercentage < 0)
+                {
+                    this.Monitor.Log($"RestoreMoneyPercentage is an invalid value, default value will be used instead... {config.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Info);
+                    config.MoneytoRestorePercentage = 0.95;
+                }
+
+                if (config.MoneyLossCap < 0)
+                {
+                    this.Monitor.Log("MoneyLossCap is an invalid value, default value will be used instead, (Using a negative number won't add money, nice try though)", LogLevel.Info);
+                    config.MoneyLossCap = 500;
+                }
+
+                if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
+                {
+                    this.Monitor.Log($"EnergytoRestorePercentage is an invalid value, default value will be used instead... {config.EnergytoRestorePercentage} isn't a decimal between 0 and 1 not including 0", LogLevel.Info);
+                    config.EnergytoRestorePercentage = 0.10;
+                }
+
+                if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
+                {
+                    this.Monitor.Log($"HealthtoRestorePercentage is an invalid value, default value will be used instead... {config.HealthtoRestorePercentage} isn't a decimal between 0 and 1 not including 0", LogLevel.Info);
+                    config.HealthtoRestorePercentage = 0.50;
+                }
+            }
+        }
+
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
@@ -91,6 +125,7 @@ namespace SmallerDeathPenalty
                 Helper.Content.AssetEditors.Add(new UIFixes(Helper));
             }
         }
+
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             //Check if player died each half second
@@ -100,26 +135,9 @@ namespace SmallerDeathPenalty
                 if (PlayerStateSaver.state == null && Game1.killScreen)
                 {
                     PlayerStateSaver.Save();
-
-                    //Display in monitor if config values are invalid
-                    if (config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
-                    {
-                        this.Monitor.Log("RestoreMoneyPercentage is an invalid value, default value will be used instead... (Is the value a decimal between 0 and 1?)", LogLevel.Debug);
-                    }
-                    if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
-                    {
-                        this.Monitor.Log("EnergytoRestorePercentage is an invalid value, default value will be used instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
-                    }
-                    if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
-                    {
-                        this.Monitor.Log("HealthtoRestorePercentage is an invalid value, default value will be used instead... (Is the value a decimal between 0 and 1 not including 0?)", LogLevel.Debug);
-                    }
-                    if (config.MoneyLossCap < 0)
-                    {
-                        this.Monitor.Log("MoneyLossCap is an invalid value, default value will be used instead, (Using a negative number won't add money, nice try though)", LogLevel.Debug);
-                    }
-
-                    //Reload asset upon death to reflect amount lost, config is checked and fixed here
+                    //Fix config if needed
+                    CheckConfig();
+                    //Reload asset upon death to reflect amount lost
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
                 }
             }
@@ -129,7 +147,7 @@ namespace SmallerDeathPenalty
                 //Restore Player state
                 PlayerStateSaver.Load();
 
-                this.Monitor.Log("Player state restored...", LogLevel.Debug);
+                this.Monitor.Log("Player state restored...", LogLevel.Info);
 
                 //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;

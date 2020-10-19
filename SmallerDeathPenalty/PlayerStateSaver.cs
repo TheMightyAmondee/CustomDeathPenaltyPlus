@@ -1,6 +1,5 @@
 ﻿using StardewValley;
 using System;
-using StardewValley.Locations;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
@@ -26,39 +25,12 @@ namespace SmallerDeathPenalty
             state = new PlayerState(Game1.player.Money);
         }
 
-        /// <summary>
-        /// Checks to see if config values are valid
-        /// </summary>
-        public static void CheckConfig()
-        {
-            //Use respective default values if config has invalid values
-            if (config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0 || config.MoneyLossCap < 0 || config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0 || config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
-            {
-                if (config.RestoreMoneyPercentage > 1 || config.RestoreMoneyPercentage < 0)
-                {
-                    config.RestoreMoneyPercentage = 0.95;
-                }
-                if (config.MoneyLossCap < 0)
-                {
-                    config.MoneyLossCap = 500;
-                }
-                if (config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0)
-                {
-                    config.EnergytoRestorePercentage = 0.10;
-                }
-                if (config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
-                {
-                    config.HealthtoRestorePercentage = 0.50;
-                }
-            }
-        }
-
         //Load Player state
         public static void Load()
         {
            
             //Is lost percentage of funds more than capped amount?
-            if (state.money * (1 - config.RestoreMoneyPercentage) > config.MoneyLossCap)
+            if (state.money * (1 - config.MoneytoRestorePercentage) > config.MoneyLossCap)
             {
                 //Yes, restore money minus capped amount
                 Game1.player.Money = (int)state.money - config.MoneyLossCap;
@@ -66,7 +38,7 @@ namespace SmallerDeathPenalty
             else
             {
                 //No, restore specified percentage of money
-                Game1.player.Money = (int)Math.Round(state.money * config.RestoreMoneyPercentage);
+                Game1.player.Money = (int)Math.Round(state.money * config.MoneytoRestorePercentage);
             }
 
             //Restore stamina
