@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEntry.cs" />
-    <Compile Include="PlayerState.cs" />
     <Compile Include="PlayerStateSaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AssetEditor.cs" />

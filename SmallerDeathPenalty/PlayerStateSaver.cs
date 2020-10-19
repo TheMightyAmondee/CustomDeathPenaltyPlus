@@ -8,6 +8,16 @@ namespace SmallerDeathPenalty
     /// </summary>
     internal class PlayerStateSaver
     {
+        internal class PlayerState
+        {
+            public double money;
+
+            public PlayerState(double m)
+            {
+                this.money = m;
+            }
+        }
+
         public static PlayerState state;
 
         private static ModConfig config;
