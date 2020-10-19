@@ -1,7 +1,4 @@
-﻿using StardewValley;
-using StardewValley.Tools;
-using System.Collections.Generic;
-
+﻿
 namespace SmallerDeathPenalty
 {
 /// <summary>
