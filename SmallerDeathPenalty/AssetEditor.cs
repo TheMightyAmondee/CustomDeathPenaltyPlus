@@ -28,14 +28,7 @@ namespace SmallerDeathPenalty
             //Allow asset to be editted if name matches
             public bool CanEdit<T>(IAssetInfo asset)
             {
-                if (asset.AssetNameEquals("Strings\\UI"))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return asset.AssetNameEquals("Strings\\UI");
             }
 
             //Edit asset
@@ -60,14 +53,7 @@ namespace SmallerDeathPenalty
             }
             public bool CanEdit<T>(IAssetInfo asset)
             {
-                if (asset.AssetNameEquals("Strings\\StringsFromCSFiles") && PlayerStateSaver.state != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return asset.AssetNameEquals("Strings\\StringsFromCSFiles") && PlayerStateSaver.state != null;
             }
 
             //Edit asset
@@ -75,23 +61,18 @@ namespace SmallerDeathPenalty
             {
                 var editor = asset.AsDictionary<string, string>().Data;
                 //Edit strings to reflect restored money
-                    if (config.MoneyLossCap == 0 || config.MoneytoRestorePercentage == 1)
-                    {
-                        editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
-                        editor["Event.cs.1058"] = "Fortunately, I still have all my money";
-                    }
-                    else if (PlayerStateSaver.state.money * (1 - config.MoneytoRestorePercentage) > config.MoneyLossCap)
-                    {
-                        //Edit events to reflect capped amount lost
-                        editor["Event.cs.1068"] = $"Dr. Harvey charged me {config.MoneyLossCap}g for the hospital visit. ";
-                        editor["Event.cs.1058"] = $"I seem to have lost {config.MoneyLossCap}g";
-                    }
-                    else
-                    {
-                        //Edit events to reflect discounted amount lost
-                        editor["Event.cs.1068"] = $"Dr. Harvey charged me {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.MoneytoRestorePercentage)}g for the hospital visit. ";
-                        editor["Event.cs.1058"] = $"I seem to have lost {PlayerStateSaver.state.money - (int)Math.Round(PlayerStateSaver.state.money * config.MoneytoRestorePercentage)}g";
-                    }
+                if (config.MoneyLossCap == 0 || config.MoneytoRestorePercentage == 1)
+                {
+                    editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
+                    editor["Event.cs.1058"] = "Fortunately, I still have all my money";
+                }
+                else
+                {
+                    //Edit events to reflect amount lost
+                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {(int)Math.Round(PlayerStateSaver.state.moneylost)}g for the hospital visit. ";
+                    editor["Event.cs.1058"] = $"I seem to have lost {(int)Math.Round(PlayerStateSaver.state.moneylost)}g";
+                }
+
 
                 if (config.RestoreItems == true)
                 {

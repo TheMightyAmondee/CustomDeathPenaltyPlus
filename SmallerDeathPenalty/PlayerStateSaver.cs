@@ -1,5 +1,6 @@
 ﻿using StardewValley;
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SmallerDeathPenalty
 {
@@ -10,11 +11,14 @@ namespace SmallerDeathPenalty
     {
         internal class PlayerState
         {
-            public double money;
+            public int money;
 
-            public PlayerState(double m)
+            public double moneylost;
+
+            public PlayerState(int m, double l)
             {
                 this.money = m;
+                this.moneylost = l;
             }
         }
 
@@ -27,28 +31,18 @@ namespace SmallerDeathPenalty
             PlayerStateSaver.config = config;
         }
 
-        // Saves player's current state for use later
+        // Saves player's current money and amount to be lost
         public static void Save()
         {
-            state = new PlayerState(Game1.player.Money);
+            state = new PlayerState(Game1.player.Money, Math.Min(config.MoneyLossCap, Game1.player.Money * (1-config.MoneytoRestorePercentage)));
         }
 
         //Load Player state
         public static void Load()
         {
+            //Restore money
+            Game1.player.Money = state.money - (int)Math.Round(state.moneylost);
            
-            //Is lost percentage of funds more than capped amount?
-            if (state.money * (1 - config.MoneytoRestorePercentage) > config.MoneyLossCap)
-            {
-                //Yes, restore money minus capped amount
-                Game1.player.Money = (int)state.money - config.MoneyLossCap;
-            }
-            else
-            {
-                //No, restore specified percentage of money
-                Game1.player.Money = (int)Math.Round(state.money * config.MoneytoRestorePercentage);
-            }
-
             //Restore stamina
             Game1.player.stamina = (int)(Game1.player.maxStamina * config.EnergytoRestorePercentage);
 
