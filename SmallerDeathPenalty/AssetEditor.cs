@@ -51,6 +51,8 @@ namespace SmallerDeathPenalty
             {
                 modHelper = helper;
             }
+
+            //Allow asset to be editted if name matches and any object references exist
             public bool CanEdit<T>(IAssetInfo asset)
             {
                 return asset.AssetNameEquals("Strings\\StringsFromCSFiles") && PlayerStateSaver.state != null;
@@ -60,7 +62,7 @@ namespace SmallerDeathPenalty
             public void Edit<T>(IAssetData asset)
             {
                 var editor = asset.AsDictionary<string, string>().Data;
-                //Edit strings to reflect restored money
+                //Special case when no money is lost
                 if (config.MoneyLossCap == 0 || config.MoneytoRestorePercentage == 1)
                 {
                     editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
@@ -72,7 +74,6 @@ namespace SmallerDeathPenalty
                     editor["Event.cs.1068"] = $"Dr. Harvey charged me {(int)Math.Round(PlayerStateSaver.state.moneylost)}g for the hospital visit. ";
                     editor["Event.cs.1058"] = $"I seem to have lost {(int)Math.Round(PlayerStateSaver.state.moneylost)}g";
                 }
-
 
                 if (config.RestoreItems == true)
                 {

@@ -13,11 +13,19 @@ namespace SmallerDeathPenalty
         : Mod
     {
         private ModConfig config;
-        
-        /// <summary>
-        /// Checks to see if config values are valid
-        /// </summary>
-        private void CheckConfig()
+
+        public override void Entry(IModHelper helper)
+        {
+            helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
+            helper.Events.GameLoop.GameLaunched += this.GameLaunched;
+            
+            this.config = this.Helper.ReadConfig<ModConfig>();
+
+            PlayerStateSaver.SetConfig(this.config);
+            AssetEditor.SetConfig(this.config);
+        }
+
+        private void GameLaunched(object sender, GameLaunchedEventArgs e)
         {
             //Use respective default values if config has invalid values
             if (config.MoneytoRestorePercentage > 1 || config.MoneytoRestorePercentage < 0 || config.MoneyLossCap < 0 || config.EnergytoRestorePercentage > 1 || config.EnergytoRestorePercentage <= 0 || config.HealthtoRestorePercentage > 1 || config.HealthtoRestorePercentage <= 0)
@@ -46,23 +54,6 @@ namespace SmallerDeathPenalty
                     config.HealthtoRestorePercentage = 0.50;
                 }
             }
-        }
-
-        public override void Entry(IModHelper helper)
-        {
-            helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
-            helper.Events.GameLoop.GameLaunched += this.GameLaunched;
-            
-            this.config = this.Helper.ReadConfig<ModConfig>();
-
-            PlayerStateSaver.SetConfig(this.config);
-            AssetEditor.SetConfig(this.config);
-        }
-
-        private void GameLaunched(object sender, GameLaunchedEventArgs e)
-        {
-            //Fix config if needed
-            CheckConfig();
             //Edit UI if items will be restored
             if (config.RestoreItems == true)
             {
@@ -77,7 +68,7 @@ namespace SmallerDeathPenalty
             //Check if player died each half second
             if (e.IsMultipleOf(30))
             {
-                //Save funds upon death
+                //Save money upon death and calculate amount of money to lose
                 if (PlayerStateSaver.state == null && Game1.killScreen)
                 {
                     PlayerStateSaver.Save();

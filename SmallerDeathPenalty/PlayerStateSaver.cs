@@ -9,20 +9,20 @@ namespace SmallerDeathPenalty
     /// </summary>
     internal class PlayerStateSaver
     {
-        internal class PlayerState
+        internal class PlayerMoneyTracker
         {
             public int money;
 
             public double moneylost;
 
-            public PlayerState(int m, double l)
+            public PlayerMoneyTracker(int m, double l)
             {
                 this.money = m;
                 this.moneylost = l;
             }
         }
 
-        public static PlayerState state;
+        public static PlayerMoneyTracker state;
 
         private static ModConfig config;
 
@@ -34,7 +34,7 @@ namespace SmallerDeathPenalty
         // Saves player's current money and amount to be lost
         public static void Save()
         {
-            state = new PlayerState(Game1.player.Money, Math.Min(config.MoneyLossCap, Game1.player.Money * (1-config.MoneytoRestorePercentage)));
+            state = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.MoneyLossCap, Game1.player.Money * (1-config.MoneytoRestorePercentage)));
         }
 
         //Load Player state
