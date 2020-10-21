@@ -68,9 +68,9 @@ namespace SmallerDeathPenalty
                     editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
                     editor["Event.cs.1058"] = "Fortunately, I still have all my money";
                 }
+                //Edit events to reflect amount lost
                 else
                 {
-                    //Edit events to reflect amount lost
                     editor["Event.cs.1068"] = $"Dr. Harvey charged me {(int)Math.Round(PlayerStateSaver.state.moneylost)}g for the hospital visit. ";
                     editor["Event.cs.1058"] = $"I seem to have lost {(int)Math.Round(PlayerStateSaver.state.moneylost)}g";
                 }

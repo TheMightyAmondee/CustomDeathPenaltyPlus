@@ -5,5 +5,6 @@
 	"Description":"Smaller penalty for dying that's fully customisable.",
 	"UniqueID": "TheMightyAmondee.SmallerDeathPenalty",
 	"EntryDll":"SmallerDeathPenalty.dll",
+	"MinimumApiVersion":"3.0.0",
 	"UpdateKeys":[]
 }
