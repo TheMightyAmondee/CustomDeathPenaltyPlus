@@ -1,6 +1,0 @@
-C:\Users\ameli\source\repos\SmallerDeathPenalty\SmallerDeathPenalty\bin\Debug\SmallerDeathPenalty.dll
-C:\Users\ameli\source\repos\SmallerDeathPenalty\SmallerDeathPenalty\bin\Debug\SmallerDeathPenalty.pdb
-C:\Users\ameli\source\repos\SmallerDeathPenalty\SmallerDeathPenalty\obj\Debug\SmallerDeathPenalty.csproj.CoreCompileInputs.cache
-C:\Users\ameli\source\repos\SmallerDeathPenalty\SmallerDeathPenalty\obj\Debug\SmallerDeathPenalty.dll
-C:\Users\ameli\source\repos\SmallerDeathPenalty\SmallerDeathPenalty\obj\Debug\SmallerDeathPenalty.pdb
-C:\Users\ameli\source\repos\SmallerDeathPenalty\SmallerDeathPenalty\obj\Debug\SmallerDeathPenalty.csprojAssemblyReference.cache

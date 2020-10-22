@@ -1,12 +1,12 @@
-﻿using System;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
+using System;
 
 namespace SmallerDeathPenalty
 {
     /// <summary>
     /// Edits game assets
     /// </summary>
-    class AssetEditor
+    internal class AssetEditor
     {
         private static ModConfig config;
 

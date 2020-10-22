@@ -3,9 +3,6 @@ using System;
 
 namespace SmallerDeathPenalty
 {
-    /// <summary>
-    /// Contains the playerstate for saving and loading
-    /// </summary>
     internal class PlayerStateSaver
     {
         internal class PlayerMoneyTracker

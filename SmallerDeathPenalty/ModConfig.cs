@@ -9,6 +9,5 @@ namespace SmallerDeathPenalty
         public double MoneytoRestorePercentage { get; set; } = 0.95;
         public double EnergytoRestorePercentage { get; set; } = 0.10;
         public double HealthtoRestorePercentage { get; set; } = 0.50;
-
     }
 }
