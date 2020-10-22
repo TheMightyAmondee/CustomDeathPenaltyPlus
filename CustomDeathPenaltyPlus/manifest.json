@@ -1,10 +1,10 @@
 ﻿{
-	"Name":"SmallerDeathPenalty",
+	"Name":"CustomDeathPenaltyPlus",
 	"Author":"TheMightyAmondee",
 	"Version":"1.0.0",
-	"Description":"Smaller penalty for dying that's fully customisable.",
-	"UniqueID": "TheMightyAmondee.SmallerDeathPenalty",
-	"EntryDll":"SmallerDeathPenalty.dll",
+	"Description":"Fully customisable penalty for dying.",
+	"UniqueID": "TheMightyAmondee.CustomDeathPenaltyPlus",
+	"EntryDll":"CustomDeathPenaltyPlus.dll",
 	"MinimumApiVersion":"3.0.0",
 	"UpdateKeys":[]
 }
