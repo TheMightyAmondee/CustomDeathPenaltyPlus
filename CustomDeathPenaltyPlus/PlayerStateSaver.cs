@@ -1,7 +1,7 @@
 ﻿using StardewValley;
 using System;
 
-namespace SmallerDeathPenalty
+namespace CustomDeathPenaltyPlus
 {
     internal class PlayerStateSaver
     {

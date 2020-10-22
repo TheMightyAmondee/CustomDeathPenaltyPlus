@@ -7,8 +7,8 @@
     <ProjectGuid>{EB5DCB3C-48AB-4D52-A570-37AA5830E310}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SmallerDeathPenalty</RootNamespace>
-    <AssemblyName>SmallerDeathPenalty</AssemblyName>
+    <RootNamespace>CustomDeathPenaltyPlus</RootNamespace>
+    <AssemblyName>CustomDeathPenaltyPlus</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

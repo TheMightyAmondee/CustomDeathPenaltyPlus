@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallerDeathPenalty", "SmallerDeathPenalty\SmallerDeathPenalty.csproj", "{EB5DCB3C-48AB-4D52-A570-37AA5830E310}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDeathPenaltyPlus", "CustomDeathPenaltyPlus\CustomDeathPenaltyPlus.csproj", "{EB5DCB3C-48AB-4D52-A570-37AA5830E310}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

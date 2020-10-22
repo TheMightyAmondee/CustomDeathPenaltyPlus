@@ -7,7 +7,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using System.Linq;
 
-namespace SmallerDeathPenalty
+namespace CustomDeathPenaltyPlus
 {
     public class ModEntry
         : Mod

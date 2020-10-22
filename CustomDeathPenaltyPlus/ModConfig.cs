@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmallerDeathPenalty
+namespace CustomDeathPenaltyPlus
 {
     internal class ModConfig
     {

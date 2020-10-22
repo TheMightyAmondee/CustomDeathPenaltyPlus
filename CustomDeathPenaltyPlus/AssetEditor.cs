@@ -1,7 +1,7 @@
 ﻿using StardewModdingAPI;
 using System;
 
-namespace SmallerDeathPenalty
+namespace CustomDeathPenaltyPlus
 {
     /// <summary>
     /// Edits game assets
