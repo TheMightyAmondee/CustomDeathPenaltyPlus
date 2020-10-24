@@ -90,25 +90,29 @@ namespace CustomDeathPenaltyPlus
                 PlayerStateSaver.state = null;
             }
 
-            else if (PlayerStateSaver.statepassout == null && Game1.player.passedOut == true)
+            else if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
+                if (!System.Diagnostics.Debugger.IsAttached)
+                {
+                    //System.Diagnostics.Debugger.Launch();
+                }
+
                 var farmlocation = Game1.player.currentLocation as FarmHouse;
                 var cellarlocation = Game1.player.currentLocation as Cellar;
                 if (farmlocation != null || cellarlocation != null)
                 {
                     return;
                 }
-                else
+                else if(PlayerStateSaver.statepassout == null)
                 {
-                    this.Monitor.Log($"{Game1.player.Name} passed out, saving money", LogLevel.Debug);
                     PlayerStateSaver.PassOutSave();
+                    Helper.Content.InvalidateCache("Data\\mail");
                 }
             }
 
-            else if(PlayerStateSaver.statepassout != null && Game1.CurrentEvent == null && Game1.player.CanMove)
+            else if(PlayerStateSaver.statepassout != null && Game1.timeOfDay == 600 && Game1.player.CanMove)
             {
                 PlayerStateSaver.PassOutLoad();
-                this.Monitor.Log($"{Game1.player.Name}, you lost some money...", LogLevel.Debug);
                 PlayerStateSaver.statepassout = null;
             }
 
