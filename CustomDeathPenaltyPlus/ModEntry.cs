@@ -6,6 +6,8 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using System.Linq;
+using StardewValley.Locations;
+using Netcode;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -77,6 +79,7 @@ namespace CustomDeathPenaltyPlus
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
                 }
             }
+
             //Restore state after event ends
             else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
@@ -86,6 +89,31 @@ namespace CustomDeathPenaltyPlus
                 //Reset PlayerStateSaver
                 PlayerStateSaver.state = null;
             }
+
+            else if (PlayerStateSaver.statepassout == null && Game1.player.passedOut == true)
+            {
+                var farmlocation = Game1.player.currentLocation as FarmHouse;
+                var cellarlocation = Game1.player.currentLocation as Cellar;
+                if (farmlocation != null || cellarlocation != null)
+                {
+                    return;
+                }
+                else
+                {
+                    this.Monitor.Log($"{Game1.player.Name} passed out, saving money", LogLevel.Debug);
+                    PlayerStateSaver.PassOutSave();
+                }
+            }
+
+            else if(PlayerStateSaver.statepassout != null && Game1.CurrentEvent == null && Game1.player.CanMove)
+            {
+                PlayerStateSaver.PassOutLoad();
+                this.Monitor.Log($"{Game1.player.Name}, you lost some money...", LogLevel.Debug);
+                PlayerStateSaver.statepassout = null;
+            }
+
+            
+            
         }
     }
 }
