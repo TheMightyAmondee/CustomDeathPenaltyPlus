@@ -3,7 +3,7 @@ using System;
 
 namespace CustomDeathPenaltyPlus
 {
-    internal class PlayerStateSaver
+    internal class PlayerStateRestorer
     {
         internal class PlayerMoneyTracker
         {
@@ -26,21 +26,22 @@ namespace CustomDeathPenaltyPlus
 
         public static void SetConfig(ModConfig config)
         {
-            PlayerStateSaver.config = config;
+            PlayerStateRestorer.config = config;
         }
 
-        // Saves player's current money and amount to be lost
+        // Saves player's current money and amount to be lost, killed
         public static void Save()
         {
             state = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.MoneyLossCap, Game1.player.Money * (1-config.MoneytoRestorePercentage)));
         }
 
+        // Saves player's current money and amount to be lost, passed out
         public static void PassOutSave()
         {
             statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutMoneyLossCap, Game1.player.Money * (1 - config.PassOutMoneytoRestorePercentage)));
         }
 
-        //Load Player state
+        //Load Player state, killed
         public static void Load()
         {
             //Restore money
@@ -64,11 +65,11 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
+        //Load Player state, passed out
         public static void PassOutLoad()
         {
+            //Restore money
             Game1.player.Money = statepassout.money - (int)Math.Round(statepassout.moneylost);
-
-            Game1.player.stamina = Game1.player.stamina = (int)(Game1.player.maxStamina * config.PassOutEnergytoRestorePercentage);
         }
     }
 }

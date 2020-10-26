@@ -20,10 +20,11 @@ namespace CustomDeathPenaltyPlus
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
-            
+            helper.Events.GameLoop.DayEnding += this.DayEnded;
+
             this.config = this.Helper.ReadConfig<ModConfig>();
 
-            PlayerStateSaver.SetConfig(this.config);
+            PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config);
         }
 
@@ -34,7 +35,7 @@ namespace CustomDeathPenaltyPlus
             {
                 if (config.MoneytoRestorePercentage > 1 || config.MoneytoRestorePercentage < 0)
                 {
-                    this.Monitor.Log($"RestoreMoneyPercentage is an invalid value, default value will be used instead... {config.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                    this.Monitor.Log($"MoneytoRestorePercentage is an invalid value, default value will be used instead... {config.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
                     config.MoneytoRestorePercentage = 0.95;
                 }
 
@@ -55,7 +56,27 @@ namespace CustomDeathPenaltyPlus
                     this.Monitor.Log($"HealthtoRestorePercentage is an invalid value, default value will be used instead... {config.HealthtoRestorePercentage} isn't a decimal between 0 and 1, excluding 0", LogLevel.Warn);
                     config.HealthtoRestorePercentage = 0.50;
                 }
+
+                if (config.PassOutMoneytoRestorePercentage > 1 || config.PassOutMoneytoRestorePercentage < 0)
+                {
+                    this.Monitor.Log($"PassOutMoneytoRestorePercentage is an invalid value, default value will be used instead... {config.PassOutMoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                    config.PassOutMoneytoRestorePercentage = 0.95;
+                }
+
+                if (config.PassOutMoneyLossCap < 0)
+                {
+                    this.Monitor.Log("PassOutMoneyLossCap is an invalid value, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Warn);
+                    config.PassOutMoneyLossCap = 500;
+                }
+
+                if (config.PassOutEnergytoRestorePercentage > 1 || config.PassOutEnergytoRestorePercentage < 0)
+                {
+                    this.Monitor.Log($"PassOutEnergytoRestorePercentage is an invalid value, default value will be used instead... {config.PassOutEnergytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                    config.PassOutEnergytoRestorePercentage = 0.50;
+                }
             }
+
+           
             //Edit UI if items will be restored
             if (config.RestoreItems == true)
             {
@@ -63,17 +84,19 @@ namespace CustomDeathPenaltyPlus
             }
             //Edit strings
             Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
+            //Edit mail
+            Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
         }
 
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-            //Check if player died each half second
+            //Check if player died or passed out each half second
             if (e.IsMultipleOf(30))
             {
                 //Save money upon death and calculate amount of money to lose
-                if (PlayerStateSaver.state == null && Game1.killScreen)
+                if (PlayerStateRestorer.state == null && Game1.killScreen)
                 {
-                    PlayerStateSaver.Save();
+                    PlayerStateRestorer.Save();
 
                     //Reload asset upon death to reflect amount lost
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
@@ -81,15 +104,16 @@ namespace CustomDeathPenaltyPlus
             }
 
             //Restore state after event ends
-            else if (PlayerStateSaver.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
+            else if (PlayerStateRestorer.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
                 //Restore Player state
-                PlayerStateSaver.Load();
+                PlayerStateRestorer.Load();
 
                 //Reset PlayerStateSaver
-                PlayerStateSaver.state = null;
+                PlayerStateRestorer.state = null;
             }
 
+            //Save money upon passing out and calculate amount of money to lose
             else if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
                 if (!System.Diagnostics.Debugger.IsAttached)
@@ -97,27 +121,29 @@ namespace CustomDeathPenaltyPlus
                     //System.Diagnostics.Debugger.Launch();
                 }
 
+                //Don't save if player won't lose money
                 var farmlocation = Game1.player.currentLocation as FarmHouse;
                 var cellarlocation = Game1.player.currentLocation as Cellar;
                 if (farmlocation != null || cellarlocation != null)
                 {
                     return;
                 }
-                else if(PlayerStateSaver.statepassout == null)
+                else if(PlayerStateRestorer.statepassout == null)
                 {
-                    PlayerStateSaver.PassOutSave();
+                    PlayerStateRestorer.PassOutSave();
                     Helper.Content.InvalidateCache("Data\\mail");
+
                 }
-            }
+            }   
+        }
 
-            else if(PlayerStateSaver.statepassout != null && Game1.timeOfDay == 600 && Game1.player.CanMove)
+        private void DayEnded(object sender, DayEndingEventArgs e)
+        {
+            if (PlayerStateRestorer.statepassout != null)
             {
-                PlayerStateSaver.PassOutLoad();
-                PlayerStateSaver.statepassout = null;
+                PlayerStateRestorer.PassOutLoad();
+                PlayerStateRestorer.statepassout = null;
             }
-
-            
-            
         }
     }
 }
