@@ -16,11 +16,14 @@ namespace CustomDeathPenaltyPlus
     {
         private ModConfig config;
 
+        public static PlayerData PlayerData { get; private set; } = new PlayerData();
+
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
-            helper.Events.GameLoop.DayEnding += this.DayEnded;
+            helper.Events.GameLoop.Saving += this.Saving;
+            helper.Events.GameLoop.DayStarted += this.DayStarted;
 
             this.config = this.Helper.ReadConfig<ModConfig>();
 
@@ -100,6 +103,7 @@ namespace CustomDeathPenaltyPlus
 
                     //Reload asset upon death to reflect amount lost
                     Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
+                    
                 }
             }
 
@@ -116,10 +120,7 @@ namespace CustomDeathPenaltyPlus
             //Save money upon passing out and calculate amount of money to lose
             else if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
-                if (!System.Diagnostics.Debugger.IsAttached)
-                {
-                    //System.Diagnostics.Debugger.Launch();
-                }
+                
 
                 //Don't save if player won't lose money
                 var farmlocation = Game1.player.currentLocation as FarmHouse;
@@ -130,19 +131,40 @@ namespace CustomDeathPenaltyPlus
                 }
                 else if(PlayerStateRestorer.statepassout == null)
                 {
-                    PlayerStateRestorer.PassOutSave();
-                    Helper.Content.InvalidateCache("Data\\mail");
-
+                    PlayerStateRestorer.SavePassout();
+                    ModEntry.PlayerData.DidPlayerPassOutYesterday = true;
+                    ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassout.moneylost);
                 }
             }   
         }
 
-        private void DayEnded(object sender, DayEndingEventArgs e)
-        {
+        private void Saving(object sender, SavingEventArgs e)
+        {  
             if (PlayerStateRestorer.statepassout != null)
-            {
-                PlayerStateRestorer.PassOutLoad();
+            {   
+                PlayerStateRestorer.LoadPassout();
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Game1.player.Name}.json", ModEntry.PlayerData);
                 PlayerStateRestorer.statepassout = null;
+            }
+            else if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
+            {
+                ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Game1.player.Name}.json", ModEntry.PlayerData);
+            }
+        }
+
+        private void DayStarted(object sender, DayStartedEventArgs e)
+        {
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                //System.Diagnostics.Debugger.Launch();
+            }
+            ModEntry.PlayerData = this.Helper.Data.ReadJsonFile<PlayerData>($"data\\{Game1.player.Name}.json") ?? new PlayerData();
+
+            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
+            {
+                Game1.player.stamina = (int)(Game1.player.maxStamina * config.PassOutEnergytoRestorePercentage);
+                Helper.Content.InvalidateCache("Data\\mail");
             }
         }
     }

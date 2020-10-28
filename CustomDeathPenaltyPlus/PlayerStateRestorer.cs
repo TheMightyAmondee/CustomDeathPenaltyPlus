@@ -36,7 +36,7 @@ namespace CustomDeathPenaltyPlus
         }
 
         // Saves player's current money and amount to be lost, passed out
-        public static void PassOutSave()
+        public static void SavePassout()
         {
             statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutMoneyLossCap, Game1.player.Money * (1 - config.PassOutMoneytoRestorePercentage)));
         }
@@ -66,7 +66,7 @@ namespace CustomDeathPenaltyPlus
         }
 
         //Load Player state, passed out
-        public static void PassOutLoad()
+        public static void LoadPassout()
         {
             //Restore money
             Game1.player.Money = statepassout.money - (int)Math.Round(statepassout.moneylost);

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CustomDeathPenaltyPlus
 {
-    class Data
+    public class PlayerData
     {
-        public bool NewDayFixes { get; set; }
-        public int MoneyLostLastPassOut { get; set; }
+        public bool DidPlayerPassOutYesterday { get; set; } = false;
+        public int MoneyLostLastPassOut { get; set; } = 0;
     }
 }
