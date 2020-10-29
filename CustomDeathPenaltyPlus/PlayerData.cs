@@ -8,7 +8,7 @@ namespace CustomDeathPenaltyPlus
 {
     public class PlayerData
     {
-        public bool DidPlayerPassOutYesterday { get; set; } = false;
-        public int MoneyLostLastPassOut { get; set; } = 0;
+        public bool DidPlayerPassOutYesterday { get; set; }
+        public int MoneyLostLastPassOut { get; set; }
     }
 }

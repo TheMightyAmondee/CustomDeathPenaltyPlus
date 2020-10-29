@@ -64,7 +64,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var editor = asset.AsDictionary<string, string>().Data;
                 //Special case when no money is lost
-                if (config.MoneyLossCap == 0 || config.MoneytoRestorePercentage == 1)
+                if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
                 {
                     editor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
                     editor["Event.cs.1058"] = "Fortunately, I still have all my money";
@@ -76,7 +76,7 @@ namespace CustomDeathPenaltyPlus
                     editor["Event.cs.1058"] = $"I seem to have lost {(int)Math.Round(PlayerStateRestorer.state.moneylost)}g";
                 }
 
-                if (config.RestoreItems == true)
+                if (config.DeathPenalty.RestoreItems == true)
                 {
                     //Remove unnecessary strings
                     editor["Event.cs.1060"] = "";

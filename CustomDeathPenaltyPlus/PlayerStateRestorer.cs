@@ -30,31 +30,31 @@ namespace CustomDeathPenaltyPlus
         }
 
         // Saves player's current money and amount to be lost, killed
-        public static void Save()
+        public static void SaveStateDeath()
         {
-            state = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.MoneyLossCap, Game1.player.Money * (1-config.MoneytoRestorePercentage)));
+            state = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1-config.DeathPenalty.MoneytoRestorePercentage)));
         }
 
         // Saves player's current money and amount to be lost, passed out
-        public static void SavePassout()
+        public static void SaveStatePassout()
         {
-            statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutMoneyLossCap, Game1.player.Money * (1 - config.PassOutMoneytoRestorePercentage)));
+            statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)));
         }
 
         //Load Player state, killed
-        public static void Load()
+        public static void LoadStateDeath()
         {
             //Restore money
             Game1.player.Money = state.money - (int)Math.Round(state.moneylost);
            
             //Restore stamina
-            Game1.player.stamina = (int)(Game1.player.maxStamina * config.EnergytoRestorePercentage);
+            Game1.player.stamina = (int)(Game1.player.maxStamina * config.DeathPenalty.EnergytoRestorePercentage);
 
             //Restore health
-            Game1.player.health = (int)(Game1.player.maxHealth * config.HealthtoRestorePercentage);
+            Game1.player.health = (int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage);
 
             //Restore items
-            if (config.RestoreItems == true)
+            if (config.DeathPenalty.RestoreItems == true)
             {
                 foreach (Item item in Game1.player.itemsLostLastDeath)
                 {
@@ -66,7 +66,7 @@ namespace CustomDeathPenaltyPlus
         }
 
         //Load Player state, passed out
-        public static void LoadPassout()
+        public static void LoadStatePassout()
         {
             //Restore money
             Game1.player.Money = statepassout.money - (int)Math.Round(statepassout.moneylost);
