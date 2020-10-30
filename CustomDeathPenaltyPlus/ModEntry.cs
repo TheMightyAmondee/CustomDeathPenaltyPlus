@@ -11,6 +11,70 @@ using Netcode;
 
 namespace CustomDeathPenaltyPlus
 {
+    internal static class PassOutPenaltyChangesExtensions
+    {
+        public static void Reconcile(this ModConfig.PassOutPenaltyChanges changes, IMonitor monitor)
+        {
+            if (false
+                || changes.MoneytoRestorePercentage > 1
+                || changes.MoneytoRestorePercentage < 0)
+            {
+                monitor.Log($"MoneytoRestorePercentage in PassOutPenalty is invalid, default value will be used instead... {changes.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                changes.MoneytoRestorePercentage = 0.95;
+            }
+
+            if (changes.MoneyLossCap < 0)
+            {
+                monitor.Log("MoneyLossCap in PassOutPenalty is invalid, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Warn);
+                changes.MoneyLossCap = 500;
+            }
+
+            if (false
+                || changes.EnergytoRestorePercentage > 1
+                || changes.EnergytoRestorePercentage < 0)
+            {
+                monitor.Log($"EnergytoRestorePercentage in PassOutPenalty is invalid, default value will be used instead... {changes.EnergytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                changes.EnergytoRestorePercentage = 0.50;
+            }
+        }
+    }
+
+    internal static class DeathPenaltyChangesExtensions
+    {
+        public static void Reconcile(this ModConfig.DeathPenaltyChanges changes, IMonitor monitor)
+        {
+            if (false
+                || changes.MoneytoRestorePercentage > 1
+                || changes.MoneytoRestorePercentage < 0)
+            {
+                monitor.Log($"MoneytoRestorePercentage in DeathPenalty is invalid, default value will be used instead... {changes.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                changes.MoneytoRestorePercentage = 0.95;
+            }
+
+            if (changes.MoneyLossCap < 0)
+            {
+                monitor.Log("MoneyLossCap in DeathPenalty is invalid, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Warn);
+                changes.MoneyLossCap = 500;
+            }
+
+            if (false
+                || changes.EnergytoRestorePercentage > 1
+                || changes.EnergytoRestorePercentage < 0)
+            {
+                monitor.Log($"EnergytoRestorePercentage in DeathPenalty is invalid, default value will be used instead... {changes.EnergytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Warn);
+                changes.EnergytoRestorePercentage = 0.10;
+            }
+
+            if (false
+                || changes.HealthtoRestorePercentage > 1
+                || changes.HealthtoRestorePercentage <= 0)
+            {
+                monitor.Log($"HealthtoRestorePercentage in DeathPenalty is invalid, default value will be used instead... {changes.HealthtoRestorePercentage} isn't a decimal between 0 and 1, excluding 0", LogLevel.Warn);
+                changes.HealthtoRestorePercentage = 0.50;
+            }
+        }
+    }
+
     public class ModEntry
         : Mod
     {
@@ -33,72 +97,31 @@ namespace CustomDeathPenaltyPlus
 
         private void GameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            //Use respective default values if config has invalid values
-            if (this.config.DeathPenalty.MoneytoRestorePercentage > 1 || this.config.DeathPenalty.MoneytoRestorePercentage < 0 || this.config.DeathPenalty.MoneyLossCap < 0 || this.config.DeathPenalty.EnergytoRestorePercentage > 1 || this.config.DeathPenalty.EnergytoRestorePercentage <= 0 || this.config.DeathPenalty.HealthtoRestorePercentage > 1 || this.config.DeathPenalty.HealthtoRestorePercentage <= 0)
+            if (!System.Diagnostics.Debugger.IsAttached)
             {
-                this.Monitor.Log("Invalid values found in the config for DeathPenalty", LogLevel.Warn);
-                if (this.config.DeathPenalty.MoneytoRestorePercentage > 1 || this.config.DeathPenalty.MoneytoRestorePercentage < 0)
-                {
-                    this.Monitor.Log($"- MoneytoRestorePercentage is an invalid value, default value will be used instead... {this.config.DeathPenalty.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Info);
-                    this.config.DeathPenalty.MoneytoRestorePercentage = 0.95;
-                }
-
-                if (this.config.DeathPenalty.MoneyLossCap < 0)
-                {
-                    this.Monitor.Log("- MoneyLossCap is an invalid value, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Info);
-                    this.config.DeathPenalty.MoneyLossCap = 500;
-                }
-
-                if (this.config.DeathPenalty.EnergytoRestorePercentage > 1 || this.config.DeathPenalty.EnergytoRestorePercentage < 0)
-                {
-                    this.Monitor.Log($"- EnergytoRestorePercentage is an invalid value, default value will be used instead... {this.config.DeathPenalty.EnergytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Info);
-                    this.config.DeathPenalty.EnergytoRestorePercentage = 0.10;
-                }
-
-                if (this.config.DeathPenalty.HealthtoRestorePercentage > 1 || this.config.DeathPenalty.HealthtoRestorePercentage <= 0)
-                {
-                    this.Monitor.Log($"- HealthtoRestorePercentage is an invalid value, default value will be used instead... {this.config.DeathPenalty.HealthtoRestorePercentage} isn't a decimal between 0 and 1, excluding 0", LogLevel.Info);
-                    this.config.DeathPenalty.HealthtoRestorePercentage = 0.50;
-                }  
+                System.Diagnostics.Debugger.Launch();
             }
 
-            if(this.config.PassOutPenalty.MoneyLossCap < 0 || this.config.PassOutPenalty.MoneytoRestorePercentage < 0 || this.config.PassOutPenalty.MoneytoRestorePercentage > 1 || this.config.PassOutPenalty.EnergytoRestorePercentage < 0 || this.config.PassOutPenalty.EnergytoRestorePercentage > 1)
-            {
-                this.Monitor.Log("Invalid values found in the config for PassOutPenalty", LogLevel.Warn);
-                if (this.config.PassOutPenalty.MoneytoRestorePercentage > 1 || this.config.PassOutPenalty.MoneytoRestorePercentage < 0)
-                {
-                    this.Monitor.Log($"- MoneytoRestorePercentage is an invalid value, default value will be used instead... {this.config.PassOutPenalty.MoneytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Info);
-                    this.config.PassOutPenalty.MoneytoRestorePercentage = 0.95;
-                }
+            this.config.PassOutPenalty.Reconcile(this.Monitor);
+            this.config.DeathPenalty.Reconcile(this.Monitor);
 
-                if (this.config.PassOutPenalty.MoneyLossCap < 0)
-                {
-                    this.Monitor.Log("- MoneyLossCap is an invalid value, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Info);
-                    this.config.PassOutPenalty.MoneyLossCap = 500;
-                }
 
-                if (this.config.PassOutPenalty.EnergytoRestorePercentage > 1 || this.config.PassOutPenalty.EnergytoRestorePercentage < 0)
-                {
-                    this.Monitor.Log($"- EnergytoRestorePercentage is an invalid value, default value will be used instead... {this.config.PassOutPenalty.EnergytoRestorePercentage} isn't a decimal between 0 and 1", LogLevel.Info);
-                    this.config.PassOutPenalty.EnergytoRestorePercentage = 0.50;
-                }
-            }
-
-           
             //Edit UI if items will be restored
             if (this.config.DeathPenalty.RestoreItems == true)
             {
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.UIFixes(Helper));
             }
+
             //Edit strings
             this.Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
             //Edit mail
             this.Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
         }
 
+
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-            //Check if player died or passed out each half second
+            //Check if player died each half second
             if (e.IsMultipleOf(30))
             {
                 //Has player died?
@@ -129,21 +152,28 @@ namespace CustomDeathPenaltyPlus
 
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = true;
 
-                //Don't save if player won't lose money
                 var farmlocation = Game1.player.currentLocation as FarmHouse;
                 var cellarlocation = Game1.player.currentLocation as Cellar;
-                if (farmlocation != null || cellarlocation != null)
-                {
-                    return;
-                }
+
                 //Save playerstate using PassOutPenalty values
-                else if(PlayerStateRestorer.statepassout == null)
+                if (farmlocation == null && cellarlocation == null && PlayerStateRestorer.statepassout == null)
                 {
                     PlayerStateRestorer.SaveStatePassout();
                     //Save amount lost to data model
                     ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassout.moneylost);
                 }
-            }   
+            }
+
+            //Prevents penalty applying if player can stay up past 2am
+            else if (Game1.timeOfDay == 2610)
+            {
+                if(PlayerStateRestorer.statepassout != null)
+                {
+                    ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
+                    ModEntry.PlayerData.MoneyLostLastPassOut = 0;
+                    PlayerStateRestorer.statepassout = null;
+                }
+            }
         }
 
         private void Saving(object sender, SavingEventArgs e)
@@ -154,7 +184,7 @@ namespace CustomDeathPenaltyPlus
                 //Restore playerstate using PassOutPenalty values
                 PlayerStateRestorer.LoadStatePassout();
                 //Save data from data model to respective JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Game1.player.Name}.json", ModEntry.PlayerData);
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
                 //Reset PlayerStateRestorer
                 PlayerStateRestorer.statepassout = null;
             }
@@ -164,18 +194,15 @@ namespace CustomDeathPenaltyPlus
                 //Change property to false
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
                 //Save change to respective JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Game1.player.Name}.json", ModEntry.PlayerData);
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
         }
 
         private void DayStarted(object sender, DayStartedEventArgs e)
         {
-            if (!System.Diagnostics.Debugger.IsAttached)
-            {
-                //System.Diagnostics.Debugger.Launch();
-            }
+
             //Read player's JSON file for any needed values, create new instance if data doesn't exist
-            ModEntry.PlayerData = this.Helper.Data.ReadJsonFile<PlayerData>($"data\\{Game1.player.Name}.json") ?? new PlayerData();
+            ModEntry.PlayerData = this.Helper.Data.ReadJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json") ?? new PlayerData();
 
             //Did player pass out yesterday?
             if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
