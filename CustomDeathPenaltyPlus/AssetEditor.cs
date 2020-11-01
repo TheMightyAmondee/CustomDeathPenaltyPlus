@@ -56,7 +56,7 @@ namespace CustomDeathPenaltyPlus
             //Allow asset to be editted if name matches and any object references exist
             public bool CanEdit<T>(IAssetInfo asset)
             {
-                return asset.AssetNameEquals("Strings\\StringsFromCSFiles") && PlayerStateRestorer.state != null;
+                return asset.AssetNameEquals("Strings\\StringsFromCSFiles") && PlayerStateRestorer.statedeath != null;
             }
 
             //Edit asset
@@ -72,8 +72,8 @@ namespace CustomDeathPenaltyPlus
                 //Edit events to reflect amount lost
                 else
                 {
-                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {(int)Math.Round(PlayerStateRestorer.state.moneylost)}g for the hospital visit. ";
-                    editor["Event.cs.1058"] = $"I seem to have lost {(int)Math.Round(PlayerStateRestorer.state.moneylost)}g";
+                    editor["Event.cs.1068"] = $"Dr. Harvey charged me {(int)Math.Round(PlayerStateRestorer.statedeath.moneylost)}g for the hospital visit. ";
+                    editor["Event.cs.1058"] = $"I seem to have lost {(int)Math.Round(PlayerStateRestorer.statedeath.moneylost)}g";
                 }
 
                 if (config.DeathPenalty.RestoreItems == true)

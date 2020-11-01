@@ -97,14 +97,8 @@ namespace CustomDeathPenaltyPlus
 
         private void GameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            if (!System.Diagnostics.Debugger.IsAttached)
-            {
-                System.Diagnostics.Debugger.Launch();
-            }
-
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
-
 
             //Edit UI if items will be restored
             if (this.config.DeathPenalty.RestoreItems == true)
@@ -125,7 +119,7 @@ namespace CustomDeathPenaltyPlus
             if (e.IsMultipleOf(30))
             {
                 //Has player died?
-                if (PlayerStateRestorer.state == null && Game1.killScreen)
+                if (PlayerStateRestorer.statedeath == null && Game1.killScreen)
                 {
                     //Save playerstate using DeathPenalty values
                     PlayerStateRestorer.SaveStateDeath();
@@ -137,13 +131,13 @@ namespace CustomDeathPenaltyPlus
             }
 
             //Restore state after PlayerKilled event ends
-            else if (PlayerStateRestorer.state != null && Game1.CurrentEvent == null && Game1.player.CanMove)
+            else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null && Game1.player.CanMove)
             {
                 //Restore Player state using DeathPenalty values
                 PlayerStateRestorer.LoadStateDeath();
 
                 //Reset PlayerStateRestorer
-                PlayerStateRestorer.state = null;
+                PlayerStateRestorer.statedeath = null;
             }
 
             //Has player passed out?

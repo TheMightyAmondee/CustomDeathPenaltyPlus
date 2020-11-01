@@ -18,7 +18,7 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-        public static PlayerMoneyTracker state;
+        public static PlayerMoneyTracker statedeath;
 
         public static PlayerMoneyTracker statepassout;
 
@@ -32,7 +32,7 @@ namespace CustomDeathPenaltyPlus
         // Saves player's current money and amount to be lost, killed
         public static void SaveStateDeath()
         {
-            state = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1-config.DeathPenalty.MoneytoRestorePercentage)));
+            statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1-config.DeathPenalty.MoneytoRestorePercentage)));
         }
 
         // Saves player's current money and amount to be lost, passed out
@@ -45,13 +45,17 @@ namespace CustomDeathPenaltyPlus
         public static void LoadStateDeath()
         {
             //Restore money
-            Game1.player.Money = state.money - (int)Math.Round(state.moneylost);
+            Game1.player.Money = statedeath.money - (int)Math.Round(statedeath.moneylost);
            
             //Restore stamina
             Game1.player.stamina = (int)(Game1.player.maxStamina * config.DeathPenalty.EnergytoRestorePercentage);
 
             //Restore health
             Game1.player.health = (int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage);
+            if (Game1.player.health == 0)
+            {
+                Game1.player.health = 1;
+            }
 
             //Restore items
             if (config.DeathPenalty.RestoreItems == true)
