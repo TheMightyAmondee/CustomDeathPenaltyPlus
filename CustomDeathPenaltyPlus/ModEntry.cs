@@ -126,18 +126,26 @@ namespace CustomDeathPenaltyPlus
 
                     //Reload asset upon death to reflect amount lost
                     this.Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
-                    
                 }
             }
 
-            //Restore state after PlayerKilled event ends
-            else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null && Game1.player.CanMove)
-            {
-                //Restore Player state using DeathPenalty values
-                PlayerStateRestorer.LoadStateDeath();
+            
 
-                //Reset PlayerStateRestorer
-                PlayerStateRestorer.statedeath = null;
+            //Restore state after PlayerKilled event ends
+            else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null)
+            {
+                if(this.config.DeathPenalty.WakeupNextDay == true && Game1.currentLocation.NameOrUniqueName == "Hospital")
+                {
+                    Game1.NewDay(1.1f);
+                }
+                if (Game1.player.canMove)
+                {
+                    //Restore Player state using DeathPenalty values
+                    PlayerStateRestorer.LoadStateDeath();
+                    //Reset PlayerStateRestorer
+                    PlayerStateRestorer.statedeath = null;
+                }
+
             }
 
             //Has player passed out?

@@ -11,10 +11,13 @@ namespace CustomDeathPenaltyPlus
 
             public double moneylost;
 
-            public PlayerMoneyTracker(int m, double ml)
+            public int timeofday;
+
+            public PlayerMoneyTracker(int m, double ml, int t)
             {
                 this.money = m;
                 this.moneylost = ml;
+                this.timeofday = t;
             }
         }
 
@@ -32,13 +35,13 @@ namespace CustomDeathPenaltyPlus
         // Saves player's current money and amount to be lost, killed
         public static void SaveStateDeath()
         {
-            statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1-config.DeathPenalty.MoneytoRestorePercentage)));
+            statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1-config.DeathPenalty.MoneytoRestorePercentage)), Game1.timeOfDay);
         }
 
         // Saves player's current money and amount to be lost, passed out
         public static void SaveStatePassout()
         {
-            statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)));
+            statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)), Game1.timeOfDay);
         }
 
         //Load Player state, killed
