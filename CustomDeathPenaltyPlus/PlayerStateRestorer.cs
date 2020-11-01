@@ -11,8 +11,6 @@ namespace CustomDeathPenaltyPlus
 
             public double moneylost;
 
-            public int timeofday;
-
             public PlayerMoneyTracker(int m, double ml)
             {
                 this.money = m;

@@ -110,8 +110,6 @@ namespace CustomDeathPenaltyPlus
             this.Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
             //Edit mail
             this.Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
-            //Edit Hospital event
-            this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
         }
 
 
@@ -149,6 +147,7 @@ namespace CustomDeathPenaltyPlus
                     //Reset PlayerStateRestorer
                     PlayerStateRestorer.statedeath = null;
                 }
+
 
             }
 

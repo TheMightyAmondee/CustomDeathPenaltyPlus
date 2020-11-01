@@ -29,7 +29,7 @@ namespace CustomDeathPenaltyPlus
             //Allow asset to be editted if name matches
             public bool CanEdit<T>(IAssetInfo asset)
             {
-                return asset.AssetNameEquals("Strings\\UI") && config.DeathPenalty.RestoreItems == true;
+                return asset.AssetNameEquals("Strings\\UI");
             }
 
             //Edit asset
@@ -123,28 +123,6 @@ namespace CustomDeathPenaltyPlus
                     maileditor["passedOut1_Billed_Female"] = $"Dear Ms. @,^Last night, a Joja team member found you incapacitated. A medical team was dispatched to bring you home safely.^We're glad you're okay!^^(You've been billed {data.MoneyLostLastPassOut}g for this service)^^-Morris^Joja Customer Satisfaction Representative[#]Joja Invoice";
                     maileditor["passedOut3_Billed"] = $"@,^Someone dropped you off at the clinic last night. You'd passed out from exhaustion!^You've got to take better care of yourself and go to bed at a reasonable hour.^I've billed you {data.MoneyLostLastPassOut}g to cover your medical expenses.^^-Dr. Harvey[#]From The Office Of Dr. Harvey";
                 }
-            }
-        }
-
-        public class HospitalEventFixes: IAssetEditor
-        {
-            private IModHelper modHelper;
-
-            public HospitalEventFixes(IModHelper helper)
-            {
-                modHelper = helper;
-            }
-
-            public bool CanEdit<T>(IAssetInfo asset)
-            {
-                return asset.AssetNameEquals("Data\\Events\\Hospital") && config.DeathPenalty.WakeupNextDay == true;
-            }
-
-            public void Edit<T>(IAssetData asset)
-            {
-                var eventeditor = asset.AsDictionary<string, string>().Data;
-
-                eventeditor["PlayerKilled"] = "none / -100 - 100 / farmer 20 12 2 Harvey 21 12 3 / pause 1500 / showFrame 5 / message \" ...{0}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"Good, you're finally awake, it's been a whole day. Someone found you unconscious and battered... I had to perform an emergency surgery on you!#$b#Be more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
             }
         }
     }
