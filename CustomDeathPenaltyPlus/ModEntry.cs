@@ -110,6 +110,8 @@ namespace CustomDeathPenaltyPlus
             this.Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
             //Edit mail
             this.Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
+            //Edit Hospital event
+            this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
         }
 
 
@@ -136,8 +138,10 @@ namespace CustomDeathPenaltyPlus
             {
                 if(this.config.DeathPenalty.WakeupNextDay == true && Game1.currentLocation.NameOrUniqueName == "Hospital")
                 {
+                    //Load new day if WakeupNextDay in config is true
                     Game1.NewDay(1.1f);
                 }
+
                 if (Game1.player.canMove)
                 {
                     //Restore Player state using DeathPenalty values
