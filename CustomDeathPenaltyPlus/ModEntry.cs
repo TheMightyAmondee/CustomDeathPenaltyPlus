@@ -106,6 +106,7 @@ namespace CustomDeathPenaltyPlus
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.UIFixes(Helper));
             }
 
+            this.Helper.Content.AssetEditors.Add(new AssetEditor.EventFixes(Helper));
             //Edit strings
             this.Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
             //Edit mail
@@ -123,32 +124,29 @@ namespace CustomDeathPenaltyPlus
                 {
                     //Save playerstate using DeathPenalty values
                     PlayerStateRestorer.SaveStateDeath();
-
                     //Reload asset upon death to reflect amount lost
                     this.Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
                 }
             }
 
-            
-
             //Restore state after PlayerKilled event ends
-            else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null)
+            else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null && Game1.player.canMove)
             {
-                if(this.config.DeathPenalty.WakeupNextDay == true && Game1.currentLocation.NameOrUniqueName == "Hospital")
+                //If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
+                if (Game1.currentLocation.NameOrUniqueName == "Mine" && this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    //Load new day if WakeupNextDay in config is true
+                    Game1.warpFarmer("Hospital", 20, 12, false);
+                }
+
+                if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                {
+                    //Load new day if WakeupNextDayinClinic in config is true
                     Game1.NewDay(1.1f);
                 }
-
-                if (Game1.player.canMove)
-                {
-                    //Restore Player state using DeathPenalty values
-                    PlayerStateRestorer.LoadStateDeath();
-                    //Reset PlayerStateRestorer
-                    PlayerStateRestorer.statedeath = null;
-                }
-
-
+                //Restore Player state using DeathPenalty values
+                PlayerStateRestorer.LoadStateDeath();
+                //Reset PlayerStateRestorer
+                PlayerStateRestorer.statedeath = null;
             }
 
             //Has player passed out?

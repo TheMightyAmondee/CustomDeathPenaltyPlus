@@ -125,5 +125,29 @@ namespace CustomDeathPenaltyPlus
                 }
             }
         }
+
+        public class EventFixes : IAssetEditor
+        {
+            private IModHelper modHelper;
+
+            public EventFixes(IModHelper helper)
+            {
+                modHelper = helper;
+            }
+            public bool CanEdit<T>(IAssetInfo asset)
+            {
+                return asset.AssetNameEquals("Data\\Events\\Mine");
+            }
+
+            public void Edit<T>(IAssetData asset)
+            {
+                var eventedits = asset.AsDictionary<string, string>().Data;
+
+                if(config.DeathPenalty.WakeupNextDayinClinic == true)
+                {
+                    eventedits["PlayerKilled"] = "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{2}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"{0} found you unconscious in the mine... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                }
+            }
+        }
     }
 }
