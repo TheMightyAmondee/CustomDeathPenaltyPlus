@@ -15,9 +15,6 @@ namespace CustomDeathPenaltyPlus
         {
             AssetEditor.config = config;
         }
-        /// <summary>
-        /// Edits strings in the UI
-        /// </summary>
         public class UIFixes : IAssetEditor
         {
             private IModHelper modHelper;
@@ -40,10 +37,6 @@ namespace CustomDeathPenaltyPlus
                 UIeditor["ItemList_ItemsLost"] = "Items recovered:";
             }
         }
-
-        /// <summary>
-        /// Edits strings in StringsFromCSFiles
-        /// </summary>
         public class StringsFromCSFilesFixes : IAssetEditor
         {
             private IModHelper modHelper;
@@ -87,10 +80,6 @@ namespace CustomDeathPenaltyPlus
                 }
             }
         }
-
-        /// <summary>
-        /// Edits Mail strings
-        /// </summary>
         public class MailDataFixes : IAssetEditor
         {
             private IModHelper modHelper;
@@ -125,12 +114,11 @@ namespace CustomDeathPenaltyPlus
                 }
             }
         }
-
-        public class EventFixes : IAssetEditor
+        public class MineEventFixes : IAssetEditor
         {
             private IModHelper modHelper;
 
-            public EventFixes(IModHelper helper)
+            public MineEventFixes(IModHelper helper)
             {
                 modHelper = helper;
             }
@@ -145,7 +133,31 @@ namespace CustomDeathPenaltyPlus
 
                 if(config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    eventedits["PlayerKilled"] = "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{2}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"{0} found you unconscious in the mine... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{2}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"Good, you're finally awake. {0} found you unconscious in the mine... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                }
+            }
+        }
+
+        public class HospitalEventFixes : IAssetEditor
+        {
+            private IModHelper modHelper;
+
+            public HospitalEventFixes(IModHelper helper)
+            {
+                modHelper = helper;
+            }
+            public bool CanEdit<T>(IAssetInfo asset)
+            {
+                return asset.AssetNameEquals("Data\\Events\\Hospital");
+            }
+
+            public void Edit<T>(IAssetData asset)
+            {
+                var eventedits = asset.AsDictionary<string, string>().Data;
+
+                if (config.DeathPenalty.WakeupNextDayinClinic == true)
+                {
+                    eventedits["PlayerKilled"] = "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{0}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"Good, you're finally awake. Someone found you unconscious and battered... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
                 }
             }
         }
