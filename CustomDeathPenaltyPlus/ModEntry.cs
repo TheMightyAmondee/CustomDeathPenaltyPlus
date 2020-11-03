@@ -100,14 +100,9 @@ namespace CustomDeathPenaltyPlus
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
-            //Edit UI if items will be restored
-            if (this.config.DeathPenalty.RestoreItems == true)
-            {
-                this.Helper.Content.AssetEditors.Add(new AssetEditor.UIFixes(Helper));
-            }
-
+            this.Helper.Content.AssetEditors.Add(new AssetEditor.UIFixes(Helper));
             //Edit PlayerKilled events
-            if(this.config.DeathPenalty.WakeupNextDayinClinic == true)
+            if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
             {
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.MineEventFixes(Helper));
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
@@ -138,16 +133,15 @@ namespace CustomDeathPenaltyPlus
             else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null && Game1.player.canMove)
             {
                 //If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
-                if (Game1.currentLocation.NameOrUniqueName == "Mine" && this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                if (Game1.currentLocation.NameOrUniqueName == "Mine" && this.config.DeathPenalty.WakeupNextDayinClinic == true && Game1.IsMultiplayer == false)
                 {
                     Game1.warpFarmer("Hospital", 20, 12, false);
                 }
 
-                if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                if (this.config.DeathPenalty.WakeupNextDayinClinic == true && Game1.IsMultiplayer == false)
                 {
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
                     this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
                     //Load new day if WakeupNextDayinClinic in config is true
                     Game1.NewDay(1.1f);
                 }
@@ -244,7 +238,7 @@ namespace CustomDeathPenaltyPlus
                     Game1.warpFarmer("Hospital", 20, 12, false);
                 }
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.DeathPenalty.EnergytoRestorePercentage);
-                Game1.player.health = (int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage);
+                Game1.player.health = (int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage);
                 if (Game1.player.health == 0)
                 {
                     Game1.player.health = 1;

@@ -33,8 +33,10 @@ namespace CustomDeathPenaltyPlus
             public void Edit<T>(IAssetData asset)
             {
                 var UIeditor = asset.AsDictionary<string, string>().Data;
-
-                UIeditor["ItemList_ItemsLost"] = "Items recovered:";
+                if(config.DeathPenalty.RestoreItems == true)
+                {
+                    UIeditor["ItemList_ItemsLost"] = "Items recovered:";
+                } 
             }
         }
         public class StringsFromCSFilesFixes : IAssetEditor
