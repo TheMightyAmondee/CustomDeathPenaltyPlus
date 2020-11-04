@@ -97,9 +97,11 @@ namespace CustomDeathPenaltyPlus
 
         private void GameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            //Reconcile config values if needed
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
+            //Edit UI
             this.Helper.Content.AssetEditors.Add(new AssetEditor.UIFixes(Helper));
             //Edit PlayerKilled events
             if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
@@ -132,44 +134,45 @@ namespace CustomDeathPenaltyPlus
             //Restore state after PlayerKilled event ends
             else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null && Game1.player.canMove)
             {
-                //If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
-                if (Game1.currentLocation.NameOrUniqueName == "Mine" && this.config.DeathPenalty.WakeupNextDayinClinic == true && Game1.IsMultiplayer == false)
+                if(Context.IsMultiplayer == false && this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    Game1.warpFarmer("Hospital", 20, 12, false);
-                }
-
-                if (this.config.DeathPenalty.WakeupNextDayinClinic == true && Game1.IsMultiplayer == false)
-                {
+                    //If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
+                    if (Game1.currentLocation.NameOrUniqueName == "Mine")
+                    {
+                        Game1.warpFarmer("Hospital", 20, 12, false);
+                    }
+                    //Save necessary data to data model
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+                    //Write data model to JSON file
                     this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-                    //Load new day if WakeupNextDayinClinic in config is true
+                    //Load new day
                     Game1.NewDay(1.1f);
+
                 }
                 //Restore Player state using DeathPenalty values
                 PlayerStateRestorer.LoadStateDeath();
                 //Reset PlayerStateRestorer
                 PlayerStateRestorer.statedeath = null;
+
             }
 
             //Has player passed out?
             else if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
-
+                //Set DidPlayerPassOUtYesterday to true in data model, and DidPlayerWakeupinClinic to false
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = true;
+                ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
 
-                var farmlocation = Game1.player.currentLocation as FarmHouse;
-                var cellarlocation = Game1.player.currentLocation as Cellar;
-
-                //Save playerstate using PassOutPenalty values
-                if (farmlocation == null && cellarlocation == null && PlayerStateRestorer.statepassout == null)
+                if (Game1.player.currentLocation as FarmHouse == null && Game1.player.currentLocation as Cellar == null && PlayerStateRestorer.statepassout == null)
                 {
+                    //Save playerstate using PassOutPenalty values
                     PlayerStateRestorer.SaveStatePassout();
                     //Save amount lost to data model
                     ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassout.moneylost);
-                }
+                } 
             }
 
-            //Prevents penalty applying if player can stay up past 2am
+            //Prevents penalty applying if player can stay up past 2am using other mods
             else if (Game1.timeOfDay == 2610)
             {
                 if(PlayerStateRestorer.statepassout != null)
@@ -182,14 +185,14 @@ namespace CustomDeathPenaltyPlus
         }
 
         private void Saving(object sender, SavingEventArgs e)
-        {  
+        {
+            //Save data from data model to respective JSON file
+            this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             //Have any values been saved after passing out?
             if (PlayerStateRestorer.statepassout != null)
             {   
                 //Restore playerstate using PassOutPenalty values
                 PlayerStateRestorer.LoadStatePassout();
-                //Save data from data model to respective JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
                 //Reset PlayerStateRestorer
                 PlayerStateRestorer.statepassout = null;
             }
@@ -204,8 +207,8 @@ namespace CustomDeathPenaltyPlus
             //Has player not died but DidPlayerWakeupinClinic is true?
             else if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
             {
-                //Check player is in bed or passed out
-                if(Game1.player.isInBed == true || Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
+                //Check player is in bed
+                if(Game1.player.isInBed == true || ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
                 {
                     //Change property to false
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
@@ -230,9 +233,10 @@ namespace CustomDeathPenaltyPlus
                 Helper.Content.InvalidateCache("Data\\mail");
             }
 
-            //Change health and stamina to reflect config settings if player woke up in clinic
+            //Did player wake up in clinic?
             if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
             {
+                //Yes, warp to clinic and change health and stamina to reflect config values
                 if(Game1.currentLocation.NameOrUniqueName != "Hospital")
                 {
                     Game1.warpFarmer("Hospital", 20, 12, false);
