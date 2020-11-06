@@ -155,16 +155,18 @@ namespace CustomDeathPenaltyPlus
                         Game1.warpFarmer("Hospital", 20, 12, false);
                     }
 
-                    // Save necessary data to data model
-                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
-
-                    // Write data model to JSON file
-                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
+                    
                     // Only load new day in single-player
                     if (Context.IsMultiplayer == false)
                     {
                         Game1.NewDay(1.1f);
+
+                        // Save necessary data to data model
+                        ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+
+                        // Write data model to JSON file
+                        this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
                     }
                     // Restore Player state using DeathPenalty values
                     PlayerStateRestorer.LoadStateDeath();
