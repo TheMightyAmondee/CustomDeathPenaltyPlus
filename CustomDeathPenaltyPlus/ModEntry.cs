@@ -128,7 +128,7 @@ namespace CustomDeathPenaltyPlus
                     // has the players death state been saved?
                     && PlayerStateRestorer.statedeath == null)
                 {
-                    // death state has NOT been recorded... so that now.
+                    // death state has NOT been recorded... so do that now.
 
                     // Save playerstate using DeathPenalty values
                     PlayerStateRestorer.SaveStateDeath();
