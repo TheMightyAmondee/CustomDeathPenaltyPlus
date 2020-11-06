@@ -121,38 +121,69 @@ namespace CustomDeathPenaltyPlus
             //Check if player died each half second
             if (e.IsMultipleOf(30))
             {
-                //Has player died?
-                if (PlayerStateRestorer.statedeath == null && Game1.killScreen)
+
+                if (true
+                    // Has player died?
+                    && Game1.killScreen
+                    // has the players death state been saved?
+                    && PlayerStateRestorer.statedeath == null)
                 {
-                    //Save playerstate using DeathPenalty values
+                    // death state has NOT been recorded... so that now.
+
+                    // Save playerstate using DeathPenalty values
                     PlayerStateRestorer.SaveStateDeath();
-                    //Reload asset upon death to reflect amount lost
+
+                    // Reload asset upon death to reflect amount lost
                     this.Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
                 }
             }
 
-            //Restore state after PlayerKilled event ends
-            else if (PlayerStateRestorer.statedeath != null && Game1.CurrentEvent == null && Game1.player.canMove)
+            // Restore state after PlayerKilled event ends
+            if (true
+                // player death state has been saved
+                && PlayerStateRestorer.statedeath != null
+                // no events are running
+                && Game1.CurrentEvent == null
+                // player is ready for action!
+                && Game1.player.canMove)
             {
-                if(Context.IsMultiplayer == false && this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    //If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
+                    // If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
                     if (Game1.currentLocation.NameOrUniqueName == "Mine")
                     {
                         Game1.warpFarmer("Hospital", 20, 12, false);
                     }
-                    //Save necessary data to data model
-                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
-                    //Write data model to JSON file
-                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-                    //Load new day
-                    Game1.NewDay(1.1f);
 
+                    // Save necessary data to data model
+                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+
+                    // Write data model to JSON file
+                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
+                    // local to begin new day
+                    void BeginNewDay()
+                    {
+                        // Load new day
+                        Game1.NewDay(1.1f);
+                    }
+
+                    // Only load new day in single-player
+                    if (Context.IsMultiplayer == false)
+                    {
+                        BeginNewDay();
+                    }
+                    else if (Context.IsMultiplayer == true && AreOtherPlayersReadyToBeginNewDay())
+                    {
+                        BeginNewDay();
+
+                    }
+                    // Restore Player state using DeathPenalty values
+                    PlayerStateRestorer.LoadStateDeath();
+
+                    // Reset PlayerStateRestorer
+                    PlayerStateRestorer.statedeath = null;
                 }
-                //Restore Player state using DeathPenalty values
-                PlayerStateRestorer.LoadStateDeath();
-                //Reset PlayerStateRestorer
-                PlayerStateRestorer.statedeath = null;
 
             }
 
@@ -169,20 +200,38 @@ namespace CustomDeathPenaltyPlus
                     PlayerStateRestorer.SaveStatePassout();
                     //Save amount lost to data model
                     ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassout.moneylost);
-                } 
+                }
             }
 
             //Prevents penalty applying if player can stay up past 2am using other mods
             else if (Game1.timeOfDay == 2610)
             {
-                if(PlayerStateRestorer.statepassout != null)
+                if (PlayerStateRestorer.statepassout != null)
                 {
                     ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
                     ModEntry.PlayerData.MoneyLostLastPassOut = 0;
                     PlayerStateRestorer.statepassout = null;
                 }
             }
+
+            bool AreOtherPlayersReadyToBeginNewDay()
+            {
+                foreach (var farmer in Game1.getAllFarmhands())
+                {
+                    var isReadyToBeginNewDay = (farmer.isInBed == true && farmer.canMove == false) || ModEntry.PlayerData.DidPlayerWakeupinClinic == true;
+
+                    if (isReadyToBeginNewDay == false)
+                    {
+                        return false;
+                    }
+                }
+
+                // yay! all farmers are ready to begin a new day!
+                return true;
+            }
         }
+
+       
 
         private void Saving(object sender, SavingEventArgs e)
         {
@@ -208,7 +257,7 @@ namespace CustomDeathPenaltyPlus
             else if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
             {
                 //Check player is in bed
-                if(Game1.player.isInBed == true || ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
+                if(Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
                 {
                     //Change property to false
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
