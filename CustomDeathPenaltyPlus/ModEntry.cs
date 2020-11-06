@@ -161,22 +161,10 @@ namespace CustomDeathPenaltyPlus
                     // Write data model to JSON file
                     this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
-                    // local to begin new day
-                    void BeginNewDay()
-                    {
-                        // Load new day
-                        Game1.NewDay(1.1f);
-                    }
-
                     // Only load new day in single-player
                     if (Context.IsMultiplayer == false)
                     {
-                        BeginNewDay();
-                    }
-                    else if (Context.IsMultiplayer == true && AreOtherPlayersReadyToBeginNewDay())
-                    {
-                        BeginNewDay();
-
+                        Game1.NewDay(1.1f);
                     }
                     // Restore Player state using DeathPenalty values
                     PlayerStateRestorer.LoadStateDeath();
@@ -212,22 +200,6 @@ namespace CustomDeathPenaltyPlus
                     ModEntry.PlayerData.MoneyLostLastPassOut = 0;
                     PlayerStateRestorer.statepassout = null;
                 }
-            }
-
-            bool AreOtherPlayersReadyToBeginNewDay()
-            {
-                foreach (var farmer in Game1.getAllFarmhands())
-                {
-                    var isReadyToBeginNewDay = (farmer.isInBed == true && farmer.canMove == false) || ModEntry.PlayerData.DidPlayerWakeupinClinic == true;
-
-                    if (isReadyToBeginNewDay == false)
-                    {
-                        return false;
-                    }
-                }
-
-                // yay! all farmers are ready to begin a new day!
-                return true;
             }
         }
 
