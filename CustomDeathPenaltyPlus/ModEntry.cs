@@ -168,13 +168,13 @@ namespace CustomDeathPenaltyPlus
                         this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
                     }
-                    // Restore Player state using DeathPenalty values
-                    PlayerStateRestorer.LoadStateDeath();
-
-                    // Reset PlayerStateRestorer
-                    PlayerStateRestorer.statedeath = null;
+                    
                 }
+                // Restore Player state using DeathPenalty values
+                PlayerStateRestorer.LoadStateDeath();
 
+                // Reset PlayerStateRestorer
+                PlayerStateRestorer.statedeath = null;
             }
 
             //Has player passed out?
