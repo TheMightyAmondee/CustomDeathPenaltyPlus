@@ -228,7 +228,7 @@ namespace CustomDeathPenaltyPlus
                 this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
             //Has player not died but DidPlayerWakeupinClinic is true?
-            else if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
+            if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
             {
                 //Check player is in bed
                 if(Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerPassOutYesterday == true)

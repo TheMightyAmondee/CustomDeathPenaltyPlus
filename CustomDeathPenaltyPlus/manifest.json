@@ -2,7 +2,7 @@
 	"Name":"CustomDeathPenaltyPlus",
 	"Author":"TheMightyAmondee",
 	"Version":"1.1.0",
-	"Description":"Fully customisable penalty for dying.",
+	"Description":"Fully customisable penalty for dying and passing out.",
 	"UniqueID": "TheMightyAmondee.CustomDeathPenaltyPlus",
 	"EntryDll":"CustomDeathPenaltyPlus.dll",
 	"MinimumApiVersion":"3.0.0",
