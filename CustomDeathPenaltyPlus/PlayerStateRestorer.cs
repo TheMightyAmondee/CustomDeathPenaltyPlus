@@ -5,6 +5,9 @@ namespace CustomDeathPenaltyPlus
 {
     internal class PlayerStateRestorer
     {
+        /// <summary>
+        /// Tracks the players current money and amount of money that will be lost
+        /// </summary>
         internal class PlayerMoneyTracker
         {
             public int money;
@@ -24,6 +27,7 @@ namespace CustomDeathPenaltyPlus
 
         private static ModConfig config;
 
+        // Allows the class to access the ModConfig properties
         public static void SetConfig(ModConfig config)
         {
             PlayerStateRestorer.config = config;
@@ -32,7 +36,7 @@ namespace CustomDeathPenaltyPlus
         // Saves player's current money and amount to be lost, killed
         public static void SaveStateDeath()
         {
-            statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1-config.DeathPenalty.MoneytoRestorePercentage)));
+            statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)));
         }
 
         // Saves player's current money and amount to be lost, passed out
@@ -41,38 +45,47 @@ namespace CustomDeathPenaltyPlus
             statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)));
         }
 
-        //Load Player state, killed
+        // Load Player state, killed
         public static void LoadStateDeath()
         {
-            //Restore money
+            // Change money to state saved in statedeath
             Game1.player.Money = statedeath.money - (int)Math.Round(statedeath.moneylost);
            
-            //Restore stamina
+            // Restore stamina to amount as specified by config values
             Game1.player.stamina = (int)(Game1.player.maxStamina * config.DeathPenalty.EnergytoRestorePercentage);
 
-            //Restore health
+            // Restore health to amount as specified by config values
             Game1.player.health = (int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage);
+
+            // Is the player's health equal to 0?
             if (Game1.player.health == 0)
             {
+                // Yes, fix this to prevent an endless loop of dying
+
+                // Change health to equal 1
                 Game1.player.health = 1;
             }
 
-            //Restore items
+            // Is RestoreItems true?
             if (config.DeathPenalty.RestoreItems == true)
             {
+                //Yes, restore items and clear itemsLostLastDeath collection
+
+                // Go through each item lost and saved to itemsLostLastDeath
                 foreach (Item item in Game1.player.itemsLostLastDeath)
                 {
+                    // Add item to player's inventory
                     Game1.player.addItemToInventory(item);
                 }
-                //Clears items lost, prevents being purchasable at Guild
+                // Clears items lost, prevents being purchasable at Guild
                 Game1.player.itemsLostLastDeath.Clear();
             }
         }
 
-        //Load Player state, passed out
+        // Load Player state, passed out
         public static void LoadStatePassout()
         {
-            //Restore money
+            // Change money to state saved in statepassout
             Game1.player.Money = statepassout.money - (int)Math.Round(statepassout.moneylost);
         }
     }

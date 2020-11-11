@@ -8,13 +8,18 @@ using StardewValley;
 using System.Linq;
 using StardewValley.Locations;
 using Netcode;
+using StardewValley.Menus;
 
 namespace CustomDeathPenaltyPlus
 {
+    /// <summary>
+    /// Extensions for the PassOutPenaltyChanges class
+    /// </summary>
     internal static class PassOutPenaltyChangesExtensions
     {
         public static void Reconcile(this ModConfig.PassOutPenaltyChanges changes, IMonitor monitor)
         {
+            // Reconcile MoneytoRestorePercentage if it's value is ouside the useable range
             if (false
                 || changes.MoneytoRestorePercentage > 1
                 || changes.MoneytoRestorePercentage < 0)
@@ -23,12 +28,14 @@ namespace CustomDeathPenaltyPlus
                 changes.MoneytoRestorePercentage = 0.95;
             }
 
+            // Reconcile MoneyLossCap if it's value is -ve
             if (changes.MoneyLossCap < 0)
             {
                 monitor.Log("MoneyLossCap in PassOutPenalty is invalid, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Warn);
                 changes.MoneyLossCap = 500;
             }
 
+            // Reconcile EnergytoRestorePercentage if it's value is ouside the useable range
             if (false
                 || changes.EnergytoRestorePercentage > 1
                 || changes.EnergytoRestorePercentage < 0)
@@ -39,10 +46,14 @@ namespace CustomDeathPenaltyPlus
         }
     }
 
+    /// <summary>
+    /// Extensions for the DeathPenaltyChanges class
+    /// </summary>
     internal static class DeathPenaltyChangesExtensions
     {
         public static void Reconcile(this ModConfig.DeathPenaltyChanges changes, IMonitor monitor)
         {
+            // Reconcile MoneytoRestorePercentage if it's value is ouside the useable range
             if (false
                 || changes.MoneytoRestorePercentage > 1
                 || changes.MoneytoRestorePercentage < 0)
@@ -51,12 +62,14 @@ namespace CustomDeathPenaltyPlus
                 changes.MoneytoRestorePercentage = 0.95;
             }
 
+            // Reconcile MoneyLossCap if the value is -ve
             if (changes.MoneyLossCap < 0)
             {
                 monitor.Log("MoneyLossCap in DeathPenalty is invalid, default value will be used instead... Using a negative number won't add money, nice try though", LogLevel.Warn);
                 changes.MoneyLossCap = 500;
             }
 
+            // Reconcile EnergytoRestorePercentage if it's value is ouside the useable range
             if (false
                 || changes.EnergytoRestorePercentage > 1
                 || changes.EnergytoRestorePercentage < 0)
@@ -65,6 +78,7 @@ namespace CustomDeathPenaltyPlus
                 changes.EnergytoRestorePercentage = 0.10;
             }
 
+            // Reconcile HealthtoRestorePercentage if it's value is ouside the useable range
             if (false
                 || changes.HealthtoRestorePercentage > 1
                 || changes.HealthtoRestorePercentage <= 0)
@@ -75,6 +89,7 @@ namespace CustomDeathPenaltyPlus
         }
     }
 
+    /// <summary>The mod entry point.</summary>
     public class ModEntry
         : Mod
     {
@@ -82,6 +97,8 @@ namespace CustomDeathPenaltyPlus
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
 
+        /// <summary>The mod entry point, called after the mod is first loaded.</summary>
+        /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
@@ -89,33 +106,43 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
 
+            // Read the mod config for values and create one if one does not currently exist
             this.config = this.Helper.ReadConfig<ModConfig>();
 
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config);
         }
 
+        /// <summary>Raised after the game is launched, right before the first game tick</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
         private void GameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            //Reconcile config values if needed
+            // Reconcile config values
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
-            //Edit UI
-            this.Helper.Content.AssetEditors.Add(new AssetEditor.UIFixes(Helper));
-            //Edit PlayerKilled events
+            // Is WakeupNextDayinClinic true?
             if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
             {
+                // Yes, edit some events
+
+                //Edit MineEvents
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.MineEventFixes(Helper));
+                //Edit HospitalEvents
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
             }
-            //Edit strings
+
+            // Edit strings
             this.Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
-            //Edit mail
+            
+            // Edit mail
             this.Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
         }
 
-
+        /// <summary>Raised after the game state is updated</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             //Check if player died each half second
@@ -128,8 +155,6 @@ namespace CustomDeathPenaltyPlus
                     // has the players death state been saved?
                     && PlayerStateRestorer.statedeath == null)
                 {
-                    // death state has NOT been recorded... so do that now.
-
                     // Save playerstate using DeathPenalty values
                     PlayerStateRestorer.SaveStateDeath();
 
@@ -138,27 +163,51 @@ namespace CustomDeathPenaltyPlus
                 }
             }
 
+            // Close items lost menu if items will be restored
+            if(true
+                // Player death state has been saved
+                && PlayerStateRestorer.statedeath != null
+                // DeathPenalty.RestoreItems true
+                && this.config.DeathPenalty.RestoreItems == true
+                // An event is in progress, this would be the PlayerKilled event
+                && Game1.CurrentEvent != null
+                // The current clickable menu can be cast to an ItemListMenu
+                && Game1.activeClickableMenu as ItemListMenu != null)
+            {
+                //Yes, we don't want that menu, so close it and end the event
+
+                //Close the menu
+                Game1.activeClickableMenu.exitThisMenuNoSound();
+                //End the event
+                Game1.CurrentEvent.exitEvent();
+            }
+
             // Restore state after PlayerKilled event ends
             if (true
-                // player death state has been saved
+                // Player death state has been saved
                 && PlayerStateRestorer.statedeath != null
-                // no events are running
+                // No events are running
                 && Game1.CurrentEvent == null
-                // player is ready for action!
+                // Player can move
                 && Game1.player.canMove)
             {
+                // Check if WakeupNextDayinClinic is true
                 if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    // If WakeupNextDayinClinic is true, warp farmer to clinic if necessary
+                    // Yes, do some extra stuff
+
+                    // Warp player to clinic if it is not the current location
                     if (Game1.currentLocation.NameOrUniqueName == "Mine")
                     {
                         Game1.warpFarmer("Hospital", 20, 12, false);
                     }
-
-                    
-                    // Only load new day in single-player
+                   
+                    // Is the game in multiplayer?
                     if (Context.IsMultiplayer == false)
                     {
+                        // No, new day can be loaded
+
+                        //Load new day
                         Game1.NewDay(1.1f);
 
                         // Save necessary data to data model
@@ -173,27 +222,33 @@ namespace CustomDeathPenaltyPlus
                 // Restore Player state using DeathPenalty values
                 PlayerStateRestorer.LoadStateDeath();
 
-                // Reset PlayerStateRestorer
+                // Reset PlayerStateRestorer class with the statedeath field
                 PlayerStateRestorer.statedeath = null;
             }
 
-            //Has player passed out?
+            // Chack if time is 2am or the player has passed out
             if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
-                //Set DidPlayerPassOUtYesterday to true in data model, and DidPlayerWakeupinClinic to false
+                // Set DidPlayerPassOutYesterday to true and DidPlayerWakeupinClinic to false in data model
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = true;
                 ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
 
-                if (Game1.player.currentLocation as FarmHouse == null && Game1.player.currentLocation as Cellar == null && PlayerStateRestorer.statepassout == null)
+                if (true
+                    // Player is not in FarmHouse
+                    && Game1.player.currentLocation as FarmHouse == null
+                    // Player is not in Cellar
+                    && Game1.player.currentLocation as Cellar == null
+                    // Player pass out state has not been saved
+                    && PlayerStateRestorer.statepassout == null)
                 {
-                    //Save playerstate using PassOutPenalty values
+                    // Save playerstate using PassOutPenalty values
                     PlayerStateRestorer.SaveStatePassout();
-                    //Save amount lost to data model
+                    // Save amount lost to data model
                     ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassout.moneylost);
                 }
             }
 
-            //Prevents penalty applying if player can stay up past 2am using other mods
+            // If player can stay up past 2am, discard saved values and reset changed properties in data model
             if (Game1.timeOfDay == 2610)
             {
                 if (PlayerStateRestorer.statepassout != null)
@@ -205,69 +260,98 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-       
-
+        /// <summary>Raised before the game begins writing data to the save file</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
         private void Saving(object sender, SavingEventArgs e)
         {
-            //Save data from data model to respective JSON file
+            // Save data from data model to respective JSON file
             this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-            //Have any values been saved after passing out?
+
+            // Has the pass out state been saved after passing out?
             if (PlayerStateRestorer.statepassout != null)
             {   
-                //Restore playerstate using PassOutPenalty values
+                //Yes, reload the state
+
+                // Restore playerstate using PassOutPenalty values
                 PlayerStateRestorer.LoadStatePassout();
-                //Reset PlayerStateRestorer
+
+                // Reset PlayerStateRestorer class with the statepassout field
                 PlayerStateRestorer.statepassout = null;
             }
-            //Has player not passed out but DidPlayerPassOutYesterday property is true?
+
+            // Has player not passed out but DidPlayerPassOutYesterday property is true?
             else if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && PlayerStateRestorer.statepassout == null)
             {
-                //Change property to false
+                // Yes, fix this so the new day will load correctly
+
+                // Change DidPlayerPassOutYesterday property to false
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
-                //Save change to respective JSON file
+
+                // Save change to respective JSON file
                 this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
-            //Has player not died but DidPlayerWakeupinClinic is true?
+
+            // Is DidPlayerWakeupinClinic true?
             if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
-            {
-                //Check player is in bed
+            {               
+                //Is player in bed or has player passed out? (player has not died)
                 if(Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
                 {
-                    //Change property to false
+                    // Yes, fix this so the new day will load correctly
+
+                    // Change property to false
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
-                    //Save change to respective JSON file
+
+                    // Save change to respective JSON file
                     this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
                 }
             }
         }
 
+        /// <summary>Raised after the game begins a new day</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
         private void DayStarted(object sender, DayStartedEventArgs e)
         {
 
-            //Read player's JSON file for any needed values, create new instance if data doesn't exist
+            // Read player's JSON file for any needed values, create new instance if data doesn't exist
             ModEntry.PlayerData = this.Helper.Data.ReadJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json") ?? new PlayerData();
 
-            //Did player pass out yesterday?
+            // Did player pass out yesterday?
             if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
             {
-                //Yes, change stamina to reflect config settings
+                // Yes, fix player state
+
+                // Change stamina to the amount restored by the config values
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
-                //Invalidate mail
+
+                // Invalidate cached mail data, this allows it to reload with correct values
                 Helper.Content.InvalidateCache("Data\\mail");
             }
 
             //Did player wake up in clinic?
             if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
             {
-                //Yes, warp to clinic and change health and stamina to reflect config values
+                //Yes, fix player state
+
+                // Is the player not at the clinic?
                 if(Game1.currentLocation.NameOrUniqueName != "Hospital")
                 {
+                    // Warp player to clinic
                     Game1.warpFarmer("Hospital", 20, 12, false);
                 }
+
+                // Change health and stamina to the amount restored by the config values
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.DeathPenalty.EnergytoRestorePercentage);
                 Game1.player.health = (int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage);
+
+                // Is the player's health equal to 0?
                 if (Game1.player.health == 0)
                 {
+                    // Yes, fix this to prevent an endless loop of dying
+
+                    // Change health to equal 1
                     Game1.player.health = 1;
                 }
             }
