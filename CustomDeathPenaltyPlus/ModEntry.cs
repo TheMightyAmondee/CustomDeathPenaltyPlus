@@ -174,11 +174,11 @@ namespace CustomDeathPenaltyPlus
                 // The current clickable menu can be cast to an ItemListMenu
                 && Game1.activeClickableMenu as ItemListMenu != null)
             {
-                //Yes, we don't want that menu, so close it and end the event
+                // Yes, we don't want that menu, so close it and end the event
 
-                //Close the menu
+                // Close the menu
                 Game1.activeClickableMenu.exitThisMenuNoSound();
-                //End the event
+                // End the event
                 Game1.CurrentEvent.exitEvent();
             }
 
@@ -207,7 +207,7 @@ namespace CustomDeathPenaltyPlus
                     {
                         // No, new day can be loaded
 
-                        //Load new day
+                        // Load new day
                         Game1.NewDay(1.1f);
 
                         // Save necessary data to data model
