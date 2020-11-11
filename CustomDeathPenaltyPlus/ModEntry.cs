@@ -178,7 +178,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             //Has player passed out?
-            else if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
+            if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
                 //Set DidPlayerPassOUtYesterday to true in data model, and DidPlayerWakeupinClinic to false
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = true;
@@ -194,7 +194,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             //Prevents penalty applying if player can stay up past 2am using other mods
-            else if (Game1.timeOfDay == 2610)
+            if (Game1.timeOfDay == 2610)
             {
                 if (PlayerStateRestorer.statepassout != null)
                 {
