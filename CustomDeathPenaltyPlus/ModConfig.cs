@@ -17,6 +17,7 @@ namespace CustomDeathPenaltyPlus
             public double EnergytoRestorePercentage { get; set; } = 0.10;
             public double HealthtoRestorePercentage { get; set; } = 0.50;
             public bool WakeupNextDayinClinic { get; set; } = false;
+            public int FriendshipPointsLoss { get; set; } = 0;
         } 
         
         internal class PassOutPenaltyChanges

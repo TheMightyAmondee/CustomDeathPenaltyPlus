@@ -80,6 +80,14 @@ namespace CustomDeathPenaltyPlus
                 // Clears items lost, prevents being purchasable at Guild
                 Game1.player.itemsLostLastDeath.Clear();
             }
+
+            // Is FriendshipPointsLoss greater than 0
+            if(config.DeathPenalty.FriendshipPointsLoss > 0)
+            {
+                //Yes, change friendship level for Harvey
+
+                Game1.player.changeFriendship(-config.DeathPenalty.FriendshipPointsLoss, Game1.getCharacterFromName("Harvey", true));
+            }
         }
 
         // Load Player state, passed out

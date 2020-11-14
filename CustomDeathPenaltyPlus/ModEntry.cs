@@ -217,6 +217,13 @@ namespace CustomDeathPenaltyPlus
                         this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
                     }
+
+                    if(this.config.DeathPenalty.FriendshipPointsLoss > 0)
+                    {
+                        string careful = $"You really need to be more careful {Game1.player.Name}. It's disappointing to see you hurt yourself all the time$s";
+                        Dialogue friendshiploss = new Dialogue(careful, Game1.getCharacterFromName<NPC>("Harvey", true));
+                        Game1.getCharacterFromName<NPC>("Harvey", true).CurrentDialogue.Push(friendshiploss);
+                    }
                     
                 }
                 // Restore Player state using DeathPenalty values
