@@ -1,6 +1,7 @@
 ﻿using StardewModdingAPI;
 using StardewValley;
 using System;
+using System.Text;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -15,6 +16,36 @@ namespace CustomDeathPenaltyPlus
         public static void SetConfig(ModConfig config)
         {
             AssetEditor.config = config;
+        }
+
+        static string StringBuilding(string person, string location)
+        {
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                //System.Diagnostics.Debugger.Launch();
+            }
+            StringBuilder sb = new StringBuilder($"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#");
+
+            // Is WakeupNextDayinClinic true?
+            if (config.DeathPenalty.WakeupNextDayinClinic == true)
+            {
+                sb.Insert(0, "speak Harvey \"Good you're finally awake. ");
+            }
+            else
+            {
+                sb.Insert(0, "speak Harvey \"");
+            }
+
+            if (config.DeathPenalty.FriendshipPointsLoss > 0)
+            {
+                sb.Append("You really need to be more careful, it's disappointing to see you hurt yourself.$s\"");
+            }
+            else
+            {
+                sb.Append("Be a little more careful next time, okay?$s\"");
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>
@@ -134,10 +165,11 @@ namespace CustomDeathPenaltyPlus
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
                 // Is WakeupNextDayinClinic true?
-                if(config.DeathPenalty.WakeupNextDayinClinic == true)
+                if (config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    //Yes, content can be editted
-                    eventedits["PlayerKilled"] = "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{2}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"Good, you're finally awake. {0} found you unconscious in the mine... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                    string[] fields = eventedits["PlayerKilled"].Split('/');
+                    fields[10] = StringBuilding("{0}", "in the mine").ToString();
+                    eventedits["PlayerKilled"] = string.Join("/", fields);
                 }
             }
         }
@@ -165,12 +197,10 @@ namespace CustomDeathPenaltyPlus
             {
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
-                // Is WakeupNextDayinClinic true?
-                if (config.DeathPenalty.WakeupNextDayinClinic == true)
-                {
-                    // Yes, content can be editted
-                    eventedits["PlayerKilled"] = "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{0}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/speak Harvey \"Good, you're finally awake. Someone found you unconscious and battered... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
-                }
+                string[] fields = eventedits["PlayerKilled"].Split('/');
+                fields[10] = StringBuilding("Someone", "and battered").ToString();
+                eventedits["PlayerKilled"] = string.Join("/", fields);
+
             }
         }
     }

@@ -123,7 +123,7 @@ namespace CustomDeathPenaltyPlus
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
             // Is WakeupNextDayinClinic true?
-            if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
+            if (this.config.DeathPenalty.WakeupNextDayinClinic == true || this.config.DeathPenalty.FriendshipPointsLoss > 0)
             {
                 // Yes, edit some events
 
@@ -216,13 +216,6 @@ namespace CustomDeathPenaltyPlus
                         // Write data model to JSON file
                         this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
-                    }
-
-                    if(this.config.DeathPenalty.FriendshipPointsLoss > 0)
-                    {
-                        string careful = $"You really need to be more careful {Game1.player.Name}. It's disappointing to see you hurt yourself all the time$s";
-                        Dialogue friendshiploss = new Dialogue(careful, Game1.getCharacterFromName<NPC>("Harvey", true));
-                        Game1.getCharacterFromName<NPC>("Harvey", true).CurrentDialogue.Push(friendshiploss);
                     }
                     
                 }
