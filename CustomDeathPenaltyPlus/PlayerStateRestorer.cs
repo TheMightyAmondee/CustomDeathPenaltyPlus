@@ -49,9 +49,12 @@ namespace CustomDeathPenaltyPlus
         // Load Player state, killed
         public static void LoadStateDeath()
         {
-            // Change money to state saved in statedeath
-            Game1.player.Money = statedeath.money - (int)Math.Round(statedeath.moneylost);
-           
+            // Change money to state saved in statedeath if money is lost
+            if(Game1.player.Money != statedeath.money)
+            {
+                Game1.player.Money = statedeath.money - (int)Math.Round(statedeath.moneylost);
+            }
+          
             // Restore stamina to amount as specified by config values
             Game1.player.stamina = (int)(Game1.player.maxStamina * config.DeathPenalty.EnergytoRestorePercentage);
 
@@ -73,8 +76,8 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.itemsLostLastDeath.Clear();
             }
 
-            // Is FriendshipPenalty greater than 0
-            if(config.DeathPenalty.FriendshipPenalty > 0)
+            // Is FriendshipPenalty greater than 0?
+            if(config.DeathPenalty.FriendshipPenalty > 0 && Game1.currentLocation.NameOrUniqueName == "Hospital")
             {
                 //Yes, change friendship level for Harvey
 

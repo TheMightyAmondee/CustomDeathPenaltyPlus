@@ -19,7 +19,7 @@ namespace CustomDeathPenaltyPlus
     {
         public static void Reconcile(this ModConfig.PassOutPenaltyChanges changes, IMonitor monitor)
         {
-            // Reconcile MoneytoRestorePercentage if it's value is ouside the useable range
+            // Reconcile MoneytoRestorePercentage if it's value is outside the useable range
             if (false
                 || changes.MoneytoRestorePercentage > 1
                 || changes.MoneytoRestorePercentage < 0)

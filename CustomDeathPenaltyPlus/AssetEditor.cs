@@ -43,7 +43,7 @@ namespace CustomDeathPenaltyPlus
             {
                 // Yes, build string accordingly
 
-                response.Replace("Be a little more careful next time, okay?", "You really need to be careful, it's disappointing to see you getting hurt all the time.");
+                response.Replace("Be a little more careful next time, okay?", "You really need to be more careful, I don't like having to patch you up after you do something dangerous.");
             }
 
             // Return the built string
