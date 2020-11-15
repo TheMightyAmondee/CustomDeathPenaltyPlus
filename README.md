@@ -8,6 +8,7 @@ Current options allow configuration for:
 - Amount of money lost, including max amount that can be lost
 - Amount of health and energy to restore
 - A more realistic option for dying, disabled by default
+- A friendship penalty with Harvey
 
 **Pass Out Penalty**
 - Amount of money lost, including max amount that can be lost
@@ -35,5 +36,7 @@ Note: The mod will create per-savefile JSON files (found in the mod folder) if y
 1.0.0 - Initial release
 
 1.1.0 - Passing out penalty is now fully customisable. Added config option for a more realistic death. Minor bug fixes
+
+1.2.0 - Added config option for a friendship penalty with Harvey. Removed items lost menu if items will be restored. Bug fixes
 
 
