@@ -18,34 +18,47 @@ namespace CustomDeathPenaltyPlus
             AssetEditor.config = config;
         }
 
-        static string StringBuilding(string person, string location)
+        /// <summary>
+        /// Builds a response string based on config values
+        /// </summary>
+        /// <param name="person">The person who found the player if they died in the mine, else Someone</param>
+        /// <param name="location">Response based on where the player died</param>
+        /// <returns>The built string</returns>
+        static string ResponseBuilder(string person, string location)
         {
-            if (!System.Diagnostics.Debugger.IsAttached)
-            {
-                //System.Diagnostics.Debugger.Launch();
-            }
-            StringBuilder sb = new StringBuilder($"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#");
+            // Create new string to build on
+            StringBuilder response = new StringBuilder($"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#");
 
             // Is WakeupNextDayinClinic true?
             if (config.DeathPenalty.WakeupNextDayinClinic == true)
             {
-                sb.Insert(0, "speak Harvey \"Good you're finally awake. ");
+                // Yes, build string accordingly
+
+                response.Insert(0, "speak Harvey \"Good you're finally awake. ");
             }
             else
             {
-                sb.Insert(0, "speak Harvey \"");
+                // No, build string accordingly
+
+                response.Insert(0, "speak Harvey \"");
             }
 
-            if (config.DeathPenalty.FriendshipPointsLoss > 0)
+            // Is FriendshipPenalty greater than 0?
+            if (config.DeathPenalty.FriendshipPenalty > 0)
             {
-                sb.Append("You really need to be more careful, it's disappointing to see you hurt yourself.$s\"");
+                // Yes, build string accordingly
+
+                response.Append("You really need to be careful, it's disappointing to see you getting hurt all the time.$s\"");
             }
             else
             {
-                sb.Append("Be a little more careful next time, okay?$s\"");
+                // No, build string accordingly
+
+                response.Append("Be a little more careful next time, okay?$s\"");
             }
 
-            return sb.ToString();
+            // Return the built string
+            return response.ToString();
         }
 
         /// <summary>
@@ -167,9 +180,7 @@ namespace CustomDeathPenaltyPlus
                 // Is WakeupNextDayinClinic true?
                 if (config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
-                    string[] fields = eventedits["PlayerKilled"].Split('/');
-                    fields[10] = StringBuilding("{0}", "in the mine").ToString();
-                    eventedits["PlayerKilled"] = string.Join("/", fields);
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}","in the mine")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
                 }
             }
         }
@@ -197,10 +208,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
-                string[] fields = eventedits["PlayerKilled"].Split('/');
-                fields[10] = StringBuilding("Someone", "and battered").ToString();
-                eventedits["PlayerKilled"] = string.Join("/", fields);
-
+                eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone","and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
             }
         }
     }

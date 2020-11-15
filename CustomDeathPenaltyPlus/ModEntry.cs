@@ -86,6 +86,13 @@ namespace CustomDeathPenaltyPlus
                 monitor.Log($"HealthtoRestorePercentage in DeathPenalty is invalid, default value will be used instead... {changes.HealthtoRestorePercentage} isn't a decimal between 0 and 1, excluding 0", LogLevel.Warn);
                 changes.HealthtoRestorePercentage = 0.50;
             }
+
+            // Reconcile FriendshipPenalty if the value is -ve
+            if(changes.FriendshipPenalty < 0)
+            {
+                monitor.Log("FriendshipPenalty is invalid, default value will be used instead... A negative number? Harvey isn't going to like you more if you die...");
+                changes.FriendshipPenalty = 0;
+            }
         }
     }
 
@@ -123,7 +130,7 @@ namespace CustomDeathPenaltyPlus
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
             // Is WakeupNextDayinClinic true?
-            if (this.config.DeathPenalty.WakeupNextDayinClinic == true || this.config.DeathPenalty.FriendshipPointsLoss > 0)
+            if (this.config.DeathPenalty.WakeupNextDayinClinic == true || this.config.DeathPenalty.FriendshipPenalty > 0)
             {
                 // Yes, edit some events
 

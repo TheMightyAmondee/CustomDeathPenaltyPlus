@@ -1,5 +1,6 @@
 ﻿using StardewValley;
 using System;
+using StardewValley.Locations;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -37,6 +38,8 @@ namespace CustomDeathPenaltyPlus
         public static void SaveStateDeath()
         {
             statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)));
+
+
         }
 
         // Saves player's current money and amount to be lost, passed out
@@ -66,6 +69,8 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.health = 1;
             }
 
+
+
             // Is RestoreItems true?
             if (config.DeathPenalty.RestoreItems == true)
             {
@@ -81,13 +86,13 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.itemsLostLastDeath.Clear();
             }
 
-            // Is FriendshipPointsLoss greater than 0
-            if(config.DeathPenalty.FriendshipPointsLoss > 0)
+            // Is FriendshipPenalty greater than 0
+            if(config.DeathPenalty.FriendshipPenalty > 0)
             {
                 //Yes, change friendship level for Harvey
 
-                Game1.player.changeFriendship(-config.DeathPenalty.FriendshipPointsLoss, Game1.getCharacterFromName("Harvey", true));
-            }
+                Game1.player.changeFriendship(-config.DeathPenalty.FriendshipPenalty, Game1.getCharacterFromName("Harvey", true));
+            }           
         }
 
         // Load Player state, passed out
