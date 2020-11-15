@@ -7,24 +7,24 @@ namespace CustomDeathPenaltyPlus
     internal class PlayerStateRestorer
     {
         /// <summary>
-        /// Tracks the players current money and amount of money that will be lost
+        /// Tracks the players state
         /// </summary>
-        internal class PlayerMoneyTracker
+        internal class PlayerDataTracker
         {
             public int money;
 
             public double moneylost;
 
-            public PlayerMoneyTracker(int m, double ml)
+            public PlayerDataTracker(int m, double ml)
             {
                 this.money = m;
                 this.moneylost = ml;
             }
         }
 
-        public static PlayerMoneyTracker statedeath;
+        public static PlayerDataTracker statedeath;
 
-        public static PlayerMoneyTracker statepassout;
+        public static PlayerDataTracker statepassout;
 
         private static ModConfig config;
 
@@ -37,15 +37,13 @@ namespace CustomDeathPenaltyPlus
         // Saves player's current money and amount to be lost, killed
         public static void SaveStateDeath()
         {
-            statedeath = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)));
-
-
+            statedeath = new PlayerDataTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)));
         }
 
         // Saves player's current money and amount to be lost, passed out
         public static void SaveStatePassout()
         {
-            statepassout = new PlayerMoneyTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)));
+            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)));
         }
 
         // Load Player state, killed
@@ -58,18 +56,7 @@ namespace CustomDeathPenaltyPlus
             Game1.player.stamina = (int)(Game1.player.maxStamina * config.DeathPenalty.EnergytoRestorePercentage);
 
             // Restore health to amount as specified by config values
-            Game1.player.health = (int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage);
-
-            // Is the player's health equal to 0?
-            if (Game1.player.health == 0)
-            {
-                // Yes, fix this to prevent an endless loop of dying
-
-                // Change health to equal 1
-                Game1.player.health = 1;
-            }
-
-
+            Game1.player.health = Math.Max((int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage), 1);
 
             // Is RestoreItems true?
             if (config.DeathPenalty.RestoreItems == true)
@@ -91,8 +78,8 @@ namespace CustomDeathPenaltyPlus
             {
                 //Yes, change friendship level for Harvey
 
-                Game1.player.changeFriendship(-config.DeathPenalty.FriendshipPenalty, Game1.getCharacterFromName("Harvey", true));
-            }           
+                Game1.player.changeFriendship(-Math.Min(config.DeathPenalty.FriendshipPenalty, Game1.player.getFriendshipLevelForNPC("Harvey")), Game1.getCharacterFromName("Harvey", true));
+            }  
         }
 
         // Load Player state, passed out

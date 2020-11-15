@@ -26,21 +26,16 @@ namespace CustomDeathPenaltyPlus
         /// <returns>The built string</returns>
         static string ResponseBuilder(string person, string location)
         {
+           
             // Create new string to build on
-            StringBuilder response = new StringBuilder($"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#");
+            StringBuilder response = new StringBuilder($"speak Harvey \"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"");
 
             // Is WakeupNextDayinClinic true?
             if (config.DeathPenalty.WakeupNextDayinClinic == true)
             {
                 // Yes, build string accordingly
 
-                response.Insert(0, "speak Harvey \"Good you're finally awake. ");
-            }
-            else
-            {
-                // No, build string accordingly
-
-                response.Insert(0, "speak Harvey \"");
+                response.Insert(14, "Good you're finally awake. ");
             }
 
             // Is FriendshipPenalty greater than 0?
@@ -48,13 +43,7 @@ namespace CustomDeathPenaltyPlus
             {
                 // Yes, build string accordingly
 
-                response.Append("You really need to be careful, it's disappointing to see you getting hurt all the time.$s\"");
-            }
-            else
-            {
-                // No, build string accordingly
-
-                response.Append("Be a little more careful next time, okay?$s\"");
+                response.Replace("Be a little more careful next time, okay?", "You really need to be careful, it's disappointing to see you getting hurt all the time.");
             }
 
             // Return the built string

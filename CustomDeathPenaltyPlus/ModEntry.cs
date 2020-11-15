@@ -90,7 +90,7 @@ namespace CustomDeathPenaltyPlus
             // Reconcile FriendshipPenalty if the value is -ve
             if(changes.FriendshipPenalty < 0)
             {
-                monitor.Log("FriendshipPenalty is invalid, default value will be used instead... A negative number? Harvey isn't going to like you more if you die...");
+                monitor.Log("FriendshipPenalty is invalid, default value will be used instead... A negative number? Harvey isn't going to like you more if you die...", LogLevel.Warn);
                 changes.FriendshipPenalty = 0;
             }
         }
@@ -198,6 +198,7 @@ namespace CustomDeathPenaltyPlus
                 // Player can move
                 && Game1.player.canMove)
             {
+
                 // Check if WakeupNextDayinClinic is true
                 if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
@@ -226,6 +227,7 @@ namespace CustomDeathPenaltyPlus
                     }
                     
                 }
+
                 // Restore Player state using DeathPenalty values
                 PlayerStateRestorer.LoadStateDeath();
 
@@ -351,16 +353,7 @@ namespace CustomDeathPenaltyPlus
 
                 // Change health and stamina to the amount restored by the config values
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.DeathPenalty.EnergytoRestorePercentage);
-                Game1.player.health = (int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage);
-
-                // Is the player's health equal to 0?
-                if (Game1.player.health == 0)
-                {
-                    // Yes, fix this to prevent an endless loop of dying
-
-                    // Change health to equal 1
-                    Game1.player.health = 1;
-                }
+                Game1.player.health = Math.Max((int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage), 1);
             }
         }
     }
