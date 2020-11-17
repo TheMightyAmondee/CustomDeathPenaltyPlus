@@ -152,6 +152,7 @@ namespace CustomDeathPenaltyPlus
         /// <param name="e">The event data.</param>
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
+
             //Check if player died each half second
             if (e.IsMultipleOf(30))
             {
@@ -210,6 +211,12 @@ namespace CustomDeathPenaltyPlus
                         Game1.NewDay(1.1f);
                     }
 
+                    // Save necessary data to data model
+                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+
+                    // Write data model to JSON file
+                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
                     // Warp player to clinic if it is not the current location
                     if (Game1.currentLocation.NameOrUniqueName == "Mine")
                     {
@@ -228,23 +235,15 @@ namespace CustomDeathPenaltyPlus
                     else
                     {
                         // Yes, inform other players you're ready for a new day
+                        Game1.player.showFrame(5, false);
                         Game1.player.team.SetLocalReady("sleep", true);
-                        Game1.dialogueUp = false;
                         Game1.player.passedOut = true;
                         Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => BeginNewDay()));
 
                         // Add player to list of ready farmers
                         if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
                         Game1.player.team.announcedSleepingFarmers.Add(Game1.player);
-
-                    }
-
-                    // Save necessary data to data model
-                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
-
-                    // Write data model to JSON file
-                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
+                    }                    
                 }
 
                 // Restore Player state using DeathPenalty values
