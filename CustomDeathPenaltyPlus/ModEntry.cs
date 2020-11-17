@@ -129,7 +129,7 @@ namespace CustomDeathPenaltyPlus
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
-            // Is WakeupNextDayinClinic true?
+            // Is WakeupNextDayinClinic true or is FriendshipPenalty greater than 0?
             if (this.config.DeathPenalty.WakeupNextDayinClinic == true || this.config.DeathPenalty.FriendshipPenalty > 0)
             {
                 // Yes, edit some events
@@ -204,6 +204,12 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Yes, do some extra stuff
 
+                    // Local to begin new day
+                    void BeginNewDay()
+                    {
+                        Game1.NewDay(1.1f);
+                    }
+
                     // Warp player to clinic if it is not the current location
                     if (Game1.currentLocation.NameOrUniqueName == "Mine")
                     {
@@ -213,19 +219,32 @@ namespace CustomDeathPenaltyPlus
                     // Is the game in multiplayer?
                     if (Context.IsMultiplayer == false)
                     {
-                        // No, new day can be loaded
+                        // No, new day can be loaded immediately
 
                         // Load new day
-                        Game1.NewDay(1.1f);
+                        BeginNewDay();
+                    }
 
-                        // Save necessary data to data model
-                        ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+                    else
+                    {
+                        // Yes, inform other players you're ready for a new day
+                        Game1.player.team.SetLocalReady("sleep", true);
+                        Game1.dialogueUp = false;
+                        Game1.player.passedOut = true;
+                        Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => BeginNewDay()));
 
-                        // Write data model to JSON file
-                        this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+                        // Add player to list of ready farmers
+                        if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
+                        Game1.player.team.announcedSleepingFarmers.Add(Game1.player);
 
                     }
-                    
+
+                    // Save necessary data to data model
+                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+
+                    // Write data model to JSON file
+                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
                 }
 
                 // Restore Player state using DeathPenalty values
