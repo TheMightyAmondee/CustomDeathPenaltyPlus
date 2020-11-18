@@ -104,6 +104,7 @@ namespace CustomDeathPenaltyPlus
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
 
+
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
@@ -112,6 +113,7 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
+            helper.Events.Multiplayer.ModMessageReceived += this.MessageReceived;
 
             // Read the mod config for values and create one if one does not currently exist
             this.config = this.Helper.ReadConfig<ModConfig>();
@@ -205,12 +207,6 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Yes, do some extra stuff
 
-                    // Local to begin new day
-                    void BeginNewDay()
-                    {
-                        Game1.NewDay(1.1f);
-                    }
-
                     // Save necessary data to data model
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
 
@@ -229,16 +225,20 @@ namespace CustomDeathPenaltyPlus
                         // No, new day can be loaded immediately
 
                         // Load new day
-                        BeginNewDay();
+                        Game1.NewDay(1.1f);
                     }
 
                     else
                     {
                         // Yes, inform other players you're ready for a new day
-                        Game1.player.showFrame(5, false);
                         Game1.player.team.SetLocalReady("sleep", true);
                         Game1.player.passedOut = true;
-                        Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => BeginNewDay()));
+
+                        Multiplayer multiplayer = new Multiplayer();
+                        multiplayer.PlayerWhoDied = Game1.player.Name;
+                        this.Helper.Multiplayer.SendMessage(multiplayer, "IDied", modIDs: new[] { this.ModManifest.UniqueID });
+
+                        Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => Game1.NewDay(1.1f)));
 
                         // Add player to list of ready farmers
                         if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
@@ -314,9 +314,6 @@ namespace CustomDeathPenaltyPlus
 
                 // Change DidPlayerPassOutYesterday property to false
                 ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
-
-                // Save change to respective JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
 
             // Is DidPlayerWakeupinClinic true?
@@ -329,11 +326,11 @@ namespace CustomDeathPenaltyPlus
 
                     // Change property to false
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
-
-                    // Save change to respective JSON file
-                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
                 }
             }
+
+            // Save change to respective JSON file
+            this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
         }
 
         /// <summary>Raised after the game begins a new day</summary>
@@ -372,6 +369,15 @@ namespace CustomDeathPenaltyPlus
                 // Change health and stamina to the amount restored by the config values
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.DeathPenalty.EnergytoRestorePercentage);
                 Game1.player.health = Math.Max((int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage), 1);
+            }
+        }
+
+        private void MessageReceived(object sender, ModMessageReceivedEventArgs e)
+        {
+            if(e.FromModID == this.ModManifest.UniqueID && e.Type == "IDied")
+            {               
+                Multiplayer multiplayer = e.ReadAs<Multiplayer>();
+                Game1.addHUDMessage(new HUDMessage($"{multiplayer.PlayerWhoDied} will need the rest of the day to recover.", null));
             }
         }
     }
