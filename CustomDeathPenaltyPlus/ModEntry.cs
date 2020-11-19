@@ -109,6 +109,7 @@ namespace CustomDeathPenaltyPlus
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
+            // Initialise event methods
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
@@ -118,6 +119,7 @@ namespace CustomDeathPenaltyPlus
             // Read the mod config for values and create one if one does not currently exist
             this.config = this.Helper.ReadConfig<ModConfig>();
 
+            // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config);
         }
@@ -218,7 +220,7 @@ namespace CustomDeathPenaltyPlus
                     {
                         Game1.warpFarmer("Hospital", 20, 12, false);
                     }
-                   
+
                     // Is the game in multiplayer?
                     if (Context.IsMultiplayer == false)
                     {
@@ -231,6 +233,7 @@ namespace CustomDeathPenaltyPlus
                     else
                     {
                         // Yes, inform other players you're ready for a new day
+
                         Game1.player.team.SetLocalReady("sleep", true);
                         Game1.player.passedOut = true;
 
