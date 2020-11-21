@@ -104,12 +104,12 @@ namespace CustomDeathPenaltyPlus
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
 
+        public bool warptoinvisiblelocation = false;
 
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            // Initialise event methods
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
@@ -172,26 +172,48 @@ namespace CustomDeathPenaltyPlus
 
                     // Reload asset upon death to reflect amount lost
                     this.Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
+
+                    // Will a new day be loaded in multiplayer after death?
+                    if (true
+                        // It is multiplayer
+                        && Context.IsMultiplayer == true 
+                        // WakeupNextDayinClinic is true
+                        && this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                    {
+                        // Set warptoinvisiblelocation to true
+                        warptoinvisiblelocation = true;
+                    }
                 }
             }
 
-            // Close items lost menu if items will be restored
             if(true
                 // Player death state has been saved
                 && PlayerStateRestorer.statedeath != null
-                // DeathPenalty.RestoreItems true
-                && this.config.DeathPenalty.RestoreItems == true
                 // An event is in progress, this would be the PlayerKilled event
                 && Game1.CurrentEvent != null
                 // The current clickable menu can be cast to an ItemListMenu
                 && Game1.activeClickableMenu as ItemListMenu != null)
             {
-                // Yes, we don't want that menu, so close it and end the event
+                // Will items be restored?
+                if(this.config.DeathPenalty.RestoreItems == true)
+                {
+                    // Yes, we don't want that menu, so close it and end the event
 
-                // Close the menu
-                Game1.activeClickableMenu.exitThisMenuNoSound();
-                // End the event
-                Game1.CurrentEvent.exitEvent();
+                    // Close the menu
+                    Game1.activeClickableMenu.exitThisMenuNoSound();
+                    // End the event
+                    Game1.CurrentEvent.exitEvent();
+                }
+
+                // Should the player be warped where they can't be seen?
+                if(warptoinvisiblelocation == true)
+                {
+                    // Yes, warp player to an invisible location
+
+                    Game1.warpFarmer("Hospital", 1000, 1000, false);
+                    // Set warptoinvisiblelocation to false to stop endless warp loop
+                    warptoinvisiblelocation = false;
+                }
             }
 
             // Restore state after PlayerKilled event ends
@@ -215,16 +237,18 @@ namespace CustomDeathPenaltyPlus
                     // Write data model to JSON file
                     this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
-                    // Warp player to clinic if it is not the current location
-                    if (Game1.currentLocation.NameOrUniqueName == "Mine")
-                    {
-                        Game1.warpFarmer("Hospital", 20, 12, false);
-                    }
+                    
 
                     // Is the game in multiplayer?
                     if (Context.IsMultiplayer == false)
                     {
                         // No, new day can be loaded immediately
+
+                        // Warp player to clinic if it is not the current location
+                        if (Game1.currentLocation.NameOrUniqueName == "Mine")
+                        {
+                            Game1.warpFarmer("Hospital", 20, 12, false);
+                        }
 
                         // Load new day
                         Game1.NewDay(1.1f);
@@ -235,17 +259,24 @@ namespace CustomDeathPenaltyPlus
                         // Yes, inform other players you're ready for a new day
 
                         Game1.player.team.SetLocalReady("sleep", true);
+                        // Ensures new day will load, will become false after new day is loaded
                         Game1.player.passedOut = true;
 
-                        Multiplayer multiplayer = new Multiplayer();
-                        multiplayer.PlayerWhoDied = Game1.player.Name;
-                        this.Helper.Multiplayer.SendMessage(multiplayer, "IDied", modIDs: new[] { this.ModManifest.UniqueID });
+                        // Create class instance to hold player's name
+                        Multiplayer multiplayer = new Multiplayer
+                        {
+                            PlayerWhoDied = Game1.player.Name
+                        };
+                        // Send data from class instance to other players, message type is IDied
+                        this.Helper.Multiplayer.SendMessage(multiplayer, "IDied", modIDs: new[] { this.ModManifest.UniqueID });                        
 
+                        // Bring up a new menu that will launch a new day when all player's are ready
                         Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => Game1.NewDay(1.1f)));
 
-                        // Add player to list of ready farmers
+                        // Add player to list of ready farmers if needed
                         if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
                         Game1.player.team.announcedSleepingFarmers.Add(Game1.player);
+
                     }                    
                 }
 
@@ -255,6 +286,7 @@ namespace CustomDeathPenaltyPlus
                 // Reset PlayerStateRestorer class with the statedeath field
                 PlayerStateRestorer.statedeath = null;
             }
+
 
             // Chack if time is 2am or the player has passed out
             if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
@@ -362,24 +394,31 @@ namespace CustomDeathPenaltyPlus
             {
                 //Yes, fix player state
 
-                // Is the player not at the clinic?
-                if(Game1.currentLocation.NameOrUniqueName != "Hospital")
+                if(Game1.currentLocation.NameOrUniqueName != "Hospital" || Context.IsMultiplayer == true)
                 {
                     // Warp player to clinic
                     Game1.warpFarmer("Hospital", 20, 12, false);
-                }
 
+                }
                 // Change health and stamina to the amount restored by the config values
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.DeathPenalty.EnergytoRestorePercentage);
                 Game1.player.health = Math.Max((int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage), 1);
             }
         }
 
+        /// <summary>
+        /// Raised after a mod message is received over the network.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
         private void MessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
+            // Has a message been received from CustomDeathPenaltyPlus of the type IDied?
             if(e.FromModID == this.ModManifest.UniqueID && e.Type == "IDied")
-            {               
+            {
+                // Read data from message into a new class instance of Multiplayer
                 Multiplayer multiplayer = e.ReadAs<Multiplayer>();
+                // Display a new HUD message to say that the dead player needs a new day to be started
                 Game1.addHUDMessage(new HUDMessage($"{multiplayer.PlayerWhoDied} will need the rest of the day to recover.", null));
             }
         }

@@ -130,7 +130,7 @@ namespace CustomDeathPenaltyPlus
                     // Yes, edit strings to show this special case
                     maileditor["passedOut1_Billed_Male"] = "Dear Mr. @,^Last night, a Joja team member found you incapacitated. A medical team was dispatched to bring you home safely.^We're glad you're okay!^^(Be thankful you haven't been billed for this service)^^-Morris^Joja Customer Satisfaction Representative[#]Joja Invoice";
                     maileditor["passedOut1_Billed_Female"] = "Dear Ms. @,^Last night, a Joja team member found you incapacitated. A medical team was dispatched to bring you home safely.^We're glad you're okay!^^(Be thankful you haven't been billed for this service)^^-Morris^Joja Customer Satisfaction Representative[#]Joja Invoice";
-                    maileditor["passedOut3_Billed"] = "@,^Someone dropped you off at the clinic last night. You'd passed out from exhaustion!^You've got to take better care of yourself and go to bed at a reasonable hour.^I haven't billed you for your medical expenses this time.^^-Dr. Harvey[#]From The Office Of Dr. Harvey";
+                    maileditor["passedOut3_Billed"] = "@,^Someone dropped you off at the clinic last night. You'd passed out from exhaustion!^You've got to take better care of yourself and go to bed at a reasonable hour.^I haven't billed you for your medical expenses this time.^^-Dr. Harvey[#]From The Office Of Dr. Harvey";                  
                 }
 
                 else
@@ -195,9 +195,9 @@ namespace CustomDeathPenaltyPlus
             // Edit asset
             public void Edit<T>(IAssetData asset)
             {
-                var eventedits = asset.AsDictionary<string, string>().Data;
+               var eventedits = asset.AsDictionary<string, string>().Data;
 
-                eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone","and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+               eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone","and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
             }
         }
     }
