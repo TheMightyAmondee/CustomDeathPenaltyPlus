@@ -1,6 +1,7 @@
 ﻿using StardewValley;
 using System;
 using StardewValley.Locations;
+using StardewModdingAPI;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -77,7 +78,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is FriendshipPenalty greater than 0?
-            if(config.DeathPenalty.FriendshipPenalty > 0 && Game1.currentLocation.NameOrUniqueName == "Hospital")
+            if(config.DeathPenalty.FriendshipPenalty > 0 && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.DeathPenalty.WakeupNextDayinClinic == true))
             {
                 //Yes, change friendship level for Harvey
 

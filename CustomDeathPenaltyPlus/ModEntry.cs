@@ -15,8 +15,10 @@ namespace CustomDeathPenaltyPlus
     /// <summary>
     /// Extensions for the PassOutPenaltyChanges class
     /// </summary>
+
+
     internal static class PassOutPenaltyChangesExtensions
-    {
+    {     
         public static void Reconcile(this ModConfig.PassOutPenaltyChanges changes, IMonitor monitor)
         {
             // Reconcile MoneytoRestorePercentage if it's value is outside the useable range
@@ -104,7 +106,7 @@ namespace CustomDeathPenaltyPlus
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
 
-        public bool warptoinvisiblelocation = false;
+        private bool warptoinvisiblelocation = false;
 
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
@@ -164,7 +166,7 @@ namespace CustomDeathPenaltyPlus
                 if (true
                     // Has player died?
                     && Game1.killScreen
-                    // has the players death state been saved?
+                    // Has the players death state been saved?
                     && PlayerStateRestorer.statedeath == null)
                 {
                     // Save playerstate using DeathPenalty values
@@ -191,7 +193,7 @@ namespace CustomDeathPenaltyPlus
                 && PlayerStateRestorer.statedeath != null
                 // An event is in progress, this would be the PlayerKilled event
                 && Game1.CurrentEvent != null
-                // The current clickable menu can be cast to an ItemListMenu
+                // The current clickable menu can be downcast to an ItemListMenu
                 && Game1.activeClickableMenu as ItemListMenu != null)
             {
                 // Will items be restored?
@@ -210,7 +212,7 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Yes, warp player to an invisible location
 
-                    Game1.warpFarmer("Hospital", 1000, 1000, false);
+                    Game1.warpFarmer(Game1.currentLocation.NameOrUniqueName, 1000, 1000, false);
                     // Set warptoinvisiblelocation to false to stop endless warp loop
                     warptoinvisiblelocation = false;
                 }
@@ -389,10 +391,10 @@ namespace CustomDeathPenaltyPlus
                 Helper.Content.InvalidateCache("Data\\mail");
             }
 
-            //Did player wake up in clinic?
+            // Did player wake up in clinic?
             if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
             {
-                //Yes, fix player state
+                // Yes, fix player state
 
                 if(Game1.currentLocation.NameOrUniqueName != "Hospital" || Context.IsMultiplayer == true)
                 {

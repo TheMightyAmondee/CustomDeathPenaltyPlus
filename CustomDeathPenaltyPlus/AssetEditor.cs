@@ -128,6 +128,7 @@ namespace CustomDeathPenaltyPlus
                 string incapacitated = "@,^Last night, a Joja team member found you incapacitated. A medical team was dispatched to bring you home safely.^We're glad you're okay!^^";
                 string exhaustion = "@,^Someone dropped you off at the clinic last night. You'd passed out from exhaustion!^You've got to take better care of yourself and go to bed at a reasonable hour.^";
                 string morris = "^^-Morris^Joja Customer Satisfaction Representative[#]Joja Invoice";
+                string harvey = "^^-Dr. Harvey[#]From The Office Of Dr. Harvey";
 
                 // Has player not lost any money?
                 if (data.MoneyLostLastPassOut == 0)
@@ -135,7 +136,7 @@ namespace CustomDeathPenaltyPlus
                     // Yes, edit strings to show this special case
                     maileditor["passedOut1_Billed_Male"] = $"Dear Mr. {incapacitated}(Be thankful you haven't been billed for this service){morris}";
                     maileditor["passedOut1_Billed_Female"] = $"Dear Ms. {incapacitated}(Be thankful you haven't been billed for this service){morris}";
-                    maileditor["passedOut3_Billed"] = $"{exhaustion}I haven't billed you for your medical expenses this time.^^-Dr. Harvey[#]From The Office Of Dr. Harvey";                  
+                    maileditor["passedOut3_Billed"] = $"{exhaustion}I haven't billed you for your medical expenses this time.{harvey}";                  
                 }
 
                 else
@@ -143,7 +144,7 @@ namespace CustomDeathPenaltyPlus
                     // No, edit strings to show amount lost
                     maileditor["passedOut1_Billed_Male"] = $"Dear Mr. {incapacitated}(You've been billed {data.MoneyLostLastPassOut}g for this service){morris}";
                     maileditor["passedOut1_Billed_Female"] = $"Dear Ms. {incapacitated}(You've been billed {data.MoneyLostLastPassOut}g for this service){morris}";
-                    maileditor["passedOut3_Billed"] = $"{exhaustion}I've billed you {data.MoneyLostLastPassOut}g to cover your medical expenses.^^-Dr. Harvey[#]From The Office Of Dr. Harvey";
+                    maileditor["passedOut3_Billed"] = $"{exhaustion}I've billed you {data.MoneyLostLastPassOut}g to cover your medical expenses.{harvey}";
                 }
             }
         }
