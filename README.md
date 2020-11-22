@@ -8,6 +8,7 @@ Current options allow configuration for:
 - Amount of money lost, including max amount that can be lost
 - Amount of health and energy to restore
 - A more realistic option for dying, disabled by default
+- A friendship penalty with Harvey
 
 **Pass Out Penalty**
 - Amount of money lost, including max amount that can be lost
@@ -24,7 +25,7 @@ Current options allow configuration for:
 2. Change any desired values in the config. Percentage values are expressed in decimal form
 3. Your changes should now be implemented in game
 
-Note: The mod will create per-savefile JSON files (found in the mod folder) if you pass out or die with WakeupNextDayinClinic enabled so that it knows what to restore if you exit the next day without saving. While deleting these will not affect the game, it can lead to incorrect values being used. Only delete the file if you are deleting the character.
+Note: The mod will create per-save file JSON files (found in the mod folder)so that the mod it knows what to restore if you exit the next day without saving after dying or passing out. While deleting these will not affect the game, it can lead to incorrect values being used. Only delete the file if you are deleting the character.
 
 ### If changes are not implemented:
  - Check the mod page for accepted values
@@ -35,5 +36,7 @@ Note: The mod will create per-savefile JSON files (found in the mod folder) if y
 1.0.0 - Initial release
 
 1.1.0 - Passing out penalty is now fully customisable. Added config option for a more realistic death. Minor bug fixes
+
+1.2.0 - Added config option for a friendship penalty with Harvey. Removed items lost menu if items will be restored. Bug fixes
 
 
