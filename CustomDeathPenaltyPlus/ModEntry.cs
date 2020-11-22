@@ -15,8 +15,6 @@ namespace CustomDeathPenaltyPlus
     /// <summary>
     /// Extensions for the PassOutPenaltyChanges class
     /// </summary>
-
-
     internal static class PassOutPenaltyChangesExtensions
     {     
         public static void Reconcile(this ModConfig.PassOutPenaltyChanges changes, IMonitor monitor)
@@ -237,9 +235,7 @@ namespace CustomDeathPenaltyPlus
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
 
                     // Write data model to JSON file
-                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
-                    
+                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);                   
 
                     // Is the game in multiplayer?
                     if (Context.IsMultiplayer == false)
@@ -288,7 +284,6 @@ namespace CustomDeathPenaltyPlus
                 // Reset PlayerStateRestorer class with the statedeath field
                 PlayerStateRestorer.statedeath = null;
             }
-
 
             // Chack if time is 2am or the player has passed out
             if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
@@ -400,8 +395,8 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Warp player to clinic
                     Game1.warpFarmer("Hospital", 20, 12, false);
-
                 }
+
                 // Change health and stamina to the amount restored by the config values
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.DeathPenalty.EnergytoRestorePercentage);
                 Game1.player.health = Math.Max((int)(Game1.player.maxHealth * this.config.DeathPenalty.HealthtoRestorePercentage), 1);
