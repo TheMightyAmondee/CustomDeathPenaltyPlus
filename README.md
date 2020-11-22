@@ -25,12 +25,11 @@ Current options allow configuration for:
 2. Change any desired values in the config. Percentage values are expressed in decimal form
 3. Your changes should now be implemented in game
 
-Note: The mod will create per-save file JSON files (found in the mod folder)so that the mod it knows what to restore if you exit the next day without saving after dying or passing out. While deleting these will not affect the game, it can lead to incorrect values being used. Only delete the file if you are deleting the character.
+Note: The mod will create per-save file JSON files (found in the mod folder) so that the mod it knows what to restore if you exit the next day without saving after dying or passing out. While deleting these will not affect the game, it can lead to incorrect values being used. Only delete the file if you are deleting the character.
 
 ### If changes are not implemented:
  - Check the mod page for accepted values
  - The mod should automatically use the default values if a config value is invalid. If your changes are not implemented check the SMAPI monitor for errors or messages.
- - WakeupNextDayinClinic will only begin a new day in single-player unless the condition removed version is downloaded, I wouldn't recommend it though, it can cause the game to become unresponsive.
  
 ### Versions:
 1.0.0 - Initial release
@@ -38,5 +37,7 @@ Note: The mod will create per-save file JSON files (found in the mod folder)so t
 1.1.0 - Passing out penalty is now fully customisable. Added config option for a more realistic death. Minor bug fixes
 
 1.2.0 - Added config option for a friendship penalty with Harvey. Removed items lost menu if items will be restored. Bug fixes
+
+1.2.1 - Fully compatible with multiplayer
 
 
