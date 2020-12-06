@@ -29,14 +29,14 @@ namespace CustomDeathPenaltyPlus
         {
            
             // Create new string to build on
-            StringBuilder response = new StringBuilder($"\"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"");
+            StringBuilder response = new StringBuilder($"speak Harvey \"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"");
 
             // Is WakeupNextDayinClinic true?
             if (config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
             {
                 // Yes, build string accordingly
 
-                response.Insert(1, "Good you're finally awake. ");
+                response.Insert(14, "Good you're finally awake. ");
             }
 
             // Is FriendshipPenalty greater than 0?
@@ -106,7 +106,7 @@ namespace CustomDeathPenaltyPlus
                     && PlayerStateRestorer.statedeath.levelslost < Game1.player.deepestMineLevel
                     && PlayerStateRestorer.statedeath.levelslost < MineShaft.lowestLevelReached
                     // Player was in the mine
-                    && PlayerStateRestorer.statedeath.location.Contains("UndergroundMine") 
+                    && PlayerStateRestorer.statedeath.location.Contains("UndergroundMine")
                     // Player has not reached the mine bottom
                     && Game1.player.deepestMineLevel < 120
                     && MineShaft.lowestLevelReached < 120)
@@ -217,7 +217,7 @@ namespace CustomDeathPenaltyPlus
             {
                var eventedits = asset.AsDictionary<string, string>().Data;
 
-               eventedits["PlayerKilled"] = eventedits["PlayerKilled"].Replace("\"Someone found you unconscious and battered... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"", $"{ResponseBuilder("Someone", "and battered")}");
+               eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
             }
         }
     }

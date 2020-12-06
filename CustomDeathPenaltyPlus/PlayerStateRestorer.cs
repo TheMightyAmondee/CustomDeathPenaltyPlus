@@ -78,8 +78,17 @@ namespace CustomDeathPenaltyPlus
                 && statedeath.location.Contains("UndergroundMine"))
             {
                 // Adjust minelevel data accordingly
-                Game1.player.deepestMineLevel = Game1.player.deepestMineLevel - statedeath.levelslost;
-                MineShaft.lowestLevelReached = MineShaft.lowestLevelReached - statedeath.levelslost;
+                if(Game1.player.deepestMineLevel < 120 && MineShaft.lowestLevelReached < 120)
+                {
+                    Game1.player.deepestMineLevel = Game1.player.deepestMineLevel - statedeath.levelslost;
+                    MineShaft.lowestLevelReached = MineShaft.lowestLevelReached - statedeath.levelslost;
+                }
+                else
+                {
+                    Game1.player.deepestMineLevel = 120 - statedeath.levelslost;
+                    MineShaft.lowestLevelReached = 120 - statedeath.levelslost;
+                }
+
             }
 
             // Restore stamina to amount as specified by config values
@@ -104,7 +113,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is FriendshipPenalty greater than 0?
-            if(config.DeathPenalty.ExtraCustomisation.FriendshipPenalty > 0 && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true))
+            if(config.DeathPenalty.ExtraCustomisation.FriendshipPenalty > 0 && Game1.player.friendshipData.ContainsKey("Harvey") && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true))
             {
                 //Yes, change friendship level for Harvey
 
