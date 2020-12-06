@@ -16,10 +16,16 @@ namespace CustomDeathPenaltyPlus
 
             public double moneylost;
 
-            public PlayerDataTracker(int m, double ml)
+            public int levelslost;
+
+            public string location;
+
+            public PlayerDataTracker(int m, double ml, int ll, string l)
             {
                 this.money = m;
                 this.moneylost = ml;
+                this.levelslost = ll;
+                this.location = l;
             }
         }
 
@@ -38,13 +44,15 @@ namespace CustomDeathPenaltyPlus
         // Saves player's current money and amount to be lost, killed
         public static void SaveStateDeath()
         {
-            statedeath = new PlayerDataTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)));
+            Random lostlevels = new Random((int)Game1.uniqueIDForThisGame / 2 + (int)Game1.stats.DaysPlayed + Game1.timeOfDay);
+
+            statedeath = new PlayerDataTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)), lostlevels.Next(0,15), Game1.currentLocation.NameOrUniqueName); ;
         }
 
         // Saves player's current money and amount to be lost, passed out
         public static void SaveStatePassout()
         {
-            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)));
+            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)),0, Game1.currentLocation.NameOrUniqueName);
         }
 
         // Load Player state, killed
@@ -55,7 +63,18 @@ namespace CustomDeathPenaltyPlus
             {
                 Game1.player.Money = statedeath.money - (int)Math.Round(statedeath.moneylost);
             }
-          
+
+            //Forget minelevels
+            if (true 
+                && config.DeathPenalty.ExtraCustomisation.ForgetMineLevels == true 
+                && Game1.player.deepestMineLevel < 120 
+                && statedeath.levelslost < Game1.player.deepestMineLevel 
+                && statedeath.location.Contains("UndergroundMine"))
+            {
+                Game1.player.deepestMineLevel = Game1.player.deepestMineLevel - statedeath.levelslost;
+                MineShaft.lowestLevelReached = MineShaft.lowestLevelReached - statedeath.levelslost;
+            }
+
             // Restore stamina to amount as specified by config values
             Game1.player.stamina = (int)(Game1.player.maxStamina * config.DeathPenalty.EnergytoRestorePercentage);
 
@@ -78,12 +97,12 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is FriendshipPenalty greater than 0?
-            if(config.DeathPenalty.FriendshipPenalty > 0 && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.DeathPenalty.WakeupNextDayinClinic == true))
+            if(config.DeathPenalty.ExtraCustomisation.FriendshipPenalty > 0 && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true))
             {
                 //Yes, change friendship level for Harvey
 
-                Game1.player.changeFriendship(-Math.Min(config.DeathPenalty.FriendshipPenalty, Game1.player.getFriendshipLevelForNPC("Harvey")), Game1.getCharacterFromName("Harvey", true));
-            }  
+                Game1.player.changeFriendship(-Math.Min(config.DeathPenalty.ExtraCustomisation.FriendshipPenalty, Game1.player.getFriendshipLevelForNPC("Harvey")), Game1.getCharacterFromName("Harvey", true));
+            } 
         }
 
         // Load Player state, passed out

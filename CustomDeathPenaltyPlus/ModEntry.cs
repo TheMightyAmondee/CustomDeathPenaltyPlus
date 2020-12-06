@@ -88,10 +88,10 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Reconcile FriendshipPenalty if the value is -ve
-            if(changes.FriendshipPenalty < 0)
+            if(changes.ExtraCustomisation.FriendshipPenalty < 0)
             {
                 monitor.Log("FriendshipPenalty is invalid, default value will be used instead... A negative number? Harvey isn't going to like you more if you die...", LogLevel.Warn);
-                changes.FriendshipPenalty = 0;
+                changes.ExtraCustomisation.FriendshipPenalty = 0;
             }
         }
     }
@@ -134,7 +134,7 @@ namespace CustomDeathPenaltyPlus
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
             // Is WakeupNextDayinClinic true or is FriendshipPenalty greater than 0?
-            if (this.config.DeathPenalty.WakeupNextDayinClinic == true || this.config.DeathPenalty.FriendshipPenalty > 0)
+            if (this.config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true || this.config.DeathPenalty.ExtraCustomisation.FriendshipPenalty > 0)
             {
                 // Yes, edit some events
 
@@ -172,13 +172,15 @@ namespace CustomDeathPenaltyPlus
 
                     // Reload asset upon death to reflect amount lost
                     this.Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
+                    this.Monitor.Log($"Lowest level {MineShaft.lowestLevelReached}");
+                    this.Monitor.Log($"Deepest level {Game1.player.deepestMineLevel}");
 
                     // Will a new day be loaded in multiplayer after death?
                     if (true
                         // It is multiplayer
                         && Context.IsMultiplayer == true 
                         // WakeupNextDayinClinic is true
-                        && this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                        && this.config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
                     {
                         // Set warptoinvisiblelocation to true
                         warptoinvisiblelocation = true;
@@ -227,7 +229,7 @@ namespace CustomDeathPenaltyPlus
             {
 
                 // Check if WakeupNextDayinClinic is true
-                if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
+                if (this.config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
                 {
                     // Yes, do some extra stuff
 
