@@ -52,7 +52,7 @@ namespace CustomDeathPenaltyPlus
         // Saves player's current money and amount to be lost, passed out
         public static void SaveStatePassout()
         {
-            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)),0, Game1.currentLocation.NameOrUniqueName);
+            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)), 0, Game1.currentLocation.NameOrUniqueName);
         }
 
         // Load Player state, killed
@@ -65,12 +65,19 @@ namespace CustomDeathPenaltyPlus
             }
 
             //Forget minelevels
-            if (true 
-                && config.DeathPenalty.ExtraCustomisation.ForgetMineLevels == true 
-                && Game1.player.deepestMineLevel < 120 
-                && statedeath.levelslost < Game1.player.deepestMineLevel 
+            if (true
+                // Mine levels will be lost
+                && config.DeathPenalty.ExtraCustomisation.ForgetMineLevels == true
+                // Player has not reached the mine bottom
+                && Game1.player.deepestMineLevel < 120
+                && MineShaft.lowestLevelReached < 120
+                // Levelslost is not more than the deepest level reached
+                && statedeath.levelslost < Game1.player.deepestMineLevel
+                && statedeath.levelslost < MineShaft.lowestLevelReached
+                // Player was in the mine
                 && statedeath.location.Contains("UndergroundMine"))
             {
+                // Adjust minelevel data accordingly
                 Game1.player.deepestMineLevel = Game1.player.deepestMineLevel - statedeath.levelslost;
                 MineShaft.lowestLevelReached = MineShaft.lowestLevelReached - statedeath.levelslost;
             }

@@ -2,6 +2,7 @@
 using StardewValley;
 using System;
 using System.Text;
+using StardewValley.Locations;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -97,12 +98,20 @@ namespace CustomDeathPenaltyPlus
                     stringeditor["Event.cs.1071"] = "";
                 }
 
+                // Have mine levels been forgotten?
                 if (true 
+                    // Mine levels will be lost
                     && config.DeathPenalty.ExtraCustomisation.ForgetMineLevels == true 
-                    && PlayerStateRestorer.statedeath.levelslost < Game1.player.deepestMineLevel 
+                    // Levelslost is not more than the deepest level reached
+                    && PlayerStateRestorer.statedeath.levelslost < Game1.player.deepestMineLevel
+                    && PlayerStateRestorer.statedeath.levelslost < MineShaft.lowestLevelReached
+                    // Player was in the mine
                     && PlayerStateRestorer.statedeath.location.Contains("UndergroundMine") 
-                    && Game1.player.deepestMineLevel < 120)
+                    // Player has not reached the mine bottom
+                    && Game1.player.deepestMineLevel < 120
+                    && MineShaft.lowestLevelReached < 120)
                 {
+                    // Yes, edit strings accordingly
                     stringeditor["Event.cs.1057"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. ";
                     stringeditor["Event.cs.1068"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. " + stringeditor["Event.cs.1068"];
                 }
