@@ -179,8 +179,6 @@ namespace CustomDeathPenaltyPlus
 
                     // Reload asset upon death to reflect amount lost
                     this.Helper.Content.InvalidateCache("Strings\\StringsFromCSFiles");
-                    this.Monitor.Log($"Lowest level {MineShaft.lowestLevelReached}");
-                    this.Monitor.Log($"Deepest level {Game1.player.deepestMineLevel}");
 
                     // Will a new day be loaded in multiplayer after death?
                     if (true
