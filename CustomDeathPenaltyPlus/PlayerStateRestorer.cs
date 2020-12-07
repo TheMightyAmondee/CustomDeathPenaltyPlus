@@ -96,8 +96,18 @@ namespace CustomDeathPenaltyPlus
                 // Go through each item lost and saved to itemsLostLastDeath
                 foreach (Item item in Game1.player.itemsLostLastDeath)
                 {
-                    // Add item to player's inventory
-                    Game1.player.addItemToInventory(item);
+                    //Is the player's inventory full?
+                    if (Game1.player.isInventoryFull() == true)
+                    {
+                        // Yes, drop item on the floor
+                        Game1.player.dropItem(item);
+                    }
+
+                    else
+                    {
+                        // No, add item to player's inventory
+                        Game1.player.addItemToInventory(item);
+                    }  
                 }
                 // Clears items lost, prevents being purchasable at Guild
                 Game1.player.itemsLostLastDeath.Clear();

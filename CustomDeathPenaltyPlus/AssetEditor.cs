@@ -113,8 +113,16 @@ namespace CustomDeathPenaltyPlus
                     && MineShaft.lowestLevelReached < 120)
                 {
                     // Yes, edit strings accordingly
-                    stringeditor["Event.cs.1057"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. ";
-                    stringeditor["Event.cs.1068"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. " + stringeditor["Event.cs.1068"];
+                    if (PlayerStateRestorer.statedeath.levelslost > 1)
+                    {
+                        stringeditor["Event.cs.1057"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. ";
+                        stringeditor["Event.cs.1068"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. " + stringeditor["Event.cs.1068"];
+                    }
+                    else
+                    {
+                        stringeditor["Event.cs.1057"] = $"I must have hit my head pretty hard... I've forgotten everything about the last level of the mine. ";
+                        stringeditor["Event.cs.1068"] = $"I must have hit my head pretty hard... I've forgotten everything about the last level of the mine. " + stringeditor["Event.cs.1068"];
+                    }                    
                 }
             }
         }
