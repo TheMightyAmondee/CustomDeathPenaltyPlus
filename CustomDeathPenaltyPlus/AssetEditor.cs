@@ -32,7 +32,7 @@ namespace CustomDeathPenaltyPlus
             StringBuilder response = new StringBuilder($"speak Harvey \"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"");
 
             // Is WakeupNextDayinClinic true?
-            if (config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
+            if (config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true)
             {
                 // Yes, build string accordingly
 
@@ -40,7 +40,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is FriendshipPenalty greater than 0?
-            if (config.DeathPenalty.ExtraCustomisation.FriendshipPenalty > 0)
+            if (config.ExtraDeathPenaltyCustomisation.FriendshipPenalty > 0)
             {
                 // Yes, build string accordingly
 
@@ -101,7 +101,8 @@ namespace CustomDeathPenaltyPlus
                 // Have mine levels been forgotten?
                 if (true 
                     // Mine levels will be lost
-                    && config.DeathPenalty.ExtraCustomisation.ForgetMineLevels == true 
+                    && config.ExtraDeathPenaltyCustomisation.ForgetMineLevels == true
+                    && PlayerStateRestorer.statedeath.levelslost > 0
                     // Levelslost is not more than the deepest level reached
                     && PlayerStateRestorer.statedeath.levelslost < Game1.player.deepestMineLevel
                     && PlayerStateRestorer.statedeath.levelslost < MineShaft.lowestLevelReached
@@ -187,7 +188,7 @@ namespace CustomDeathPenaltyPlus
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
                 // Is WakeupNextDayinClinic true?
-                if (config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
+                if (config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true)
                 {
                     eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}","in the mine")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
                 }

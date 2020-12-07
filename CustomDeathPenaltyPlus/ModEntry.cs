@@ -85,13 +85,19 @@ namespace CustomDeathPenaltyPlus
             {
                 monitor.Log($"HealthtoRestorePercentage in DeathPenalty is invalid, default value will be used instead... {changes.HealthtoRestorePercentage} isn't a decimal between 0 and 1, excluding 0", LogLevel.Warn);
                 changes.HealthtoRestorePercentage = 0.50;
-            }
+            }    
+        }
+    }
 
+    internal static class OtherChangesExtenstions
+    {
+        public static void Reconcile(this ModConfig.OtherChanges changes, IMonitor monitor)
+        {
             // Reconcile FriendshipPenalty if the value is -ve
-            if(changes.ExtraCustomisation.FriendshipPenalty < 0)
+            if (changes.FriendshipPenalty < 0)
             {
                 monitor.Log("FriendshipPenalty is invalid, default value will be used instead... A negative number? Harvey isn't going to like you more if you die...", LogLevel.Warn);
-                changes.ExtraCustomisation.FriendshipPenalty = 0;
+                changes.FriendshipPenalty = 0;
             }
         }
     }
@@ -132,9 +138,10 @@ namespace CustomDeathPenaltyPlus
             // Reconcile config values
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
+            this.config.ExtraDeathPenaltyCustomisation.Reconcile(this.Monitor);
 
             // Is WakeupNextDayinClinic true or is FriendshipPenalty greater than 0?
-            if (this.config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true || this.config.DeathPenalty.ExtraCustomisation.FriendshipPenalty > 0)
+            if (this.config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true || this.config.ExtraDeathPenaltyCustomisation.FriendshipPenalty > 0)
             {
                 // Yes, edit some events
 
@@ -180,7 +187,7 @@ namespace CustomDeathPenaltyPlus
                         // It is multiplayer
                         && Context.IsMultiplayer == true 
                         // WakeupNextDayinClinic is true
-                        && this.config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
+                        && this.config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true)
                     {
                         // Set warptoinvisiblelocation to true
                         warptoinvisiblelocation = true;
@@ -229,7 +236,7 @@ namespace CustomDeathPenaltyPlus
             {
 
                 // Check if WakeupNextDayinClinic is true
-                if (this.config.DeathPenalty.ExtraCustomisation.WakeupNextDayinClinic == true)
+                if (this.config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true)
                 {
                     // Yes, do some extra stuff
 
