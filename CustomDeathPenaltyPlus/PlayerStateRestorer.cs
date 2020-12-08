@@ -18,14 +18,14 @@ namespace CustomDeathPenaltyPlus
 
             public int levelslost;
 
-            public string location;
+            public int minelevel;
 
-            public PlayerDataTracker(int m, double ml, int ll, string l)
+            public PlayerDataTracker(int m, double ml, int ll, int mil)
             {
                 this.money = m;
                 this.moneylost = ml;
                 this.levelslost = ll;
-                this.location = l;
+                this.minelevel = mil;
             }
         }
 
@@ -41,18 +41,20 @@ namespace CustomDeathPenaltyPlus
             PlayerStateRestorer.config = config;
         }
 
-        // Saves player's current money and amount to be lost, killed
+        // Saves player's current money, amount to be lost and mine data, killed
         public static void SaveStateDeath()
         {
             Random lostlevels = new Random((int)Game1.uniqueIDForThisGame / 2 + (int)Game1.stats.DaysPlayed + Game1.timeOfDay);
 
-            statedeath = new PlayerDataTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)), Math.Min(Game1.player.deepestMineLevel, lostlevels.Next(0,16)), Game1.currentLocation.NameOrUniqueName);
+            var tracker = Game1.currentLocation as MineShaft;
+
+            statedeath = new PlayerDataTracker(Game1.player.Money, Math.Min(config.DeathPenalty.MoneyLossCap, Game1.player.Money * (1 - config.DeathPenalty.MoneytoRestorePercentage)), Math.Min(Game1.player.deepestMineLevel, lostlevels.Next(0,16)), Game1.currentLocation as MineShaft != null ? tracker.mineLevel : 121);
         }
 
-        // Saves player's current money and amount to be lost, passed out
+        // Saves player's current money, amount to be lost and mine data, passed out
         public static void SaveStatePassout()
         {
-            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)), 0, Game1.currentLocation.NameOrUniqueName);
+            statepassout = new PlayerDataTracker(Game1.player.Money, Math.Min(config.PassOutPenalty.MoneyLossCap, Game1.player.Money * (1 - config.PassOutPenalty.MoneytoRestorePercentage)), 0, 121);
         }
 
         // Load Player state, killed
@@ -72,7 +74,7 @@ namespace CustomDeathPenaltyPlus
                 && Game1.player.deepestMineLevel < 120
                 && MineShaft.lowestLevelReached < 120
                 // Player was in the mine
-                && statedeath.location.StartsWith("UndergroundMine"))
+                && statedeath.minelevel < 121)
             {
                 // Adjust minelevel data accordingly
                 Game1.player.deepestMineLevel = Game1.player.deepestMineLevel - statedeath.levelslost;

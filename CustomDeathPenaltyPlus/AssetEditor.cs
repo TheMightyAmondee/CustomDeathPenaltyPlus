@@ -104,7 +104,7 @@ namespace CustomDeathPenaltyPlus
                     && config.ExtraDeathPenaltyCustomisation.ForgetMineLevels == true
                     && PlayerStateRestorer.statedeath.levelslost > 0
                     // Player was in the mine
-                    && PlayerStateRestorer.statedeath.location.StartsWith("UndergroundMine")
+                    && PlayerStateRestorer.statedeath.minelevel < 121
                     // Player has not reached the mine bottom
                     && Game1.player.deepestMineLevel < 120
                     && MineShaft.lowestLevelReached < 120)
