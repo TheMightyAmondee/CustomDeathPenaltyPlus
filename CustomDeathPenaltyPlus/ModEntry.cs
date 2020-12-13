@@ -120,8 +120,9 @@ namespace CustomDeathPenaltyPlus
             this.config = this.Helper.ReadConfig<ModConfig>();
 
             // Add console commands
-            helper.ConsoleCommands.Add("change_dp", "Changes the death penalty settings\n format: change_dp <configoption> <value>", this.Setdp);
-            helper.ConsoleCommands.Add("change_pp", "Changes the pass out penalty settings\n format: change_pp <configoption> <value>", this.Setpp);
+            helper.ConsoleCommands.Add("cdpp_setdp", "Changes the death penalty settings\n format: cdpp_setdp <configoption> <value>", this.Setdp);
+            helper.ConsoleCommands.Add("cdpp_setpp", "Changes the pass out penalty settings\n format: cdpp_setpp <configoption> <value>", this.Setpp);
+            helper.ConsoleCommands.Add("cdpp_info", "Displays the current config settings", this.Info);
 
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
@@ -596,6 +597,24 @@ namespace CustomDeathPenaltyPlus
                     }
             }
             Helper.WriteConfig(this.config);
+        }
+
+        private void Info(string command, string[] args)
+        {
+            this.Monitor.Log($"\nCurrent config settings:" +
+                $"\n\nDeathPenalty" +
+                $"\n\nRestoreItems - {this.config.DeathPenalty.RestoreItems.ToString().ToLower()}" +
+                $"\nMoneyLossCap - {this.config.DeathPenalty.MoneyLossCap}" +
+                $"\nMoneytoRestorePercentage - {this.config.DeathPenalty.MoneytoRestorePercentage}" +
+                $"\nEnergytoRestorePercentage - {this.config.DeathPenalty.EnergytoRestorePercentage}" +
+                $"\nHealthtoRestorePercentage - {this.config.DeathPenalty.HealthtoRestorePercentage}" +
+                $"\nWakeupNextDayinClinic - {this.config.DeathPenalty.WakeupNextDayinClinic.ToString().ToLower()}" +
+                $"\nFriendshipPenalty - {this.config.DeathPenalty.FriendshipPenalty}" +
+                $"\n\nPassOutPenalty" +
+                $"\n\nMoneyLossCap - {this.config.PassOutPenalty.MoneyLossCap}" +
+                $"\nMoneytoRestorePercentage - {this.config.PassOutPenalty.MoneytoRestorePercentage}" +
+                $"\nEnergytoRestorePercentage - {this.config.PassOutPenalty.EnergytoRestorePercentage}", 
+                LogLevel.Info);
         }
     }
 }
