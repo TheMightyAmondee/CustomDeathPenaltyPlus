@@ -556,7 +556,7 @@ namespace CustomDeathPenaltyPlus
                             else
                             {
                                 dp.FriendshipPenalty = int.Parse(args[1]);
-                                this.Monitor.Log($"DeathPenalty - FriendshipPenalty set to {args[1]}", LogLevel.Info);
+                                this.Monitor.Log($"FriendshipPenalty set to {args[1]}", LogLevel.Info);
                             }
                         }
 
