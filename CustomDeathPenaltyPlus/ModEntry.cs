@@ -592,6 +592,7 @@ namespace CustomDeathPenaltyPlus
         private void Setpp(string command, string[] args)
         {
             var pp = this.config.PassOutPenalty;
+
             switch (args[0])
             {
                 case "cap":
