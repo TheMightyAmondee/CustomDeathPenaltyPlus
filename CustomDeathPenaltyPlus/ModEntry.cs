@@ -435,7 +435,6 @@ namespace CustomDeathPenaltyPlus
 
             switch (args[0])
             {
-
                 case "items":
                 case "restoreitems":
                     {
@@ -590,7 +589,6 @@ namespace CustomDeathPenaltyPlus
             }
             Helper.WriteConfig(this.config);
         }
-
         private void Setpp(string command, string[] args)
         {
             var pp = this.config.PassOutPenalty;
@@ -673,7 +671,6 @@ namespace CustomDeathPenaltyPlus
             }
             Helper.WriteConfig(this.config);
         }
-
         private void Info(string command, string[] args)
         {
             this.Monitor.Log($"Current config settings:" +
