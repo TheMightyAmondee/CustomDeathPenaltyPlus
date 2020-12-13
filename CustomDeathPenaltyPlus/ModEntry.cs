@@ -120,9 +120,9 @@ namespace CustomDeathPenaltyPlus
             this.config = this.Helper.ReadConfig<ModConfig>();
 
             // Add console commands
-            helper.ConsoleCommands.Add("cdpp_setdp", "Changes the death penalty settings\n format: cdpp_setdp <configoption> <value>", this.Setdp);
-            helper.ConsoleCommands.Add("cdpp_setpp", "Changes the pass out penalty settings\n format: cdpp_setpp <configoption> <value>", this.Setpp);
-            helper.ConsoleCommands.Add("cdpp_info", "Displays the current config settings", this.Info);
+            helper.ConsoleCommands.Add("deathpenalty", "Changes the death penalty settings\n format: deathpenalty <configoption> <value>", this.Setdp);
+            helper.ConsoleCommands.Add("passoutpenalty", "Changes the pass out penalty settings\n format: passoutpenalty <configoption> <value>", this.Setpp);
+            helper.ConsoleCommands.Add("configinfo", "Displays the current config settings", this.Info);
 
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
