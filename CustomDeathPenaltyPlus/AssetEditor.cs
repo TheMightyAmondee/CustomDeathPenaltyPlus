@@ -32,7 +32,7 @@ namespace CustomDeathPenaltyPlus
             StringBuilder response = new StringBuilder($"speak Harvey \"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"");
 
             // Is WakeupNextDayinClinic true?
-            if (config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true)
+            if (config.DeathPenalty.WakeupNextDayinClinic == true)
             {
                 // Yes, build string accordingly
 
@@ -40,7 +40,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is FriendshipPenalty greater than 0?
-            if (config.ExtraDeathPenaltyCustomisation.FriendshipPenalty > 0)
+            if (config.DeathPenalty.FriendshipPenalty > 0)
             {
                 // Yes, build string accordingly
 
@@ -96,30 +96,6 @@ namespace CustomDeathPenaltyPlus
                     stringeditor["Event.cs.1062"] = "";
                     stringeditor["Event.cs.1063"] = "";
                     stringeditor["Event.cs.1071"] = "";
-                }
-
-                // Have mine levels been forgotten?
-                if (true 
-                    // Mine levels will be lost
-                    && config.ExtraDeathPenaltyCustomisation.ForgetMineLevels == true
-                    && PlayerStateRestorer.statedeath.levelslost > 0
-                    // Player was in the mine
-                    && PlayerStateRestorer.statedeath.minelevel < 121
-                    // Player has not reached the mine bottom
-                    && Game1.player.deepestMineLevel < 120
-                    && MineShaft.lowestLevelReached < 120)
-                {
-                    // Yes, edit strings accordingly
-                    if (PlayerStateRestorer.statedeath.levelslost > 1)
-                    {
-                        stringeditor["Event.cs.1057"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. ";
-                        stringeditor["Event.cs.1068"] = $"I must have hit my head pretty hard... I've forgotten everything about the last {PlayerStateRestorer.statedeath.levelslost} levels of the mine. " + stringeditor["Event.cs.1068"];
-                    }
-                    else
-                    {
-                        stringeditor["Event.cs.1057"] = $"I must have hit my head pretty hard... I've forgotten everything about the last level of the mine. ";
-                        stringeditor["Event.cs.1068"] = $"I must have hit my head pretty hard... I've forgotten everything about the last level of the mine. " + stringeditor["Event.cs.1068"];
-                    }                    
                 }
             }
         }
@@ -193,7 +169,7 @@ namespace CustomDeathPenaltyPlus
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
                 // Is WakeupNextDayinClinic true?
-                if (config.ExtraDeathPenaltyCustomisation.WakeupNextDayinClinic == true)
+                if (config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
                     eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}","in the mine")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
                 }
