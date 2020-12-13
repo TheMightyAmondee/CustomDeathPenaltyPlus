@@ -654,7 +654,7 @@ namespace CustomDeathPenaltyPlus
                             else
                             {
                                 pp.EnergytoRestorePercentage = double.Parse(args[1]);
-                                this.Monitor.Log($"PassPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
+                                this.Monitor.Log($"PassOutPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
                             }
                         }
 
