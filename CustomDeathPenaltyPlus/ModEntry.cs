@@ -601,19 +601,19 @@ namespace CustomDeathPenaltyPlus
 
         private void Info(string command, string[] args)
         {
-            this.Monitor.Log($"\nCurrent config settings:" +
+            this.Monitor.Log($"Current config settings:" +
                 $"\n\nDeathPenalty" +
-                $"\n\nRestoreItems - {this.config.DeathPenalty.RestoreItems.ToString().ToLower()}" +
-                $"\nMoneyLossCap - {this.config.DeathPenalty.MoneyLossCap}" +
-                $"\nMoneytoRestorePercentage - {this.config.DeathPenalty.MoneytoRestorePercentage}" +
-                $"\nEnergytoRestorePercentage - {this.config.DeathPenalty.EnergytoRestorePercentage}" +
-                $"\nHealthtoRestorePercentage - {this.config.DeathPenalty.HealthtoRestorePercentage}" +
-                $"\nWakeupNextDayinClinic - {this.config.DeathPenalty.WakeupNextDayinClinic.ToString().ToLower()}" +
-                $"\nFriendshipPenalty - {this.config.DeathPenalty.FriendshipPenalty}" +
+                $"\n\nRestoreItems: {this.config.DeathPenalty.RestoreItems.ToString().ToLower()}" +
+                $"\nMoneyLossCap: {this.config.DeathPenalty.MoneyLossCap}" +
+                $"\nMoneytoRestorePercentage: {this.config.DeathPenalty.MoneytoRestorePercentage}" +
+                $"\nEnergytoRestorePercentage: {this.config.DeathPenalty.EnergytoRestorePercentage}" +
+                $"\nHealthtoRestorePercentage: {this.config.DeathPenalty.HealthtoRestorePercentage}" +
+                $"\nWakeupNextDayinClinic: {this.config.DeathPenalty.WakeupNextDayinClinic.ToString().ToLower()}" +
+                $"\nFriendshipPenalty: {this.config.DeathPenalty.FriendshipPenalty}" +
                 $"\n\nPassOutPenalty" +
-                $"\n\nMoneyLossCap - {this.config.PassOutPenalty.MoneyLossCap}" +
-                $"\nMoneytoRestorePercentage - {this.config.PassOutPenalty.MoneytoRestorePercentage}" +
-                $"\nEnergytoRestorePercentage - {this.config.PassOutPenalty.EnergytoRestorePercentage}", 
+                $"\n\nMoneyLossCap: {this.config.PassOutPenalty.MoneyLossCap}" +
+                $"\nMoneytoRestorePercentage: {this.config.PassOutPenalty.MoneytoRestorePercentage}" +
+                $"\nEnergytoRestorePercentage: {this.config.PassOutPenalty.EnergytoRestorePercentage}", 
                 LogLevel.Info);
         }
     }
