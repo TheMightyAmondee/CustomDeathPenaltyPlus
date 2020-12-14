@@ -432,15 +432,37 @@ namespace CustomDeathPenaltyPlus
         // Define console commands
         private void Setdp(string command, string[] args)
         {
-            Commands.DeathPenalty(args, this.Monitor, this.Helper);            
+            try
+            {
+                Commands.DeathPenalty(args, this.Monitor, this.Helper);
+            }
+            catch
+            {
+                this.Monitor.Log("Command failed, ensure correct format is used with appropriate values", LogLevel.Error);
+            }
+                        
         }
         private void Setpp(string command, string[] args)
         {
-            Commands.PassOutPenalty(args, this.Monitor, this.Helper);
+            try
+            {
+                Commands.PassOutPenalty(args, this.Monitor, this.Helper);
+            }
+            catch
+            {
+                this.Monitor.Log("Command failed, ensure correct format is used with appropriate values", LogLevel.Error);
+            }
         }
         private void Info(string command, string[] args)
         {
-            Commands.ConfigInfo(args, this.Monitor);
+            try
+            {
+                Commands.ConfigInfo(args, this.Monitor);
+            }
+            catch
+            {
+                this.Monitor.Log("Command failed, ensure correct format is used", LogLevel.Error);
+            }
         }
     }
 }

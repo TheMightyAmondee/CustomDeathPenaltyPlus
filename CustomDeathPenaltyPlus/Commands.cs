@@ -18,146 +18,86 @@ namespace CustomDeathPenaltyPlus
                 case "items":
                 case "restoreitems":
                     {
-                        try
-                        {
-                            dp.RestoreItems = bool.Parse(args[1]);
-                        }
-                        catch
-                        {
-                            monitor.Log("Value could not be parsed, specify true or false only", LogLevel.Error);
-                            break;
-                        }
+                        dp.RestoreItems = bool.Parse(args[1]);
                         monitor.Log($"RestoreItems set to {args[1]}", LogLevel.Info);
-                        break;
+                        break;   
                     }
                 case "cap":
                 case "moneylosscap":
                     {
-                        try
+                        if (int.Parse(args[1]) < 0)
                         {
-                            if (int.Parse(args[1]) < 0)
-                            {
-                                monitor.Log("Value specified is not in the valid range for MoneyLossCap", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.MoneyLossCap = int.Parse(args[1]);
-                                monitor.Log($"DeathPenalty - MoneyLossCap set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for MoneyLossCap", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a whole number only", LogLevel.Error);
-                            break;
+                            dp.MoneyLossCap = int.Parse(args[1]);
+                            monitor.Log($"DeathPenalty - MoneyLossCap set to {args[1]}", LogLevel.Info);
                         }
-
+                        
                         break;
                     }
                 case "money":
                 case "moneytorestorepercentage":
                     {
-                        try
+                        if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
                         {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                monitor.Log("Value specified is not in the valid range for MoneytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.MoneytoRestorePercentage = double.Parse(args[1]);
-                                monitor.Log($"DeathPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for MoneytoRestorePercentage", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
+                            dp.MoneytoRestorePercentage = double.Parse(args[1]);
+                            monitor.Log($"DeathPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
                 case "health":
                 case "healthtorestorepercentage":
                     {
-                        try
+                        if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
                         {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                monitor.Log("Value specified is not in the valid range for HealthtoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.HealthtoRestorePercentage = double.Parse(args[1]);
-                                monitor.Log($"HealthtoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for HealthtoRestorePercentage", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
+                            dp.HealthtoRestorePercentage = double.Parse(args[1]);
+                            monitor.Log($"HealthtoRestorePercentage set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
                 case "energy":
                 case "energytorestorepercentage":
                     {
-                        try
+                        if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
                         {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                monitor.Log("Value specified is not in the valid range for EnergytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.EnergytoRestorePercentage = double.Parse(args[1]);
-                                monitor.Log($"DeathPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for EnergytoRestorePercentage", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
+                            dp.EnergytoRestorePercentage = double.Parse(args[1]);
+                            monitor.Log($"DeathPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
                 case "friendship":
                 case "friendshippenalty":
                     {
-                        try
+                        if (int.Parse(args[1]) < 0)
                         {
-                            if (int.Parse(args[1]) < 0)
-                            {
-                                monitor.Log("Value specified is not in the valid range for FriendshipPenalty", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.FriendshipPenalty = int.Parse(args[1]);
-                                monitor.Log($"FriendshipPenalty set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for FriendshipPenalty", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a whole number only", LogLevel.Error);
-                            break;
+                            dp.FriendshipPenalty = int.Parse(args[1]);
+                            monitor.Log($"FriendshipPenalty set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
                 case "nextday":
                 case "wakeupnextdayinclinic":
                     {
-                        try
-                        {
-                            dp.WakeupNextDayinClinic = bool.Parse(args[1]);
-                        }
-                        catch
-                        {
-                            monitor.Log("Value could not be parsed, specify true or false only", LogLevel.Error);
-                            break;
-                        }
+                        
+                        dp.WakeupNextDayinClinic = bool.Parse(args[1]);
                         monitor.Log($"WakeupNextDayinClinic set to {args[1]}", LogLevel.Info);
                         break;
                     }
@@ -178,69 +118,42 @@ namespace CustomDeathPenaltyPlus
                 case "cap":
                 case "moneylosscap":
                     {
-                        try
+                        if (int.Parse(args[1]) < 0)
                         {
-                            if (int.Parse(args[1]) < 0)
-                            {
-                                monitor.Log("Value specified is not in the valid range for MoneyLossCap", LogLevel.Error);
-                            }
-                            else
-                            {
-                                pp.MoneyLossCap = int.Parse(args[1]);
-                                monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for MoneyLossCap", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a whole number only", LogLevel.Error);
-                            break;
+                            pp.MoneyLossCap = int.Parse(args[1]);
+                            monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
                 case "money":
                 case "moneytorestorepercentage":
                     {
-                        try
+                        if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
                         {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                monitor.Log("Value specified is not in the valid range for MoneytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                pp.MoneytoRestorePercentage = double.Parse(args[1]);
-                                monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for MoneytoRestorePercentage", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
+                            pp.MoneytoRestorePercentage = double.Parse(args[1]);
+                            monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
                 case "energy":
                 case "energytorestorepercentage":
                     {
-                        try
+                        if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
                         {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                monitor.Log("Value specified is not in the valid range for EnergytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                pp.EnergytoRestorePercentage = double.Parse(args[1]);
-                                monitor.Log($"PassOutPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
+                            monitor.Log("Value specified is not in the valid range for EnergytoRestorePercentage", LogLevel.Error);
                         }
-
-                        catch
+                        else
                         {
-                            monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
+                            pp.EnergytoRestorePercentage = double.Parse(args[1]);
+                            monitor.Log($"PassOutPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
