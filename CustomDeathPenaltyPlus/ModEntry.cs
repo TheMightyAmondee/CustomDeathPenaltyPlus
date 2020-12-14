@@ -103,6 +103,7 @@ namespace CustomDeathPenaltyPlus
         private ModConfig config;
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
+        public static Commands Commands { get; private set; } = new Commands();
 
         private bool warptoinvisiblelocation = false;
 
@@ -127,6 +128,7 @@ namespace CustomDeathPenaltyPlus
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config);
+            Commands.SetConfig(this.config);
         }
 
         /// <summary>Raised after the game is launched, right before the first game tick</summary>
@@ -431,263 +433,15 @@ namespace CustomDeathPenaltyPlus
         // Define console commands
         private void Setdp(string command, string[] args)
         {
-            var dp = this.config.DeathPenalty;
-
-            switch (args[0])
-            {
-                case "items":
-                case "restoreitems":
-                    {
-                        try
-                        {
-                            dp.RestoreItems = bool.Parse(args[1]);
-                        }
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify true or false only", LogLevel.Error);
-                            break;
-                        }
-                        this.Monitor.Log($"RestoreItems set to {args[1]}", LogLevel.Info);
-                        break;
-                    }
-                case "cap":
-                case "moneylosscap":
-                    {
-                        try
-                        {
-                            if (int.Parse(args[1]) < 0)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for MoneyLossCap", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.MoneyLossCap = int.Parse(args[1]);
-                                this.Monitor.Log($"DeathPenalty - MoneyLossCap set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a whole number only", LogLevel.Error);
-                            break;
-                        }
-                        
-                        break;
-                    }
-                case "money":
-                case "moneytorestorepercentage":
-                    {
-                        try
-                        {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for MoneytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.MoneytoRestorePercentage = double.Parse(args[1]);
-                                this.Monitor.Log($"DeathPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                case "health":
-                case "healthtorestorepercentage":
-                    {
-                        try
-                        {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for HealthtoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.HealthtoRestorePercentage = double.Parse(args[1]);
-                                this.Monitor.Log($"HealthtoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                case "energy":
-                case "energytorestorepercentage":
-                    {
-                        try
-                        {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for EnergytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.EnergytoRestorePercentage = double.Parse(args[1]);
-                                this.Monitor.Log($"DeathPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                case "friendship":
-                case "friendshippenalty":
-                    {
-                        try
-                        {
-                            if (int.Parse(args[1]) < 0)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for FriendshipPenalty", LogLevel.Error);
-                            }
-                            else
-                            {
-                                dp.FriendshipPenalty = int.Parse(args[1]);
-                                this.Monitor.Log($"FriendshipPenalty set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a whole number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                case "nextday":
-                case "wakeupnextdayinclinic":
-                    {
-                        try
-                        {
-                            dp.WakeupNextDayinClinic = bool.Parse(args[1]);
-                        }
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify true or false only", LogLevel.Error);
-                            break;
-                        }
-                        this.Monitor.Log($"WakeupNextDayinClinic set to {args[1]}", LogLevel.Info);
-                        break;
-                    }
-                default:
-                    {
-                        this.Monitor.Log("Invalid config option specified\nAvailable options:\n- restoreitems OR items\n- moneylosscap OR cap\n- moneytorestorepercentage OR money\n- healthtorestorepercentage OR health\n- energytorestorepercentage OR energy\n- friendshippenalty OR friendship\n- wakeupnextdayinclinic OR nextday", LogLevel.Error);
-                        break;
-                    }
-            }
-            Helper.WriteConfig(this.config);
+            Commands.DeathPenalty(args, this.Monitor, this.Helper);            
         }
         private void Setpp(string command, string[] args)
         {
-            var pp = this.config.PassOutPenalty;
-
-            switch (args[0])
-            {
-                case "cap":
-                case "moneylosscap":
-                    {
-                        try
-                        {
-                            if (int.Parse(args[1]) < 0)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for MoneyLossCap", LogLevel.Error);
-                            }
-                            else
-                            {
-                                pp.MoneyLossCap = int.Parse(args[1]);
-                                this.Monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a whole number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                case "money":
-                case "moneytorestorepercentage":
-                    {
-                        try
-                        {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for MoneytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                pp.MoneytoRestorePercentage = double.Parse(args[1]);
-                                this.Monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                case "energy":
-                case "energytorestorepercentage":
-                    {
-                        try
-                        {
-                            if (double.Parse(args[1]) < 0 || double.Parse(args[1]) > 1)
-                            {
-                                this.Monitor.Log("Value specified is not in the valid range for EnergytoRestorePercentage", LogLevel.Error);
-                            }
-                            else
-                            {
-                                pp.EnergytoRestorePercentage = double.Parse(args[1]);
-                                this.Monitor.Log($"PassOutPenalty - EnergytoRestorePercentage set to {args[1]}", LogLevel.Info);
-                            }
-                        }
-
-                        catch
-                        {
-                            this.Monitor.Log("Value could not be parsed, specify a number only", LogLevel.Error);
-                            break;
-                        }
-                        break;
-                    }
-                default:
-                    {
-                        this.Monitor.Log("Invalid config option specified\nAvailable options:\n- moneylosscap OR cap\n- moneytorestorepercentage OR money\n- energytorestorepercentage OR energy", LogLevel.Error);
-                        break;
-                    }
-            }
-            Helper.WriteConfig(this.config);
+            Commands.PassOutPenalty(args, this.Monitor, this.Helper);
         }
         private void Info(string command, string[] args)
         {
-            this.Monitor.Log($"Current config settings:" +
-                $"\n\nDeathPenalty" +
-                $"\n\nRestoreItems: {this.config.DeathPenalty.RestoreItems.ToString().ToLower()}" +
-                $"\nMoneyLossCap: {this.config.DeathPenalty.MoneyLossCap}" +
-                $"\nMoneytoRestorePercentage: {this.config.DeathPenalty.MoneytoRestorePercentage}" +
-                $"\nEnergytoRestorePercentage: {this.config.DeathPenalty.EnergytoRestorePercentage}" +
-                $"\nHealthtoRestorePercentage: {this.config.DeathPenalty.HealthtoRestorePercentage}" +
-                $"\nWakeupNextDayinClinic: {this.config.DeathPenalty.WakeupNextDayinClinic.ToString().ToLower()}" +
-                $"\nFriendshipPenalty: {this.config.DeathPenalty.FriendshipPenalty}" +
-                $"\n\nPassOutPenalty" +
-                $"\n\nMoneyLossCap: {this.config.PassOutPenalty.MoneyLossCap}" +
-                $"\nMoneytoRestorePercentage: {this.config.PassOutPenalty.MoneytoRestorePercentage}" +
-                $"\nEnergytoRestorePercentage: {this.config.PassOutPenalty.EnergytoRestorePercentage}", 
-                LogLevel.Info);
+            Commands.ConfigInfo(args, this.Monitor);
         }
     }
 }
