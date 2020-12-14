@@ -7,7 +7,6 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using System.Linq;
 using StardewValley.Locations;
-using Netcode;
 using StardewValley.Menus;
 
 namespace CustomDeathPenaltyPlus

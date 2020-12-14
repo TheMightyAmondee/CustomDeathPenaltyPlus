@@ -2,7 +2,6 @@
 using StardewValley;
 using System;
 using System.Text;
-using StardewValley.Locations;
 
 namespace CustomDeathPenaltyPlus
 {

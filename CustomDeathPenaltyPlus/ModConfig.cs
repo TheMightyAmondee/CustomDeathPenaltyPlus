@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-
+﻿
 namespace CustomDeathPenaltyPlus
 {
     internal class ModConfig
