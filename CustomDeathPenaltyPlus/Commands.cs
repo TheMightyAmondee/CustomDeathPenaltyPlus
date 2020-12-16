@@ -103,7 +103,15 @@ namespace CustomDeathPenaltyPlus
                     }
                 default:
                     {
-                        monitor.Log("Invalid config option specified\nAvailable options:\n- restoreitems OR items\n- moneylosscap OR cap\n- moneytorestorepercentage OR money\n- healthtorestorepercentage OR health\n- energytorestorepercentage OR energy\n- friendshippenalty OR friendship\n- wakeupnextdayinclinic OR nextday", LogLevel.Error);
+                        monitor.Log("Invalid config option specified" +
+                            "\n\nAvailable options:" +
+                            "\n\n- restoreitems OR items" +
+                            "\n- moneylosscap OR cap" +
+                            "\n- moneytorestorepercentage OR money" +
+                            "\n- healthtorestorepercentage OR health" +
+                            "\n- energytorestorepercentage OR energy" +
+                            "\n- friendshippenalty OR friendship" +
+                            "\n- wakeupnextdayinclinic OR nextday", LogLevel.Error);
                         break;
                     }
             }
@@ -125,7 +133,7 @@ namespace CustomDeathPenaltyPlus
                         else
                         {
                             pp.MoneyLossCap = int.Parse(args[1]);
-                            monitor.Log($"PassOutPenalty - MoneytoRestorePercentage set to {args[1]}", LogLevel.Info);
+                            monitor.Log($"PassOutPenalty - MoneyLossCap set to {args[1]}", LogLevel.Info);
                         }
                         break;
                     }
@@ -159,7 +167,11 @@ namespace CustomDeathPenaltyPlus
                     }
                 default:
                     {
-                        monitor.Log("Invalid config option specified\nAvailable options:\n- moneylosscap OR cap\n- moneytorestorepercentage OR money\n- energytorestorepercentage OR energy", LogLevel.Error);
+                        monitor.Log("Invalid config option specified" +
+                            "\n\nAvailable options:" +
+                            "\n\n- moneylosscap OR cap" +
+                            "\n- moneytorestorepercentage OR money" +
+                            "\n- energytorestorepercentage OR energy", LogLevel.Error);
                         break;
                     }
             }
