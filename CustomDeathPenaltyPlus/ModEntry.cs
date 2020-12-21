@@ -114,6 +114,7 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
+            helper.Events.GameLoop.DayEnding += this.DayEnding;
             helper.Events.Multiplayer.ModMessageReceived += this.MessageReceived;
 
             // Read the mod config for values and create one if one does not currently exist
@@ -319,17 +320,14 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-        /// <summary>Raised before the game begins writing data to the save file</summary>
+        /// <summary>Raised before the game ends the current day.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private void Saving(object sender, SavingEventArgs e)
+        private void DayEnding(object sender, DayEndingEventArgs e)
         {
-            // Save data from data model to respective JSON file
-            this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
             // Has the pass out state been saved after passing out?
             if (PlayerStateRestorer.statepassout != null)
-            {   
+            {
                 //Yes, reload the state
 
                 // Restore playerstate using PassOutPenalty values
@@ -338,9 +336,18 @@ namespace CustomDeathPenaltyPlus
                 // Reset PlayerStateRestorer class with the statepassout field
                 PlayerStateRestorer.statepassout = null;
             }
+        }
+
+        /// <summary>Raised before the game begins writing data to the save file</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void Saving(object sender, SavingEventArgs e)
+        {
+            // Save data from data model to respective JSON file
+            this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
-            else if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && PlayerStateRestorer.statepassout == null)
+            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && (Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerWakeupinClinic == true))
             {
                 // Yes, fix this so the new day will load correctly
 
