@@ -7,7 +7,6 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using System.Linq;
 using StardewValley.Locations;
-using Netcode;
 using StardewValley.Menus;
 
 namespace CustomDeathPenaltyPlus
@@ -88,7 +87,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Reconcile FriendshipPenalty if the value is -ve
-            if(changes.FriendshipPenalty < 0)
+            if (changes.FriendshipPenalty < 0)
             {
                 monitor.Log("FriendshipPenalty is invalid, default value will be used instead... A negative number? Harvey isn't going to like you more if you die...", LogLevel.Warn);
                 changes.FriendshipPenalty = 0;
@@ -103,6 +102,7 @@ namespace CustomDeathPenaltyPlus
         private ModConfig config;
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
+        public static Commands Commands { get; private set; } = new Commands();
 
         private bool warptoinvisiblelocation = false;
 
@@ -120,9 +120,15 @@ namespace CustomDeathPenaltyPlus
             // Read the mod config for values and create one if one does not currently exist
             this.config = this.Helper.ReadConfig<ModConfig>();
 
+            // Add console commands
+            helper.ConsoleCommands.Add("deathpenalty", "Changes the death penalty settings\n format: deathpenalty <configoption> <value>", this.Setdp);
+            helper.ConsoleCommands.Add("passoutpenalty", "Changes the pass out penalty settings\n format: passoutpenalty <configoption> <value>", this.Setpp);
+            helper.ConsoleCommands.Add("configinfo", "Displays the current config settings", this.Info);
+
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config);
+            Commands.SetConfig(this.config);
         }
 
         /// <summary>Raised after the game is launched, right before the first game tick</summary>
@@ -282,6 +288,9 @@ namespace CustomDeathPenaltyPlus
                 // Restore Player state using DeathPenalty values
                 PlayerStateRestorer.LoadStateDeath();
 
+                // Write data model to JSON file
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
                 // Reset PlayerStateRestorer class with the statedeath field
                 PlayerStateRestorer.statedeath = null;
             }
@@ -380,9 +389,9 @@ namespace CustomDeathPenaltyPlus
 
             // Read player's JSON file for any needed values, create new instance if data doesn't exist
             ModEntry.PlayerData = this.Helper.Data.ReadJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json") ?? new PlayerData();
-
+          
             // Did player pass out yesterday?
-            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
+            if (ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
             {
                 // Yes, fix player state
 
@@ -424,6 +433,42 @@ namespace CustomDeathPenaltyPlus
                 Multiplayer multiplayer = e.ReadAs<Multiplayer>();
                 // Display a new HUD message to say that the dead player needs a new day to be started
                 Game1.addHUDMessage(new HUDMessage($"{multiplayer.PlayerWhoDied} will need the rest of the day to recover.", null));
+            }
+        }
+
+        // Define console commands
+        private void Setdp(string command, string[] args)
+        {
+            try
+            {
+                Commands.DeathPenalty(args, this.Monitor, this.Helper);
+            }
+            catch
+            {
+                this.Monitor.Log("Command failed, ensure correct format is used with appropriate values", LogLevel.Error);
+            }
+                        
+        }
+        private void Setpp(string command, string[] args)
+        {
+            try
+            {
+                Commands.PassOutPenalty(args, this.Monitor, this.Helper);
+            }
+            catch
+            {
+                this.Monitor.Log("Command failed, ensure correct format is used with appropriate values", LogLevel.Error);
+            }
+        }
+        private void Info(string command, string[] args)
+        {
+            try
+            {
+                Commands.ConfigInfo(args, this.Monitor);
+            }
+            catch
+            {
+                this.Monitor.Log("Command failed, ensure correct format is used", LogLevel.Error);
             }
         }
     }

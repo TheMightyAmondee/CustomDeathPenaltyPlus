@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-
+﻿
 namespace CustomDeathPenaltyPlus
 {
     internal class ModConfig
@@ -9,7 +7,6 @@ namespace CustomDeathPenaltyPlus
 
         public PassOutPenaltyChanges PassOutPenalty { get; set; } = new PassOutPenaltyChanges();
 
-        
         internal class DeathPenaltyChanges
         {
             public bool RestoreItems { get; set; } = true;
