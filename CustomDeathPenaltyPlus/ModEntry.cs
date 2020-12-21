@@ -347,7 +347,7 @@ namespace CustomDeathPenaltyPlus
             this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
-            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && PlayerStateRestorer.statepassout == null)
+            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && (Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerWakeupinClinic == true))
             {
                 // Yes, fix this so the new day will load correctly
 
