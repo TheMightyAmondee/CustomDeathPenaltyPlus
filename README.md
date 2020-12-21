@@ -40,4 +40,6 @@ Note: The mod will create per-save file JSON files (found in the mod folder) so 
 
 1.2.1 - Fully compatible with multiplayer
 
+1.2.2 - Fixed bug where money would not restore correctly when passing out
+
 
