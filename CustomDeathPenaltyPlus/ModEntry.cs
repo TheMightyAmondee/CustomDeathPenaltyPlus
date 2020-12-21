@@ -329,6 +329,9 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
+        /// <summary>Raised before the game ends the current day.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
         private void DayEnding(object sender, DayEndingEventArgs e)
         {
             // Has the pass out state been saved after passing out?
