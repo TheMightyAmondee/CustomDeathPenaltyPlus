@@ -234,11 +234,22 @@ namespace CustomDeathPenaltyPlus
                 // Player can move
                 && Game1.player.canMove)
             {
+                // Restore Player state using DeathPenalty values
+                PlayerStateRestorer.LoadStateDeath();
+
+                // Write data model to JSON file
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
+                // Reset PlayerStateRestorer class with the statedeath field
+                PlayerStateRestorer.statedeath = null;
 
                 // Check if WakeupNextDayinClinic is true
                 if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
                     // Yes, do some extra stuff
+
+                    // Ensures new day will load, will become false after new day is loaded
+                    Game1.player.passedOut = true;
 
                     // Save necessary data to data model
                     ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
@@ -257,8 +268,11 @@ namespace CustomDeathPenaltyPlus
                             Game1.warpFarmer("Hospital", 20, 12, false);
                         }
 
-                        // Load new day
-                        Game1.NewDay(1.1f);
+                        if(Game1.player.passedOut == true)
+                        {
+                            // Load new day
+                            Game1.NewDay(1.1f);
+                        }
                     }
 
                     else
@@ -266,9 +280,7 @@ namespace CustomDeathPenaltyPlus
                         // Yes, inform other players you're ready for a new day
 
                         Game1.player.team.SetLocalReady("sleep", true);
-                        // Ensures new day will load, will become false after new day is loaded
-                        Game1.player.passedOut = true;
-
+                        
                         // Create class instance to hold player's name
                         Multiplayer multiplayer = new Multiplayer
                         {
@@ -287,14 +299,7 @@ namespace CustomDeathPenaltyPlus
                     }                    
                 }
 
-                // Restore Player state using DeathPenalty values
-                PlayerStateRestorer.LoadStateDeath();
-
-                // Write data model to JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
-                // Reset PlayerStateRestorer class with the statedeath field
-                PlayerStateRestorer.statedeath = null;
+               
             }
 
             // Chack if time is 2am or the player has passed out
