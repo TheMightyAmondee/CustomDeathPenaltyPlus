@@ -147,6 +147,8 @@ namespace CustomDeathPenaltyPlus
 
                 //Edit MineEvents
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.MineEventFixes(Helper));
+                //Edit IslandSouthEvents
+                this.Helper.Content.AssetEditors.Add(new AssetEditor.IslandSouthEventFixes(Helper));
                 //Edit HospitalEvents
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
             }
@@ -250,7 +252,7 @@ namespace CustomDeathPenaltyPlus
                         // No, new day can be loaded immediately
 
                         // Warp player to clinic if it is not the current location
-                        if (Game1.currentLocation.NameOrUniqueName == "Mine")
+                        if (Game1.currentLocation.NameOrUniqueName == "Mine" || Game1.currentLocation.NameOrUniqueName == "IslandSouth")
                         {
                             Game1.warpFarmer("Hospital", 20, 12, false);
                         }
