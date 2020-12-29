@@ -176,7 +176,7 @@ namespace CustomDeathPenaltyPlus
         }
 
         /// <summary>
-        /// Edits content in Data/Events/Mine
+        /// Edits content in Data/Events/IslandSouth
         /// </summary>
         public class IslandSouthEventFixes : IAssetEditor
         {
