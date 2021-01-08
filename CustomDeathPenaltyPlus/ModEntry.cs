@@ -238,17 +238,18 @@ namespace CustomDeathPenaltyPlus
                 // state should be loaded
                 && loadstate == true)
             {
-                // Save necessary data to data model
-                ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
-
-                // Write data model to JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
+                
                 loadstate = false;
 
                 // Start new day if necessary
                 if (this.config.DeathPenalty.WakeupNextDayinClinic == true)
                 {
+                    // Save necessary data to data model
+                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+
+                    // Write data model to JSON file
+                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
                     // Is the game multiplayer?
                     if (Context.IsMultiplayer == false)
                     {
@@ -347,7 +348,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is the day ending because player died?
-            if (PlayerStateRestorer.statedeath != null)
+            else if (PlayerStateRestorer.statedeath != null)
             {
                 //Yes, reload the state
 
