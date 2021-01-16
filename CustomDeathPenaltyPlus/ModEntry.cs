@@ -456,13 +456,13 @@ namespace CustomDeathPenaltyPlus
             {
                 Commands.DeathPenalty(args, this.Monitor, this.Helper);
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
-                throw new FormatException("Command failed, specified value could not be parsed.", ex);
+                this.Monitor.Log("Specified value could not be parsed, enter value as it would appear in the config", LogLevel.Error);
             }
             catch (IndexOutOfRangeException)
             {
-                throw new IndexOutOfRangeException("Command failed, incorrect command format used.\nFormat: deathpenalty <configoption> <value>");
+                this.Monitor.Log("Incorrect command format used.\nRequired format: deathpenalty <configoption> <value>", LogLevel.Error);
             }
         }
         private void Setpp(string command, string[] args)
@@ -471,13 +471,13 @@ namespace CustomDeathPenaltyPlus
             {
                 Commands.PassOutPenalty(args, this.Monitor, this.Helper);
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
-                throw new FormatException("Command failed, specified value could not be parsed.", ex);
+                this.Monitor.Log("Specified value could not be parsed, enter value as it would appear in the config", LogLevel.Error);
             }
             catch (IndexOutOfRangeException)
             {
-                throw new IndexOutOfRangeException("Command failed, incorrect command format used.\nFormat: passoutpenalty <configoption> <value>");
+                this.Monitor.Log("Incorrect command format used.\nRequired format: passoutpenalty <configoption> <value>", LogLevel.Error);
             }
         }
         private void Info(string command, string[] args)
@@ -488,7 +488,7 @@ namespace CustomDeathPenaltyPlus
             }
             catch (IndexOutOfRangeException)
             {
-                throw new IndexOutOfRangeException($"Command failed, incorrect command format used.\nFormat: configinfo");
+                this.Monitor.Log("Incorrect command format used.\nRequired format: configinfo", LogLevel.Error);
             }
         }
     }
