@@ -201,29 +201,32 @@ namespace CustomDeathPenaltyPlus
                 // Player death state has been saved
                 && PlayerStateRestorer.statedeath != null
                 // An event is in progress, this would be the PlayerKilled event
-                && Game1.CurrentEvent != null
-                // The current clickable menu can be downcast to an ItemListMenu
-                && Game1.activeClickableMenu as ItemListMenu != null)
+                && Game1.CurrentEvent != null)
             {
-                // Will items be restored?
-                if(this.config.DeathPenalty.RestoreItems == true)
+                // Current active menu can be downcast to an itemlistmenu
+                if(Game1.activeClickableMenu as ItemListMenu != null)
                 {
-                    // Yes, we don't want that menu, so close it and end the event
+                    // Will items be restored?
+                    if (this.config.DeathPenalty.RestoreItems == true)
+                    {
+                        // Yes, we don't want that menu, so close it and end the event
 
-                    // Close the menu
-                    Game1.activeClickableMenu.exitThisMenuNoSound();
-                    // End the event
-                    Game1.CurrentEvent.exitEvent();
-                }
+                        // Close the menu
+                        Game1.activeClickableMenu.exitThisMenuNoSound();
+                        // End the event
+                        Game1.CurrentEvent.exitEvent();
+                    }
 
-                // Should the player be warped where they can't be seen?
-                if(warptoinvisiblelocation == true)
-                {
-                    // Yes, warp player to an invisible location
+                    // Should the player be warped where they can't be seen?
+                    if (warptoinvisiblelocation == true)
+                    {
+                        // Yes, warp player to an invisible location
 
-                    Game1.warpFarmer(Game1.currentLocation.NameOrUniqueName, 1000, 1000, false);
-                    // Set warptoinvisiblelocation to false to stop endless warp loop
-                    warptoinvisiblelocation = false;
+                        Game1.warpFarmer(Game1.currentLocation.NameOrUniqueName, 1000, 1000, false);
+                        // Set warptoinvisiblelocation to false to stop endless warp loop
+                        warptoinvisiblelocation = false;
+                    }
+
                 }
 
                 // Set loadstate to true so state will be loaded after event

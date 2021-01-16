@@ -51,7 +51,7 @@ namespace CustomDeathPenaltyPlus
         public static void LoadStateDeath()
         {
             // Change money to state saved in statedeath if money is lost
-            if(Game1.player.Money != statedeath.money)
+            if(Game1.player.Money != statedeath.money || Game1.currentLocation.NameOrUniqueName == "Hospital")
             {
                 Game1.player.Money = statedeath.money - (int)Math.Round(statedeath.moneylost);
             }
