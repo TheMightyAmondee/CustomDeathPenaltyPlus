@@ -456,11 +456,14 @@ namespace CustomDeathPenaltyPlus
             {
                 Commands.DeathPenalty(args, this.Monitor, this.Helper);
             }
-            catch
+            catch (FormatException ex)
             {
-                this.Monitor.Log("Command failed, ensure correct format is used with appropriate values", LogLevel.Error);
+                throw new FormatException("Command failed, specified value could not be parsed.", ex);
             }
-                        
+            catch (IndexOutOfRangeException)
+            {
+                throw new IndexOutOfRangeException("Command failed, incorrect command format used.\nFormat: deathpenalty <configoption> <value>");
+            }
         }
         private void Setpp(string command, string[] args)
         {
@@ -468,9 +471,13 @@ namespace CustomDeathPenaltyPlus
             {
                 Commands.PassOutPenalty(args, this.Monitor, this.Helper);
             }
-            catch
+            catch (FormatException ex)
             {
-                this.Monitor.Log("Command failed, ensure correct format is used with appropriate values", LogLevel.Error);
+                throw new FormatException("Command failed, specified value could not be parsed.", ex);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw new IndexOutOfRangeException("Command failed, incorrect command format used.\nFormat: passoutpenalty <configoption> <value>");
             }
         }
         private void Info(string command, string[] args)
@@ -479,9 +486,9 @@ namespace CustomDeathPenaltyPlus
             {
                 Commands.ConfigInfo(args, this.Monitor);
             }
-            catch
+            catch (IndexOutOfRangeException)
             {
-                this.Monitor.Log("Command failed, ensure correct format is used", LogLevel.Error);
+                throw new IndexOutOfRangeException($"Command failed, incorrect command format used.\nFormat: configinfo");
             }
         }
     }
