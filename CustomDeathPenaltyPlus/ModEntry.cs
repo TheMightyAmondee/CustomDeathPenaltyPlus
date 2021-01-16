@@ -296,7 +296,7 @@ namespace CustomDeathPenaltyPlus
                 }
             }
 
-            // Chack if time is 2am or the player has passed out
+            // Check if time is 2am or the player has passed out
             if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
                 // Set DidPlayerPassOutYesterday to true and DidPlayerWakeupinClinic to false in data model
@@ -319,14 +319,14 @@ namespace CustomDeathPenaltyPlus
             }
 
             // If player can stay up past 2am, discard saved values and reset changed properties in data model
-            if (Game1.timeOfDay == 2610)
+            if (Game1.timeOfDay == 2610 && PlayerStateRestorer.statepassout != null)
             {
-                if (PlayerStateRestorer.statepassout != null)
-                {
-                    ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
-                    ModEntry.PlayerData.MoneyLostLastPassOut = 0;
-                    PlayerStateRestorer.statepassout = null;
-                }
+                ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
+                ModEntry.PlayerData.MoneyLostLastPassOut = 0;
+                PlayerStateRestorer.statepassout = null;
+
+                                    // Write data model to JSON file
+                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
         }
 
