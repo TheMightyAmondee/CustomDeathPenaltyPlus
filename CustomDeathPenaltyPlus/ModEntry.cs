@@ -96,6 +96,7 @@ namespace CustomDeathPenaltyPlus
         }
     }
 
+    /// <summary>Holds the booleans used by the mod to know what to load and when.</summary>
     internal class Toggles
     {
         internal bool warptoinvisiblelocation = false;
@@ -236,13 +237,14 @@ namespace CustomDeathPenaltyPlus
                         // Restore playerstate using DeathPenalty values
                         PlayerStateRestorer.LoadStateDeath();
 
+                        // Clear state if WakeupNextDayinClinic is false, other stuff needs to be done if it's true
                         if(this.config.DeathPenalty.WakeupNextDayinClinic == false)
                         {
                             // Reset PlayerStateRestorer class with the statedeath field
                             PlayerStateRestorer.statedeath = null;
                             PlayerStateRestorer.statedeathps.Value = null;
 
-                            // State already loaded, set loadstate to false
+                            // State already loaded and cleared, set loadstate to false
                             togglesperscreen.Value.loadstate = false;
                         }
                     }
@@ -268,7 +270,7 @@ namespace CustomDeathPenaltyPlus
                 // state should be loaded
                 && togglesperscreen.Value.loadstate == true)
             {
-
+                // Set loadstate to false
                 togglesperscreen.Value.loadstate = false;
 
                 // Start new day if necessary
@@ -359,12 +361,15 @@ namespace CustomDeathPenaltyPlus
             // Load state earlier if it is multiplayer and it isn't 2AM or later
             if(Game1.timeOfDay < 2600 && Game1.player.canMove && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
             {
+                // Load state and fix stamina
                 PlayerStateRestorer.LoadStatePassout();
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
 
+                // Reset state
                 PlayerStateRestorer.statepassout = null;
                 PlayerStateRestorer.statepassoutps.Value = null;
 
+                // Set shouldtogglepassoutdata to false, this prevents DidPlayerPassOutYesterday from becoming true when player goes to bed
                 togglesperscreen.Value.shouldtogglepassoutdata = false;
             }
 
@@ -445,6 +450,7 @@ namespace CustomDeathPenaltyPlus
             // Save change to respective JSON file
             this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
+            // Set shouldtogglepassoutdata if needed so DidPlayerPassOutYesterday will toggle normally again
             togglesperscreen.Value.shouldtogglepassoutdata = true;
         }
 
