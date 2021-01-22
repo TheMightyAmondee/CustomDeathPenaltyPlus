@@ -101,6 +101,8 @@ namespace CustomDeathPenaltyPlus
         internal bool warptoinvisiblelocation = false;
 
         internal bool loadstate = false;
+
+        internal bool shouldtogglepassoutdata = true;
     }
 
     /// <summary>The mod entry point.</summary>
@@ -111,7 +113,6 @@ namespace CustomDeathPenaltyPlus
 
         public static PlayerData PlayerData { get; private set; } = new PlayerData();
         public static Commands Commands { get; private set; } = new Commands();
-
         internal static Toggles Toggles { get; private set; } = new Toggles();
 
         private static readonly PerScreen<Toggles> togglesperscreen = new PerScreen<Toggles>(createNewState: () => Toggles);
@@ -212,8 +213,11 @@ namespace CustomDeathPenaltyPlus
                 // An event is in progress, this would be the PlayerKilled event
                 && Game1.CurrentEvent != null)
             {
+                // Set loadstate to true so state will be loaded after event
+                togglesperscreen.Value.loadstate = true;
+
                 // Current active menu can be downcast to an itemlistmenu
-                if(Game1.activeClickableMenu as ItemListMenu != null)
+                if (Game1.activeClickableMenu as ItemListMenu != null)
                 {
                     // Will items be restored?
                     if (this.config.DeathPenalty.RestoreItems == true)
@@ -232,6 +236,15 @@ namespace CustomDeathPenaltyPlus
                         // Restore playerstate using DeathPenalty values
                         PlayerStateRestorer.LoadStateDeath();
 
+                        if(this.config.DeathPenalty.WakeupNextDayinClinic == false)
+                        {
+                            // Reset PlayerStateRestorer class with the statedeath field
+                            PlayerStateRestorer.statedeath = null;
+                            PlayerStateRestorer.statedeathps.Value = null;
+
+                            // State already loaded, set loadstate to false
+                            togglesperscreen.Value.loadstate = false;
+                        }
                     }
 
                     // Should the player be warped where they can't be seen?
@@ -244,10 +257,7 @@ namespace CustomDeathPenaltyPlus
                         togglesperscreen.Value.warptoinvisiblelocation = false;
                     }
 
-                }
-
-                // Set loadstate to true so state will be loaded after event
-                togglesperscreen.Value.loadstate = true;
+                }   
             }
 
             if(true
@@ -277,9 +287,9 @@ namespace CustomDeathPenaltyPlus
 
                         Game1.NewDay(1.1f);
                     }
+
                     else
                     {
-
                         // Yes, inform other players you're ready for a new day
 
                         Game1.player.team.SetLocalReady("sleep", true);
@@ -292,9 +302,7 @@ namespace CustomDeathPenaltyPlus
                         {
                             PlayerWhoDied = Game1.player.Name
                         };
-
-                        
-                       
+                                             
                         // Send data from class instance to other players, message type is IDied
                         this.Helper.Multiplayer.SendMessage(multiplayer, "IDied", modIDs: new[] { this.ModManifest.UniqueID });
 
@@ -343,6 +351,21 @@ namespace CustomDeathPenaltyPlus
                     // Save amount lost to data model
                     ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassoutps.Value.moneylost);
                 }
+
+                // Write data model to JSON file
+                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+            }
+
+            // Load state earlier if it is multiplayer and it isn't 2AM or later
+            if(Game1.timeOfDay < 2600 && Game1.player.canMove && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
+            {
+                PlayerStateRestorer.LoadStatePassout();
+                Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
+
+                PlayerStateRestorer.statepassout = null;
+                PlayerStateRestorer.statepassoutps.Value = null;
+
+                togglesperscreen.Value.shouldtogglepassoutdata = false;
             }
 
             // If player can stay up past 2am, discard saved values and reset changed properties in data model
@@ -352,7 +375,6 @@ namespace CustomDeathPenaltyPlus
                 ModEntry.PlayerData.MoneyLostLastPassOut = 0;
                 PlayerStateRestorer.statepassout = null;
                 PlayerStateRestorer.statepassoutps.Value = null;
-
                 // Write data model to JSON file
                 this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
@@ -399,7 +421,7 @@ namespace CustomDeathPenaltyPlus
             this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
-            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && (Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerWakeupinClinic == true))
+            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && (Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerWakeupinClinic == true) && togglesperscreen.Value.shouldtogglepassoutdata == true)
             {
                 // Yes, fix this so the new day will load correctly
 
@@ -422,6 +444,8 @@ namespace CustomDeathPenaltyPlus
 
             // Save change to respective JSON file
             this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
+            togglesperscreen.Value.shouldtogglepassoutdata = true;
         }
 
         /// <summary>Raised after the game begins a new day</summary>
