@@ -7,6 +7,8 @@ namespace CustomDeathPenaltyPlus
 
         public PassOutPenaltyChanges PassOutPenalty { get; set; } = new PassOutPenaltyChanges();
 
+        public OtherChanges OtherPenalties { get; set; } = new OtherChanges();
+
         internal class DeathPenaltyChanges
         {
             public bool RestoreItems { get; set; } = true;
@@ -14,8 +16,6 @@ namespace CustomDeathPenaltyPlus
             public double MoneytoRestorePercentage { get; set; } = 0.95;
             public double EnergytoRestorePercentage { get; set; } = 0.10;
             public double HealthtoRestorePercentage { get; set; } = 0.50;
-            public bool WakeupNextDayinClinic { get; set; } = false;
-            public int FriendshipPenalty { get; set; } = 0;
         }
 
         internal class PassOutPenaltyChanges
@@ -23,6 +23,13 @@ namespace CustomDeathPenaltyPlus
             public int MoneyLossCap { get; set; } = 500;
             public double MoneytoRestorePercentage { get; set; } = 0.95;
             public double EnergytoRestorePercentage { get; set; } = 0.50;
+        }
+
+        internal class OtherChanges
+        {
+            public bool WakeupNextDayinClinic { get; set; } = false;
+            public int HarveyFriendshipChange { get; set; } = 0;
+            public int MaruFriendshipChange { get; set; } = 0;
         }
     }
 }
