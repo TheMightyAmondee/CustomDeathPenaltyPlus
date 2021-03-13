@@ -232,7 +232,7 @@ namespace CustomDeathPenaltyPlus
                         PlayerStateRestorer.LoadStateDeath();
 
                         // Clear state if WakeupNextDayinClinic is false, other stuff needs to be done if it's true
-                        if(this.config.OtherPenalties.WakeupNextDayinClinic == false)
+                        if (this.config.OtherPenalties.WakeupNextDayinClinic == false)
                         {
                             // Reset PlayerStateRestorer class with the statedeath field
                             PlayerStateRestorer.statedeath = null;

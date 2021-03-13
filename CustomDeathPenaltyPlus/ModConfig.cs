@@ -28,6 +28,7 @@ namespace CustomDeathPenaltyPlus
         internal class OtherChanges
         {
             public bool WakeupNextDayinClinic { get; set; } = false;
+            public int ForetMineLevels { get; set; } = 0;
             public int HarveyFriendshipChange { get; set; } = 0;
             public int MaruFriendshipChange { get; set; } = 0;
         }

@@ -46,7 +46,7 @@ namespace CustomDeathPenaltyPlus
             }
             else if(config.OtherPenalties.HarveyFriendshipChange > 0)
             {
-                response.Replace("Be a little more careful next time, okay?$s", "While it's nice to see you, I hate having to patch you up. So be a little more careful ok?");
+                response.Replace("Be a little more careful next time, okay?$s", "While it's nice to see you, I hate having to patch you up...#$b#Please be a little more careful next time, okay?$s");
             }
 
             // Return the built string

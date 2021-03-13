@@ -34,11 +34,11 @@ namespace CustomDeathPenaltyPlus
         private static ModConfig config;
 
         // Change friendship of marriage candidate NPCs
-        public static void ChangeFriendship(string name)
+        public static void ApplyFriendshipChange(string name)
         {            
             var configvalue = config.OtherPenalties.HarveyFriendshipChange;
 
-            if(name == "Maru")
+            if (name == "Maru")
             {
                 configvalue = config.OtherPenalties.MaruFriendshipChange;
             }
@@ -124,11 +124,11 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.itemsLostLastDeath.Clear();
             }
 
-            ChangeFriendship("Harvey");
+            ApplyFriendshipChange("Harvey");
 
-            if(Game1.Date.DayOfWeek == DayOfWeek.Tuesday || Game1.Date.DayOfWeek == DayOfWeek.Thursday)
+            if (Game1.Date.DayOfWeek == DayOfWeek.Tuesday || Game1.Date.DayOfWeek == DayOfWeek.Thursday)
             {
-                ChangeFriendship("Maru");
+                ApplyFriendshipChange("Maru");
             }
         }
 
