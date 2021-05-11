@@ -105,13 +105,14 @@ namespace CustomDeathPenaltyPlus
     {
         private ModConfig config;
 
-        public static PlayerData PlayerData { get; private set; } = new PlayerData();
+        //public static PlayerData PlayerData { get; private set; } = new PlayerData();
         public static Commands Commands { get; private set; } = new Commands();
         internal static Toggles Toggles { get; private set; } = new Toggles();
 
         private static readonly PerScreen<Toggles> togglesperscreen = new PerScreen<Toggles>(createNewState: () => Toggles);
 
-       
+        public static string location;
+
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
@@ -121,6 +122,7 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
             helper.Events.GameLoop.DayEnding += this.DayEnding;
+            helper.Events.Player.Warped += this.Warp;
             helper.Events.Multiplayer.ModMessageReceived += this.MessageReceived;
 
             // Read the mod config for values and create one if one does not currently exist
@@ -134,7 +136,7 @@ namespace CustomDeathPenaltyPlus
 
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
-            AssetEditor.SetConfig(this.config);
+            AssetEditor.SetConfig(this.config, this.ModManifest);
             Commands.SetConfig(this.config);
         }
 
@@ -148,7 +150,7 @@ namespace CustomDeathPenaltyPlus
             this.config.DeathPenalty.Reconcile(this.Monitor);
 
             // Is WakeupNextDayinClinic true or is FriendshipPenalty greater than 0?
-            if (this.config.OtherPenalties.WakeupNextDayinClinic == true || this.config.OtherPenalties.HarveyFriendshipChange != 0)
+            if (this.config.OtherPenalties.WakeupNextDayinClinic == true || this.config.OtherPenalties.HarveyFriendshipChange != 0 || this.config.OtherPenalties.MoreRealisticWarps == true)
             {
                 // Yes, edit some events
 
@@ -172,11 +174,14 @@ namespace CustomDeathPenaltyPlus
         /// <param name="e">The event data.</param>
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-
+            if (Game1.player.health <= 0 && PlayerStateRestorer.statedeathps.Value == null && location == null)
+            {
+                location = Game1.currentLocation.NameOrUniqueName;
+                this.Helper.Content.InvalidateCache("Data\\Events\\Hospital");
+            }
             //Check if player died each half second
             if (e.IsMultipleOf(30))
             {
-
                 if (true
                     // Has player died?
                     && Game1.killScreen
@@ -259,6 +264,7 @@ namespace CustomDeathPenaltyPlus
             if(true
                 // Player death state has been saved
                 && PlayerStateRestorer.statedeathps.Value != null
+                && this.config.OtherPenalties.MoreRealisticWarps == false
                 // No events are running
                 && Game1.CurrentEvent == null
                 // state should be loaded
@@ -271,10 +277,8 @@ namespace CustomDeathPenaltyPlus
                 if (this.config.OtherPenalties.WakeupNextDayinClinic == true)
                 {
                     // Save necessary data to data model
-                    ModEntry.PlayerData.DidPlayerWakeupinClinic = true;
+                    Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] = "true";
 
-                    // Write data model to JSON file
-                    this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
 
                     // Is the game multiplayer?
                     if (Context.IsMultiplayer == false)
@@ -305,13 +309,15 @@ namespace CustomDeathPenaltyPlus
                         // Bring up a new menu that will launch a new day when all player's are ready
                         Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => Game1.NewDay(1.1f)));
 
+                        // Reset PlayerStateRestorer class with the statedeath field
+                        PlayerStateRestorer.statedeath = null;
+                        PlayerStateRestorer.statedeathps.Value = null;
+
                         // Add player to list of ready farmers if needed
                         if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
                         Game1.player.team.announcedSleepingFarmers.Add(Game1.player);
 
-                        // Reset PlayerStateRestorer class with the statedeath field
-                        PlayerStateRestorer.statedeath = null;
-                        PlayerStateRestorer.statedeathps.Value = null;
+
                     }
                 }
 
@@ -327,12 +333,23 @@ namespace CustomDeathPenaltyPlus
                 }
             }
 
+            if (this.config.OtherPenalties.MoreRealisticWarps == true && PlayerStateRestorer.statedeathps.Value != null && Game1.CurrentEvent == null && Game1.player.canMove == true)
+            {
+                // Restore Player state using DeathPenalty values
+                PlayerStateRestorer.LoadStateDeath();
+
+                // Reset PlayerStateRestorer class with the statedeath field
+                PlayerStateRestorer.statedeath = null;
+                PlayerStateRestorer.statedeathps.Value = null;
+                location = null;
+            }
+
             // Check if time is 2am or the player has passed out
             if (Game1.timeOfDay == 2600 || Game1.player.stamina <= -15)
             {
                 // Set DidPlayerPassOutYesterday to true and DidPlayerWakeupinClinic to false in data model
-                ModEntry.PlayerData.DidPlayerPassOutYesterday = true;
-                ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
+                Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] = "true";
+                Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] = "false";
 
                 if (true
                     // Player is not in FarmHouse
@@ -345,11 +362,8 @@ namespace CustomDeathPenaltyPlus
                     // Save playerstate using PassOutPenalty values
                     PlayerStateRestorer.SaveStatePassout();
                     // Save amount lost to data model
-                    ModEntry.PlayerData.MoneyLostLastPassOut = (int)Math.Round(PlayerStateRestorer.statepassoutps.Value.moneylost);
+                    Game1.player.modData[$"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"] = $"{(int)Math.Round(PlayerStateRestorer.statepassoutps.Value.moneylost)}";
                 }
-
-                // Write data model to JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
 
             // Load state earlier if it is multiplayer and it isn't 2AM or later
@@ -370,12 +384,10 @@ namespace CustomDeathPenaltyPlus
             // If player can stay up past 2am, discard saved values and reset changed properties in data model
             if (Game1.timeOfDay == 2610 && PlayerStateRestorer.statepassoutps.Value != null)
             {
-                ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
-                ModEntry.PlayerData.MoneyLostLastPassOut = 0;
+                Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] = "false";
+                Game1.player.modData[$"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"] = "0";                
                 PlayerStateRestorer.statepassout = null;
                 PlayerStateRestorer.statepassoutps.Value = null;
-                // Write data model to JSON file
-                this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
             }
         }
 
@@ -416,34 +428,30 @@ namespace CustomDeathPenaltyPlus
         /// <param name="e">The event data.</param>
         private void Saving(object sender, SavingEventArgs e)
         {
-            // Save data from data model to respective JSON file
-            this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
+
 
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
-            if(ModEntry.PlayerData.DidPlayerPassOutYesterday == true && (Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerWakeupinClinic == true) && togglesperscreen.Value.shouldtogglepassoutdata == true)
+            if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true" && (Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true") && togglesperscreen.Value.shouldtogglepassoutdata == true)
             {
                 // Yes, fix this so the new day will load correctly
 
                 // Change DidPlayerPassOutYesterday property to false
-                ModEntry.PlayerData.DidPlayerPassOutYesterday = false;
+                Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] = "false";
             }
 
             // Is DidPlayerWakeupinClinic true?
-            if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
+            if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true")
             {               
                 //Is player in bed or has player passed out? (player has not died)
-                if(Game1.player.isInBed.Value == true || ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
+                if(Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
                 {
                     // Yes, fix this so the new day will load correctly
 
                     // Change property to false
-                    ModEntry.PlayerData.DidPlayerWakeupinClinic = false;
+                    Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] = "false";
                 }
             }
-
-            // Save change to respective JSON file
-            this.Helper.Data.WriteJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json", ModEntry.PlayerData);
-
+          
             // Set shouldtogglepassoutdata if needed so DidPlayerPassOutYesterday will toggle normally again
             togglesperscreen.Value.shouldtogglepassoutdata = true;
         }
@@ -454,11 +462,23 @@ namespace CustomDeathPenaltyPlus
         private void DayStarted(object sender, DayStartedEventArgs e)
         {
 
-            // Read player's JSON file for any needed values, create new instance if data doesn't exist
-            ModEntry.PlayerData = this.Helper.Data.ReadJsonFile<PlayerData>($"data\\{Constants.SaveFolderName}.json") ?? new PlayerData();
-          
+            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"))
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday", "false");
+            }
+
+            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"))
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut", "0");
+            }
+
+            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"))
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
+            }
+           
             // Did player pass out yesterday?
-            if (ModEntry.PlayerData.DidPlayerPassOutYesterday == true)
+            if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
             {
                 // Yes, fix player state
 
@@ -470,7 +490,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Did player wake up in clinic?
-            if(ModEntry.PlayerData.DidPlayerWakeupinClinic == true)
+            if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true")
             {
                 // Yes, fix player state
 
@@ -559,6 +579,14 @@ namespace CustomDeathPenaltyPlus
             catch (IndexOutOfRangeException)
             {
                 this.Monitor.Log("Incorrect command format used.\nRequired format: configinfo", LogLevel.Error);
+            }
+        }
+
+        private void Warp(object sender, WarpedEventArgs e)
+        {
+            if (this.config.OtherPenalties.MoreRealisticWarps == true && e.NewLocation.NameOrUniqueName != "Hospital")
+            {
+                this.Helper.Content.InvalidateCache("Data\\Events\\Hospital");
             }
         }
     }

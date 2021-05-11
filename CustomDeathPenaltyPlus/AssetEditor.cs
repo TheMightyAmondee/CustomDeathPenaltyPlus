@@ -11,11 +11,14 @@ namespace CustomDeathPenaltyPlus
     internal class AssetEditor
     {
         private static ModConfig config;
+        private static IManifest manifest;
 
         // Allows the class to access the ModConfig properties
-        public static void SetConfig(ModConfig config)
+        public static void SetConfig(ModConfig config, IManifest manifest)
         {
             AssetEditor.config = config;
+            AssetEditor.manifest = manifest;
+
         }
 
         /// <summary>
@@ -124,12 +127,12 @@ namespace CustomDeathPenaltyPlus
             {
                 var maileditor = asset.AsDictionary<string, string>().Data;
 
-                var data = ModEntry.PlayerData;
+                var data = Game1.player.modData;
 
                 
 
                 // Has player not lost any money?
-                if (data.MoneyLostLastPassOut == 0)
+                if (data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] == "0")
                 {
                     // Yes, edit strings to show this special case
                     maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("You've been billed {0}g for this service", "Be thankful you haven't been billed for this service");
@@ -140,9 +143,9 @@ namespace CustomDeathPenaltyPlus
                 else
                 {
                     // No, edit strings to show amount lost
-                    maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("{0}", $"{data.MoneyLostLastPassOut}");
-                    maileditor["passedOut1_Billed_Female"] = maileditor["passedOut1_Billed_Female"].Replace("{0}", $"{data.MoneyLostLastPassOut}"); ;
-                    maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("{0}", $"{data.MoneyLostLastPassOut}");
+                    maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("{0}", $"{data[$"{manifest.UniqueID}.MoneyLostLastPassOut"]}");
+                    maileditor["passedOut1_Billed_Female"] = maileditor["passedOut1_Billed_Female"].Replace("{0}", $"{data[$"{manifest.UniqueID}.MoneyLostLastPassOut"]}"); ;
+                    maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("{0}", $"{data[$"{manifest.UniqueID}.MoneyLostLastPassOut"]}");
                 }
             }
         }
@@ -232,7 +235,11 @@ namespace CustomDeathPenaltyPlus
             {
                var eventedits = asset.AsDictionary<string, string>().Data;
 
-               eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                if (ModEntry.location.StartsWith("UndergroundMine") && config.OtherPenalties.MoreRealisticWarps == true)
+                {
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2/skippable/changeLocation SkullCave/pause 300/viewport 20 12 true/pause 1500/hospitaldeath/end";
+                }                
             }
         }
     }
