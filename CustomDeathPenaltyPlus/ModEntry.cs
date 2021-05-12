@@ -258,7 +258,31 @@ namespace CustomDeathPenaltyPlus
                         togglesperscreen.Value.warptoinvisiblelocation = false;
                     }
 
-                }   
+                    else if(this.config.OtherPenalties.MoreRealisticWarps == true && location != null)
+                    {
+                        if (location.StartsWith("UndergroundMine") && Game1.mine != null && Game1.mine.getMineArea() == 121)
+                        {
+                            Game1.warpFarmer("SkullCave", 3, 5, false);
+                        }
+
+                        else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && !location.StartsWith("IslandFarm"))
+                        {
+                            int tileX = 10;
+                            switch (Game1.player.houseUpgradeLevel)
+                            {
+                                case 0:
+                                    tileX = 3;
+                                    break;
+                                case 1:
+                                    tileX = 9;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            Game1.warpFarmer(Game1.player.homeLocation.Value, tileX, 9, false);
+                        }
+                    }                        
+                }
             }
 
             if(true
@@ -335,6 +359,7 @@ namespace CustomDeathPenaltyPlus
 
             if (this.config.OtherPenalties.MoreRealisticWarps == true && PlayerStateRestorer.statedeathps.Value != null && Game1.CurrentEvent == null && Game1.player.canMove == true)
             {
+               
                 // Restore Player state using DeathPenalty values
                 PlayerStateRestorer.LoadStateDeath();
 
@@ -476,7 +501,7 @@ namespace CustomDeathPenaltyPlus
             {
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
             }
-           
+
             // Did player pass out yesterday?
             if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
             {

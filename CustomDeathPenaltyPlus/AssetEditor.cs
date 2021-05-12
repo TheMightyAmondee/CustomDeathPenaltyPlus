@@ -1,7 +1,11 @@
 ﻿using StardewModdingAPI;
+using Microsoft.Xna.Framework.Graphics;
+using StardewValley.Locations;
 using StardewValley;
 using System;
 using System.Text;
+
+
 
 namespace CustomDeathPenaltyPlus
 {
@@ -13,6 +17,10 @@ namespace CustomDeathPenaltyPlus
         private static ModConfig config;
         private static IManifest manifest;
 
+
+        public static string cabin = Context.IsMainPlayer ? "FarmHouse" : Game1.player.homeLocation.Value;
+        public static string warplocation = cabin ?? "FarmHouse";
+       
         // Allows the class to access the ModConfig properties
         public static void SetConfig(ModConfig config, IManifest manifest)
         {
@@ -79,19 +87,38 @@ namespace CustomDeathPenaltyPlus
             {
                 var stringeditor = asset.AsDictionary<string, string>().Data;
 
-                // Has player not lost any money?
-                if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
+                if(config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")))
                 {
-                    // Yes, edit strings to show this special case
-                    stringeditor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
-                    stringeditor["Event.cs.1058"] = "Fortunately, I still have all my money";
+                    if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
+                    {
+                        // Yes, edit strings to show this special case
+                        stringeditor["Event.cs.1068"] = "I still seem to have all my money. ";
+                        stringeditor["Event.cs.1058"] = "Fortunately, I still have all my money";
+                    }
+                    else
+                    {
+                        // No, edit strings to show amount lost
+                        stringeditor["Event.cs.1068"] = $"I seem to have lost {(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}g. I wonder how that happened... ";
+                        stringeditor["Event.cs.1058"] = stringeditor["Event.cs.1058"].Replace("{0}", $"{(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}");
+                    }
                 }
                 else
                 {
-                    // No, edit strings to show amount lost
-                    stringeditor["Event.cs.1068"] = stringeditor["Event.cs.1068"].Replace("{0}",$"{(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}");
-                    stringeditor["Event.cs.1058"] = stringeditor["Event.cs.1058"].Replace("{0}", $"{(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}");
+                    // Has player not lost any money?
+                    if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
+                    {
+                        // Yes, edit strings to show this special case
+                        stringeditor["Event.cs.1068"] = "Dr. Harvey didn't charge me for the hospital visit, how nice. ";
+                        stringeditor["Event.cs.1058"] = "Fortunately, I still have all my money";
+                    }
+                    else
+                    {
+                        // No, edit strings to show amount lost
+                        stringeditor["Event.cs.1068"] = stringeditor["Event.cs.1068"].Replace("{0}", $"{(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}");
+                        stringeditor["Event.cs.1058"] = stringeditor["Event.cs.1058"].Replace("{0}", $"{(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}");
+                    }
                 }
+               
                 // Is RestoreItems true?
                 if (config.DeathPenalty.RestoreItems == true)
                 {
@@ -236,10 +263,29 @@ namespace CustomDeathPenaltyPlus
                var eventedits = asset.AsDictionary<string, string>().Data;
 
                 eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+
                 if (ModEntry.location.StartsWith("UndergroundMine") && config.OtherPenalties.MoreRealisticWarps == true)
                 {
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2/skippable/changeLocation SkullCave/pause 300/viewport 20 12 true/pause 1500/hospitaldeath/end";
-                }                
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 3 5 2 MrQi 4 5 3/skippable/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 20 12 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid...$1#$b#Be more careful in the caverns next time. You've still got so much to achieve!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+
+                }
+                else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
+                {
+                    int tileX = 10;
+                    switch (Game1.player.houseUpgradeLevel)
+                    {
+                        case 0:
+                            tileX = 3;
+                            break;
+                        case 1:
+                            tileX = 9;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer {tileX} 9 2/skippable/changeLocation {warplocation}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...Where am I?\"/viewport 20 12 true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad happened outside... I'm glad to find myself back home...\"/pause 1000/hospitaldeath/end";
+                }
             }
         }
     }
