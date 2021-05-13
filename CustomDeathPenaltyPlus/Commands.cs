@@ -166,7 +166,11 @@ namespace CustomDeathPenaltyPlus
                 case "nextday":
                 case "wakeupnextdayinclinic":
                     {
-
+                        if (op.MoreRealisticWarps == true && args[1] == "true")
+                        {
+                            monitor.Log("WakeupNextDayinClinic and MoreRealisticWarps can't both be true", LogLevel.Error);
+                            break;
+                        }
                         op.WakeupNextDayinClinic = bool.Parse(args[1]);
                         monitor.Log($"WakeupNextDayinClinic set to {args[1]}", LogLevel.Info);
                         helper.Content.InvalidateCache("Data\\Events\\IslandSouth");
@@ -189,6 +193,26 @@ namespace CustomDeathPenaltyPlus
                         op.MaruFriendshipChange = int.Parse(args[1]);
                         monitor.Log($"MaruFriendshipChange set to {args[1]}", LogLevel.Info);
                         helper.Content.InvalidateCache("Data\\Events\\Hospital");
+                        break;
+                    }
+
+                case "warps":
+                case "morerealisticwarps":
+                    {
+                        if(op.WakeupNextDayinClinic == true && args[1] == "true")
+                        {
+                            monitor.Log("WakeupNextDayinClinic and MoreRealisticWarps can't both be true", LogLevel.Error);
+                            break;
+                        }
+                        op.MoreRealisticWarps = bool.Parse(args[1]);
+                        monitor.Log($"MoreRealisticWarps set to {args[1]}", LogLevel.Info);
+                        break;
+                    }
+                case "debuff":
+                case "debuffondeath":
+                    {
+                        op.DebuffonDeath = bool.Parse(args[1]);
+                        monitor.Log($"DebuffonDeath set to {args[1]}", LogLevel.Info);
                         break;
                     }
                 default:
@@ -221,7 +245,10 @@ namespace CustomDeathPenaltyPlus
                 $"\n\nOtherPenalties" +
                 $"\n\n\nWakeupNextDayinClinic: { config.OtherPenalties.WakeupNextDayinClinic.ToString().ToLower()}" +
                 $"\nHarveyFriendshipChange: {config.OtherPenalties.HarveyFriendshipChange}" +
-                $"\nMaruFriendshipChange: {config.OtherPenalties.MaruFriendshipChange}",
+                $"\nMaruFriendshipChange: {config.OtherPenalties.MaruFriendshipChange}" +
+                $"\n\nMoreRealisticWarps: {config.OtherPenalties.MoreRealisticWarps.ToString().ToLower()}" +
+                $"\n\nDebuffonDeath: {config.OtherPenalties.DebuffonDeath.ToString().ToLower()}",
+
                 LogLevel.Info);
         }
     }    

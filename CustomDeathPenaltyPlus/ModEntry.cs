@@ -97,6 +97,8 @@ namespace CustomDeathPenaltyPlus
         internal bool loadstate = false;
 
         internal bool shouldtogglepassoutdata = true;
+
+        internal bool warp = true;
     }
 
     /// <summary>The mod entry point.</summary>
@@ -153,7 +155,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Is WakeupNextDayinClinic true or is FriendshipPenalty greater than 0?
-            if (this.config.OtherPenalties.WakeupNextDayinClinic == true || this.config.OtherPenalties.HarveyFriendshipChange != 0 || this.config.OtherPenalties.MoreRealisticWarps == true)
+            if (this.config.OtherPenalties.WakeupNextDayinClinic == true || this.config.OtherPenalties.HarveyFriendshipChange != 0)
             {
                 // Yes, edit some events
 
@@ -161,6 +163,15 @@ namespace CustomDeathPenaltyPlus
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.MineEventFixes(Helper));
                 //Edit IslandSouthEvents
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.IslandSouthEventFixes(Helper));
+                //Edit HospitalEvents
+                this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
+            }
+
+            // Is MoreRealisticWarps true?
+            else if (this.config.OtherPenalties.MoreRealisticWarps == true)
+            {
+                // Yes, edit an event
+
                 //Edit HospitalEvents
                 this.Helper.Content.AssetEditors.Add(new AssetEditor.HospitalEventFixes(Helper));
             }
@@ -263,7 +274,7 @@ namespace CustomDeathPenaltyPlus
                     }
 
                     // Warp player to event location
-                    else if (this.config.OtherPenalties.MoreRealisticWarps == true && location != null)
+                    else if (this.config.OtherPenalties.MoreRealisticWarps == true && togglesperscreen.Value.warp == true && location != null)
                     {
                         if (location.StartsWith("UndergroundMine") && Game1.mine != null && Game1.mine.getMineArea() == 121)
                         {
@@ -286,7 +297,8 @@ namespace CustomDeathPenaltyPlus
                             }
                             Game1.warpFarmer(Game1.player.homeLocation.Value, tileX, 9, false);
                         }
-                        location = null;
+
+                        togglesperscreen.Value.warp = false;
                     }                        
                 }
             }
@@ -294,6 +306,7 @@ namespace CustomDeathPenaltyPlus
             if(true
                 // Player death state has been saved
                 && PlayerStateRestorer.statedeathps.Value != null
+                // MoreRealisticWarps is false
                 && this.config.OtherPenalties.MoreRealisticWarps == false
                 // No events are running
                 && Game1.CurrentEvent == null
@@ -361,7 +374,11 @@ namespace CustomDeathPenaltyPlus
                 }
             }
 
-            if (this.config.OtherPenalties.MoreRealisticWarps == true && PlayerStateRestorer.statedeathps.Value != null && Game1.CurrentEvent == null && Game1.player.canMove == true)
+            if (true 
+                && this.config.OtherPenalties.MoreRealisticWarps == true 
+                && PlayerStateRestorer.statedeathps.Value != null 
+                && Game1.CurrentEvent == null 
+                && Game1.player.canMove == true)
             {
                
                 // Restore Player state using DeathPenalty values
@@ -370,6 +387,7 @@ namespace CustomDeathPenaltyPlus
                 // Reset PlayerStateRestorer class with the statedeath field
                 PlayerStateRestorer.statedeathps.Value = null;
                 location = null;
+                togglesperscreen.Value.warp = true;
             }
 
             // Check if time is 2am or the player has passed out
@@ -453,23 +471,23 @@ namespace CustomDeathPenaltyPlus
         private void Saving(object sender, SavingEventArgs e)
         {
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
-            if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true" && (Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true") && togglesperscreen.Value.shouldtogglepassoutdata == true)
+            if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true" && (Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true") && togglesperscreen.Value.shouldtogglepassoutdata == true)
             {
                 // Yes, fix this so the new day will load correctly
 
-                // Change DidPlayerPassOutYesterday property to false
+                // Change DidPlayerPassOutYesterday field to false
                 Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] = "false";
             }
 
             // Is DidPlayerWakeupinClinic true?
-            if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true")
+            if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true")
             {               
                 //Is player in bed or has player passed out? (player has not died)
-                if(Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
+                if (Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
                 {
                     // Yes, fix this so the new day will load correctly
 
-                    // Change property to false
+                    // Change field to false
                     Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] = "false";
                 }
             }

@@ -23,13 +23,13 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-        public static PlayerDataTracker statedeath;
+        //public static PlayerDataTracker statedeath;
 
-        internal static readonly PerScreen<PlayerDataTracker> statedeathps = new PerScreen<PlayerDataTracker>(createNewState: () => statedeath);
+        internal static readonly PerScreen<PlayerDataTracker> statedeathps = new PerScreen<PlayerDataTracker>(createNewState: () => null);
 
-        public static PlayerDataTracker statepassout;
+        //public static PlayerDataTracker statepassout;
 
-        internal static readonly PerScreen<PlayerDataTracker> statepassoutps = new PerScreen<PlayerDataTracker>(createNewState: () => statepassout);
+        internal static readonly PerScreen<PlayerDataTracker> statepassoutps = new PerScreen<PlayerDataTracker>(createNewState: () => null);
 
         private static ModConfig config;
 
@@ -98,6 +98,24 @@ namespace CustomDeathPenaltyPlus
 
             // Restore health to amount as specified by config values
             Game1.player.health = Math.Max((int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage), 1);
+
+            if(config.OtherPenalties.DebuffonDeath == true)
+            {
+                if(Game1.getLocationFromName(ModEntry.location) as IslandLocation != null)
+                {
+                    var burnttwice = new Buff(12);
+                    burnttwice.totalMillisecondsDuration = 60000;
+                    burnttwice.millisecondsDuration = 60000;
+                    Game1.buffsDisplay.addOtherBuff(burnttwice);
+                }
+                else
+                {
+                    var jinxtwice = new Buff(14);
+                    jinxtwice.totalMillisecondsDuration = 60000;
+                    jinxtwice.millisecondsDuration = 60000;
+                    Game1.buffsDisplay.addOtherBuff(jinxtwice);
+                }
+            }
 
             // Is RestoreItems true?
             if (config.DeathPenalty.RestoreItems == true)

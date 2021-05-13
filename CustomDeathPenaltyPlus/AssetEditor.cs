@@ -87,7 +87,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var stringeditor = asset.AsDictionary<string, string>().Data;
 
-                if(config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")))
+                if (config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")) && !ModEntry.location.StartsWith("IslandFarm"))
                 {
                     if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
                     {
@@ -266,7 +266,7 @@ namespace CustomDeathPenaltyPlus
 
                 if (ModEntry.location.StartsWith("UndergroundMine") && config.OtherPenalties.MoreRealisticWarps == true)
                 {
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 3 5 2 MrQi 4 5 3/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 20 12 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid...$1#$b#Be more careful in the caverns next time. You've still got so much to achieve!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 3 5 2 MrQi 4 4 2/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 20 12 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid... I hope you weren't doing something stupid.$1#$b#Just be more careful in the caverns next time, okay. There's still lots of potential in you, kid!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 }
                 else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
@@ -284,7 +284,7 @@ namespace CustomDeathPenaltyPlus
                             break;
                     }
 
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer {tileX} 9 2/changeLocation {warplocation}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...Where am I?\"/viewport 20 12 true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad happened outside... I'm glad to find myself back home...\"/pause 1000/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer {tileX} 9 2/changeLocation {warplocation}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...What just happened?\"/viewport 20 12 true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad must have happened to me... I have no idea how I got here...\"/pause 1000/hospitaldeath/end";
                 }
             }
         }
