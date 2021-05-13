@@ -105,7 +105,6 @@ namespace CustomDeathPenaltyPlus
     {
         private ModConfig config;
 
-        //public static PlayerData PlayerData { get; private set; } = new PlayerData();
         public static Commands Commands { get; private set; } = new Commands();
 
         private static readonly PerScreen<Toggles> togglesperscreen = new PerScreen<Toggles>(createNewState: () => new Toggles());
@@ -121,7 +120,6 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
             helper.Events.GameLoop.DayEnding += this.DayEnding;
-            helper.Events.Player.Warped += this.Warp;
             helper.Events.Multiplayer.ModMessageReceived += this.MessageReceived;
 
             // Read the mod config for values and create one if one does not currently exist
@@ -179,12 +177,14 @@ namespace CustomDeathPenaltyPlus
         /// <param name="e">The event data.</param>
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-            if (Game1.player.health <= 0 && PlayerStateRestorer.statedeathps.Value == null && location == null)
+            // Reload events if needed
+            if (Game1.player.health <= 0 && PlayerStateRestorer.statedeathps.Value == null && location == null && this.config.OtherPenalties.MoreRealisticWarps == true)
             {
                 location = Game1.currentLocation.NameOrUniqueName;
                 this.Helper.Content.InvalidateCache("Data\\Events\\Hospital");
             }
-            //Check if player died each half second
+
+            // Check if player died each half second
             if (e.IsMultipleOf(30))
             {
                 if (true
@@ -262,6 +262,7 @@ namespace CustomDeathPenaltyPlus
                         togglesperscreen.Value.warptoinvisiblelocation = false;
                     }
 
+                    // Warp player to event location
                     else if (this.config.OtherPenalties.MoreRealisticWarps == true && location != null)
                     {
                         if (location.StartsWith("UndergroundMine") && Game1.mine != null && Game1.mine.getMineArea() == 121)
@@ -285,6 +286,7 @@ namespace CustomDeathPenaltyPlus
                             }
                             Game1.warpFarmer(Game1.player.homeLocation.Value, tileX, 9, false);
                         }
+                        location = null;
                     }                        
                 }
             }
@@ -393,7 +395,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Load state earlier if it is multiplayer and it isn't 2AM or later
-            if(Game1.timeOfDay < 2600 && Game1.player.canMove && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
+            if (Game1.timeOfDay < 2600 && Game1.player.canMove && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
             {
                 // Load state and fix stamina
                 PlayerStateRestorer.LoadStatePassout();
@@ -450,8 +452,6 @@ namespace CustomDeathPenaltyPlus
         /// <param name="e">The event data.</param>
         private void Saving(object sender, SavingEventArgs e)
         {
-
-
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
             if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true" && (Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true") && togglesperscreen.Value.shouldtogglepassoutdata == true)
             {
@@ -601,14 +601,6 @@ namespace CustomDeathPenaltyPlus
             catch (IndexOutOfRangeException)
             {
                 this.Monitor.Log("Incorrect command format used.\nRequired format: configinfo", LogLevel.Error);
-            }
-        }
-
-        private void Warp(object sender, WarpedEventArgs e)
-        {
-            if (this.config.OtherPenalties.MoreRealisticWarps == true && e.NewLocation.NameOrUniqueName != "Hospital")
-            {
-                this.Helper.Content.InvalidateCache("Data\\Events\\Hospital");
             }
         }
     }
