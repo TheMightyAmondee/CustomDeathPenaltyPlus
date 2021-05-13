@@ -107,9 +107,8 @@ namespace CustomDeathPenaltyPlus
 
         //public static PlayerData PlayerData { get; private set; } = new PlayerData();
         public static Commands Commands { get; private set; } = new Commands();
-        internal static Toggles Toggles { get; private set; } = new Toggles();
 
-        private static readonly PerScreen<Toggles> togglesperscreen = new PerScreen<Toggles>(createNewState: () => Toggles);
+        private static readonly PerScreen<Toggles> togglesperscreen = new PerScreen<Toggles>(createNewState: () => new Toggles());
 
         public static string location;
 
@@ -148,6 +147,12 @@ namespace CustomDeathPenaltyPlus
             // Reconcile config values
             this.config.PassOutPenalty.Reconcile(this.Monitor);
             this.config.DeathPenalty.Reconcile(this.Monitor);
+
+            if (this.config.OtherPenalties.WakeupNextDayinClinic == true && this.config.OtherPenalties.MoreRealisticWarps == true)
+            {
+                this.config.OtherPenalties.MoreRealisticWarps = false;
+                this.Monitor.Log("WakeupNextDayinClinic and MoreRealisticWarps cannot both be true as they can conflict.\nSetting MoreRealisticWarps to false...", LogLevel.Warn);
+            }
 
             // Is WakeupNextDayinClinic true or is FriendshipPenalty greater than 0?
             if (this.config.OtherPenalties.WakeupNextDayinClinic == true || this.config.OtherPenalties.HarveyFriendshipChange != 0 || this.config.OtherPenalties.MoreRealisticWarps == true)
@@ -240,7 +245,6 @@ namespace CustomDeathPenaltyPlus
                         if (this.config.OtherPenalties.WakeupNextDayinClinic == false)
                         {
                             // Reset PlayerStateRestorer class with the statedeath field
-                            PlayerStateRestorer.statedeath = null;
                             PlayerStateRestorer.statedeathps.Value = null;
 
                             // State already loaded and cleared, set loadstate to false
@@ -258,7 +262,7 @@ namespace CustomDeathPenaltyPlus
                         togglesperscreen.Value.warptoinvisiblelocation = false;
                     }
 
-                    else if(this.config.OtherPenalties.MoreRealisticWarps == true && location != null)
+                    else if (this.config.OtherPenalties.MoreRealisticWarps == true && location != null)
                     {
                         if (location.StartsWith("UndergroundMine") && Game1.mine != null && Game1.mine.getMineArea() == 121)
                         {
@@ -334,7 +338,6 @@ namespace CustomDeathPenaltyPlus
                         Game1.activeClickableMenu = (IClickableMenu)new ReadyCheckDialog("sleep", false, (ConfirmationDialog.behavior)(_ => Game1.NewDay(1.1f)));
 
                         // Reset PlayerStateRestorer class with the statedeath field
-                        PlayerStateRestorer.statedeath = null;
                         PlayerStateRestorer.statedeathps.Value = null;
 
                         // Add player to list of ready farmers if needed
@@ -352,7 +355,6 @@ namespace CustomDeathPenaltyPlus
                     PlayerStateRestorer.LoadStateDeath();
 
                     // Reset PlayerStateRestorer class with the statedeath field
-                    PlayerStateRestorer.statedeath = null;
                     PlayerStateRestorer.statedeathps.Value = null;
                 }
             }
@@ -364,7 +366,6 @@ namespace CustomDeathPenaltyPlus
                 PlayerStateRestorer.LoadStateDeath();
 
                 // Reset PlayerStateRestorer class with the statedeath field
-                PlayerStateRestorer.statedeath = null;
                 PlayerStateRestorer.statedeathps.Value = null;
                 location = null;
             }
@@ -399,7 +400,6 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.stamina = (int)(Game1.player.maxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
 
                 // Reset state
-                PlayerStateRestorer.statepassout = null;
                 PlayerStateRestorer.statepassoutps.Value = null;
 
                 // Set shouldtogglepassoutdata to false, this prevents DidPlayerPassOutYesterday from becoming false when player goes to bed
@@ -411,7 +411,6 @@ namespace CustomDeathPenaltyPlus
             {
                 Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] = "false";
                 Game1.player.modData[$"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"] = "0";                
-                PlayerStateRestorer.statepassout = null;
                 PlayerStateRestorer.statepassoutps.Value = null;
             }
         }
@@ -430,7 +429,6 @@ namespace CustomDeathPenaltyPlus
                 PlayerStateRestorer.LoadStatePassout();
 
                 // Reset PlayerStateRestorer class with the statepassout field
-                PlayerStateRestorer.statepassout = null;
                 PlayerStateRestorer.statepassoutps.Value = null;
             }
 
@@ -443,7 +441,6 @@ namespace CustomDeathPenaltyPlus
                 PlayerStateRestorer.LoadStateDeath();
 
                 // Reset PlayerStateRestorer class with the statedeath field
-                PlayerStateRestorer.statedeath = null;
                 PlayerStateRestorer.statedeathps.Value = null;
             }
         }
