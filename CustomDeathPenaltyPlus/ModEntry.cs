@@ -107,8 +107,6 @@ namespace CustomDeathPenaltyPlus
     {
         private ModConfig config;
 
-        public static Commands Commands { get; private set; } = new Commands();
-
         private static readonly PerScreen<Toggles> togglesperscreen = new PerScreen<Toggles>(createNewState: () => new Toggles());
 
         public static string location;
@@ -127,16 +125,12 @@ namespace CustomDeathPenaltyPlus
             // Read the mod config for values and create one if one does not currently exist
             this.config = this.Helper.ReadConfig<ModConfig>();
 
-            // Add console commands
-            helper.ConsoleCommands.Add("deathpenalty", "Changes the death penalty settings\n format: deathpenalty <configoption> <value>", this.Setdp);
-            helper.ConsoleCommands.Add("passoutpenalty", "Changes the pass out penalty settings\n format: passoutpenalty <configoption> <value>", this.Setpp);
-            helper.ConsoleCommands.Add("otherpenalty", "Changes the other penalty settings\n format: otherpenalty <configoption> <value>", this.Setop);
+            // Add console command
             helper.ConsoleCommands.Add("configinfo", "Displays the current config settings", this.Info);
 
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config, this.ModManifest);
-            Commands.SetConfig(this.config);
         }
 
         /// <summary>Raised after the game is launched, right before the first game tick</summary>
@@ -588,58 +582,30 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-        // Define console commands
-        private void Setdp(string command, string[] args)
-        {
-            try
-            {
-                Commands.DeathPenalty(args, this.Monitor, this.Helper);
-            }
-            catch (FormatException)
-            {
-                this.Monitor.Log("Specified value could not be parsed, enter value as it would appear in the config", LogLevel.Error);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                this.Monitor.Log("Incorrect command format used.\nRequired format: deathpenalty <configoption> <value>", LogLevel.Error);
-            }
-        }
-        private void Setpp(string command, string[] args)
-        {
-            try
-            {
-                Commands.PassOutPenalty(args, this.Monitor, this.Helper);
-            }
-            catch (FormatException)
-            {
-                this.Monitor.Log("Specified value could not be parsed, enter value as it would appear in the config", LogLevel.Error);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                this.Monitor.Log("Incorrect command format used.\nRequired format: passoutpenalty <configoption> <value>", LogLevel.Error);
-            }
-        }
-
-        private void Setop(string command, string[] args)
-        {
-            try
-            {
-                Commands.OtherPenalty(args, this.Monitor, this.Helper);
-            }
-            catch (FormatException)
-            {
-                this.Monitor.Log("Specified value could not be parsed, enter value as it would appear in the config", LogLevel.Error);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                this.Monitor.Log("Incorrect command format used.\nRequired format: otherpenalty <configoption> <value>", LogLevel.Error);
-            }
-        }
+        // Define console command
         private void Info(string command, string[] args)
         {
             try
             {
-                Commands.ConfigInfo(args, this.Monitor);
+                this.Monitor.Log($"Current config settings:" +
+                        $"\n\nDeathPenalty" +
+                        $"\n\nRestoreItems: {config.DeathPenalty.RestoreItems.ToString().ToLower()}" +
+                        $"\nMoneyLossCap: {config.DeathPenalty.MoneyLossCap}" +
+                        $"\nMoneytoRestorePercentage: {config.DeathPenalty.MoneytoRestorePercentage}" +
+                        $"\nEnergytoRestorePercentage: {config.DeathPenalty.EnergytoRestorePercentage}" +
+                        $"\nHealthtoRestorePercentage: {config.DeathPenalty.HealthtoRestorePercentage}" +
+                        $"\n\nPassOutPenalty" +
+                        $"\n\nMoneyLossCap: {config.PassOutPenalty.MoneyLossCap}" +
+                        $"\nMoneytoRestorePercentage: {config.PassOutPenalty.MoneytoRestorePercentage}" +
+                        $"\nEnergytoRestorePercentage: {config.PassOutPenalty.EnergytoRestorePercentage}" +
+                        $"\n\nOtherPenalties" +
+                        $"\n\n\nWakeupNextDayinClinic: { config.OtherPenalties.WakeupNextDayinClinic.ToString().ToLower()}" +
+                        $"\nHarveyFriendshipChange: {config.OtherPenalties.HarveyFriendshipChange}" +
+                        $"\nMaruFriendshipChange: {config.OtherPenalties.MaruFriendshipChange}" +
+                        $"\n\nMoreRealisticWarps: {config.OtherPenalties.MoreRealisticWarps.ToString().ToLower()}" +
+                        $"\n\nDebuffonDeath: {config.OtherPenalties.DebuffonDeath.ToString().ToLower()}",
+
+                        LogLevel.Info);
             }
             catch (IndexOutOfRangeException)
             {
