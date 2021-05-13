@@ -7,12 +7,17 @@ Current options allow configuration for:
 - Disabling item loss
 - Amount of money lost, including max amount that can be lost
 - Amount of health and energy to restore
-- A more realistic option for dying, disabled by default
-- A friendship penalty with Harvey
+
 
 **Pass Out Penalty**
 - Amount of money lost, including max amount that can be lost
 - Amount of energy to restore next day
+
+**Other Penalties**
+- A more realistic option for dying, disabled by default
+- A friendship penalty with Harvey and/or Maru
+- More realistic spawn locations after death, includes new events, disabled by default
+- Apply a debuff after death, jinxed normally or burnt on Ginger Island, disabled by default
 
 ### Installation:
 1. Install the latest version of SMAPI
@@ -24,8 +29,6 @@ Current options allow configuration for:
 1. Run the game at least once to generate the config file
 2. Change any desired values in the config. Percentage values are expressed in decimal form
 3. Your changes should now be implemented in game
-
-Note: The mod will create per-save file JSON files (found in the mod folder) so that the mod knows what to restore if you exit the next day without saving after dying or passing out. While deleting these will not affect the game, it can lead to incorrect values being used. Only delete the file if you are deleting the character.
 
 ### If changes are not implemented:
  - Check the mod page for accepted values
@@ -39,6 +42,7 @@ Command | Format | Action
 ------------ | -------------|----------------
 deathpenalty | deathpenalty &lt;configvalue&gt; &lt;value&gt; | changes the deathpenalty config values
 passoutpenalty | passoutpenalty &lt;configvalue&gt; &lt;value&gt; | changes the passoutpenalty config values
+otherpenalty | otherpenalty &lt;configvalue&gt; &lt;value&gt; | changes the otherpenalties config values
 configinfo | configinfo | displays the current config settings in the SMAPI console
 
 where config value is the name of the config option in the config file in lower case and the value is the value as it would appear in the config file.
@@ -53,7 +57,10 @@ moneytorestorepercentage | money
 healthtorestorepercentage | health
 energytorestorepercentage | energy
 wakeupnextdayinclinic | nextday
-friendshippenalty | friendship
+harveyfriendshipchange | harvey
+marufriendshipchange | maru
+morerealisticwarps | warps
+debuffondeath | debuff
  
 ### Versions:
 1.0.0 - Initial release
@@ -67,5 +74,7 @@ friendshippenalty | friendship
 1.2.2 - Fixed bug where money would not restore correctly when passing out
 
 1.3.0 - Updated for Stardew Valley 1.5, added debug commands
+
+1.4.0 - Mod data now saved to save file instead of the mod folder, added more config options
 
 

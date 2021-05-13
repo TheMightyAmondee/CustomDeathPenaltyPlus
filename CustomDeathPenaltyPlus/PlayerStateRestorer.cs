@@ -104,17 +104,21 @@ namespace CustomDeathPenaltyPlus
             {
                 if(Game1.getLocationFromName(ModEntry.location) as IslandLocation != null)
                 {
-                    var burnttwice = new Buff(12);
-                    burnttwice.totalMillisecondsDuration = 60000;
-                    burnttwice.millisecondsDuration = 60000;
-                    Game1.buffsDisplay.addOtherBuff(burnttwice);
+                    var burntdebuff = new Buff(12)
+                    {
+                        totalMillisecondsDuration = 60000,
+                        millisecondsDuration = 60000
+                    };
+                    Game1.buffsDisplay.addOtherBuff(burntdebuff);
                 }
                 else
                 {
-                    var jinxtwice = new Buff(14);
-                    jinxtwice.totalMillisecondsDuration = 60000;
-                    jinxtwice.millisecondsDuration = 60000;
-                    Game1.buffsDisplay.addOtherBuff(jinxtwice);
+                    var jinxeddebuff = new Buff(14)
+                    {
+                        totalMillisecondsDuration = 60000,
+                        millisecondsDuration = 60000
+                    };
+                    Game1.buffsDisplay.addOtherBuff(jinxeddebuff);
                 }
             }
 

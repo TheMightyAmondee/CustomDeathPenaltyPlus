@@ -189,9 +189,19 @@ namespace CustomDeathPenaltyPlus
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             // Reload events if needed
-            if (Game1.player.health <= 0 && PlayerStateRestorer.statedeathps.Value == null && location == null && this.config.OtherPenalties.MoreRealisticWarps == true)
+            if (true
+                // Player has died, before killscreen is true
+                && Game1.player.health <= 0 
+                // death state has not been saved
+                && PlayerStateRestorer.statedeathps.Value == null
+                // location of death hasn't been saved
+                && location == null 
+                // MoreRealisticWarps is true
+                && this.config.OtherPenalties.MoreRealisticWarps == true)
             {
+                // Save location of death
                 location = Game1.currentLocation.NameOrUniqueName;
+                // Reload events
                 this.Helper.Content.InvalidateCache("Data\\Events\\Hospital");
             }
 
@@ -274,14 +284,21 @@ namespace CustomDeathPenaltyPlus
                     }
 
                     // Warp player to event location
-                    else if (this.config.OtherPenalties.MoreRealisticWarps == true && togglesperscreen.Value.warp == true && location != null)
+                    else if (true 
+                        && this.config.OtherPenalties.MoreRealisticWarps == true 
+                        && togglesperscreen.Value.warp == true 
+                        && location != null)
                     {
                         if (location.StartsWith("UndergroundMine") && Game1.mine != null && Game1.mine.getMineArea() == 121)
                         {
                             Game1.warpFarmer("SkullCave", 3, 5, false);
                         }
 
-                        else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && !location.StartsWith("IslandFarm"))
+                        else if (true 
+                            && (false 
+                            || ModEntry.location.StartsWith("Farm") 
+                            || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) 
+                            && !location.StartsWith("IslandFarm"))
                         {
                             int tileX = 12;
                             int tileY = 18;
@@ -377,10 +394,15 @@ namespace CustomDeathPenaltyPlus
                 }
             }
 
-            if (true 
-                && this.config.OtherPenalties.MoreRealisticWarps == true 
-                && PlayerStateRestorer.statedeathps.Value != null 
-                && Game1.CurrentEvent == null 
+            
+            if (true
+                // MoreRealisticWarps is true
+                && this.config.OtherPenalties.MoreRealisticWarps == true
+                // Player death state has been saved
+                && PlayerStateRestorer.statedeathps.Value != null
+                // There is no event running
+                && Game1.CurrentEvent == null
+                // Player can move
                 && Game1.player.canMove == true)
             {
                

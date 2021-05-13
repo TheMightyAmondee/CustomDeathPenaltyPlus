@@ -221,7 +221,9 @@ namespace CustomDeathPenaltyPlus
                             "\n\nAvailable options:" +           
                             "\n\n- wakeupnextdayinclinic OR nextday" +
                             "\n- harveyfriendshipchange OR harvey" +
-                            "\n- marufriendshipchange OR maru", 
+                            "\n- marufriendshipchange OR maru" +
+                            "\n- morerealisticwarps OR warps" +
+                            "\n- debuffondeath OR debuff", 
                             LogLevel.Error);
                         break;
                     }
