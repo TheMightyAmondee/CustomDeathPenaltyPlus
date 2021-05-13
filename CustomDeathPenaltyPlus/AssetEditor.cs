@@ -271,20 +271,24 @@ namespace CustomDeathPenaltyPlus
                 }
                 else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
                 {
-                    int tileX = 10;
+                    // Get tile where player should spawn, same as doorX position
+                    int tileX = 12;
+                    int tileY = 18;
                     switch (Game1.player.houseUpgradeLevel)
                     {
                         case 0:
                             tileX = 3;
+                            tileY = 9;
                             break;
                         case 1:
                             tileX = 9;
+                            tileY = 8;
                             break;
                         default:
                             break;
                     }
 
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer {tileX} 9 2/changeLocation {warplocation}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...What just happened?\"/viewport 20 12 true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad must have happened to me... I have no idea how I got here...\"/pause 1000/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer {tileX} {tileY} 2/changeLocation {warplocation}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...What just happened?\"/viewport 20 12 true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad must have happened to me... I have no idea how I got here...\"/pause 1000/hospitaldeath/end";
                 }
             }
         }

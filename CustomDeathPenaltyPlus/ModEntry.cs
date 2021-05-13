@@ -283,19 +283,22 @@ namespace CustomDeathPenaltyPlus
 
                         else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && !location.StartsWith("IslandFarm"))
                         {
-                            int tileX = 10;
+                            int tileX = 12;
+                            int tileY = 18;
                             switch (Game1.player.houseUpgradeLevel)
                             {
                                 case 0:
                                     tileX = 3;
+                                    tileY = 9;
                                     break;
                                 case 1:
                                     tileX = 9;
+                                    tileY = 8;
                                     break;
                                 default:
                                     break;
                             }
-                            Game1.warpFarmer(Game1.player.homeLocation.Value, tileX, 9, false);
+                            Game1.warpFarmer(Game1.player.homeLocation.Value, tileX, tileY, false);
                         }
 
                         togglesperscreen.Value.warp = false;

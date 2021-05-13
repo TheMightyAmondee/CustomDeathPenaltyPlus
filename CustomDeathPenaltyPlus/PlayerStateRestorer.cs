@@ -99,6 +99,7 @@ namespace CustomDeathPenaltyPlus
             // Restore health to amount as specified by config values
             Game1.player.health = Math.Max((int)(Game1.player.maxHealth * config.DeathPenalty.HealthtoRestorePercentage), 1);
 
+            // Apply debuff if needed
             if(config.OtherPenalties.DebuffonDeath == true)
             {
                 if(Game1.getLocationFromName(ModEntry.location) as IslandLocation != null)
