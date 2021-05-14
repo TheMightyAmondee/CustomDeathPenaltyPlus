@@ -15,7 +15,7 @@ Current options allow configuration for:
 
 **Other Penalties**
 - A more realistic option for dying, disabled by default
-- A friendship penalty with Harvey and/or Maru
+- A friendship change with Harvey and/or Maru
 - More realistic spawn locations after death, includes new events, disabled by default
 - Apply a debuff after death, jinxed normally or burnt on Ginger Island, disabled by default
 
@@ -30,38 +30,15 @@ Current options allow configuration for:
 2. Change any desired values in the config. Percentage values are expressed in decimal form
 3. Your changes should now be implemented in game
 
+### Notes:
+- WakeupNextDayinClinic and MoreRealisticWarps cannot both be true at the same time, they create conflicting changes. Mod will default to disabling MoreRealisticWarps if both are set to true
+- Applied debuffs last for 60 seconds
+
 ### If changes are not implemented:
  - Check the mod page for accepted values
  - The mod should automatically use the default values if a config value is invalid. If your changes are not implemented check the SMAPI monitor for errors or messages.
-### Debug Commands:
-Version 1.3.0 introduced console commands to allow config values to be changed in the SMAPI console, mostly intended for debugging purposes. When entering commands all characters should be in lower case.
+ - Other mods that edit the PlayerKilled event can override the mod's edits. Penalties should still apply however (MoreRealisticWarps will also look really weird)
 
-Available commands:
-
-Command | Format | Action
------------- | -------------|----------------
-deathpenalty | deathpenalty &lt;configvalue&gt; &lt;value&gt; | changes the deathpenalty config values
-passoutpenalty | passoutpenalty &lt;configvalue&gt; &lt;value&gt; | changes the passoutpenalty config values
-otherpenalty | otherpenalty &lt;configvalue&gt; &lt;value&gt; | changes the otherpenalties config values
-configinfo | configinfo | displays the current config settings in the SMAPI console
-
-where config value is the name of the config option in the config file in lower case and the value is the value as it would appear in the config file.
-
-The configvalue argument will also accept a shorthand version of the config value as shown in the table:
-
-Config Value | Shorthand Value
------------- | ---------------
-restoreitems | items
-moneylosscap | cap
-moneytorestorepercentage | money
-healthtorestorepercentage | health
-energytorestorepercentage | energy
-wakeupnextdayinclinic | nextday
-harveyfriendshipchange | harvey
-marufriendshipchange | maru
-morerealisticwarps | warps
-debuffondeath | debuff
- 
 ### Versions:
 1.0.0 - Initial release
 
@@ -75,6 +52,6 @@ debuffondeath | debuff
 
 1.3.0 - Updated for Stardew Valley 1.5, added debug commands
 
-1.4.0 - Mod data now saved to save file instead of the mod folder, added more config options
+1.4.0 - Mod data now saved to save file instead of the mod folder, added more config options, removed most debug commands (better to edit config manually, more error checking is in place) only configinfo remains
 
 

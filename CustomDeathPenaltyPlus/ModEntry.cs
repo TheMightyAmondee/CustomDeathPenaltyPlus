@@ -97,8 +97,6 @@ namespace CustomDeathPenaltyPlus
         internal bool loadstate = false;
 
         internal bool shouldtogglepassoutdata = true;
-
-        internal bool warp = true;
     }
 
     /// <summary>The mod entry point.</summary>
@@ -277,15 +275,14 @@ namespace CustomDeathPenaltyPlus
                         togglesperscreen.Value.warptoinvisiblelocation = false;
                     }
 
-                    // Warp player to event location
+                    // Set player exit location for event
                     else if (true 
-                        && this.config.OtherPenalties.MoreRealisticWarps == true 
-                        && togglesperscreen.Value.warp == true 
+                        && this.config.OtherPenalties.MoreRealisticWarps == true  
                         && location != null)
                     {
-                        if (location.StartsWith("UndergroundMine") && Game1.mine != null && Game1.mine.getMineArea() == 121)
+                        if (location.StartsWith("UndergroundMine") || location == "SkullCave")
                         {
-                            Game1.warpFarmer("SkullCave", 3, 5, false);
+                            Game1.CurrentEvent.setExitLocation("SkullCave", 3, 5);
                         }
 
                         else if (true 
@@ -309,11 +306,10 @@ namespace CustomDeathPenaltyPlus
                                 default:
                                     break;
                             }
-                            Game1.warpFarmer(Game1.player.homeLocation.Value, tileX, tileY, false);
+                            Game1.CurrentEvent.setExitLocation(Game1.player.homeLocation.Value, tileX, tileY);
                         }
-
-                        togglesperscreen.Value.warp = false;
-                    }                        
+                        location = null;
+                    }
                 }
             }
 
@@ -372,8 +368,6 @@ namespace CustomDeathPenaltyPlus
                         // Add player to list of ready farmers if needed
                         if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
                         Game1.player.team.announcedSleepingFarmers.Add(Game1.player);
-
-
                     }
                 }
 
@@ -405,8 +399,6 @@ namespace CustomDeathPenaltyPlus
 
                 // Reset PlayerStateRestorer class with the statedeath field
                 PlayerStateRestorer.statedeathps.Value = null;
-                location = null;
-                togglesperscreen.Value.warp = true;
             }
 
             // Check if time is 2am or the player has passed out
