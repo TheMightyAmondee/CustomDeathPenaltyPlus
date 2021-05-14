@@ -18,8 +18,8 @@ namespace CustomDeathPenaltyPlus
         private static IManifest manifest;
 
 
-        public static string cabin = Context.IsMainPlayer ? "FarmHouse" : Game1.player.homeLocation.Value;
-        public static string warplocation = cabin ?? "FarmHouse";
+        public static string cabin;
+        public static string warplocation;
        
         // Allows the class to access the ModConfig properties
         public static void SetConfig(ModConfig config, IManifest manifest)
@@ -87,7 +87,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var stringeditor = asset.AsDictionary<string, string>().Data;
 
-                if (config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")) && !ModEntry.location.StartsWith("IslandFarm"))
+                if (config.OtherPenalties.MoreRealisticWarps == true && ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine"))) && !ModEntry.location.StartsWith("IslandFarm"))
                 {
                     if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
                     {
@@ -271,6 +271,8 @@ namespace CustomDeathPenaltyPlus
                 }
                 else if ((ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
                 {
+                    cabin = Context.IsMainPlayer ? "FarmHouse" : Game1.player.homeLocation.Value;
+                    warplocation = cabin ?? "FarmHouse";
                     // Get tile where player should spawn, same as doorX position
                     int tileX = 12;
                     int tileY = 18;
