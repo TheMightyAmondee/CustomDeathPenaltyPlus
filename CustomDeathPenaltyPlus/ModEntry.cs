@@ -318,6 +318,8 @@ namespace CustomDeathPenaltyPlus
                 && PlayerStateRestorer.statedeathps.Value != null
                 // MoreRealisticWarps is false
                 && this.config.OtherPenalties.MoreRealisticWarps == false
+                // Player isn't warping
+                && Game1.isWarping == false
                 // No events are running
                 && Game1.CurrentEvent == null
                 // state should be loaded
