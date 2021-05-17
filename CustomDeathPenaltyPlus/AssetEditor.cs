@@ -151,9 +151,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var maileditor = asset.AsDictionary<string, string>().Data;
 
-                var data = Game1.player.modData;
-
-                
+                var data = Game1.player.modData;               
 
                 // Has player not lost any money?
                 if (data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] == "0")
@@ -186,7 +184,7 @@ namespace CustomDeathPenaltyPlus
                 modHelper = helper;
             }
 
-            // Allow asset to be editted if name matches
+            // Allow asset to be edited if name matches
             public bool CanEdit<T>(IAssetInfo asset)
             {
                 return asset.AssetNameEquals("Data\\Events\\Mine");
@@ -195,11 +193,14 @@ namespace CustomDeathPenaltyPlus
             // Edit asset
             public void Edit<T>(IAssetData asset)
             {
-                var eventedits = asset.AsDictionary<string, string>().Data;              
+                var eventedits = asset.AsDictionary<string, string>().Data;
+
+                IDictionary<string, string> events = modHelper.Content.Load<Dictionary<string, string>>("assets\\Events.json", ContentSource.ModFolder);
                 // Is WakeupNextDayinClinic true?
                 if (config.OtherPenalties.WakeupNextDayinClinic == true)
                 {
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}", "in the mine")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledMine"], Game1.player.Name, ResponseBuilder("{0}", "in the mine"));
+                        //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}", "in the mine")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 }
             }
@@ -217,7 +218,7 @@ namespace CustomDeathPenaltyPlus
                 modHelper = helper;
             }
 
-            // Allow asset to be editted if name matches
+            // Allow asset to be edited if name matches
             public bool CanEdit<T>(IAssetInfo asset)
             {
                 return asset.AssetNameEquals("Data\\Events\\IslandSouth");
@@ -228,10 +229,13 @@ namespace CustomDeathPenaltyPlus
             {
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
+                IDictionary<string, string> events = modHelper.Content.Load<Dictionary<string, string>>("assets\\Events.json", ContentSource.ModFolder);
+
                 // Is WakeupNextDayinClinic true?
                 if (config.OtherPenalties.WakeupNextDayinClinic == true)
                 {
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}", "on the island shore")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledIsland"], Game1.player.Name, ResponseBuilder("{0}", "on the island shore"));
+                    //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}", "on the island shore")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
                 }
             }
         }
@@ -248,7 +252,7 @@ namespace CustomDeathPenaltyPlus
                 modHelper = helper;
             }
 
-            // Allow asset to be editted if name matches
+            // Allow asset to be edited if name matches
             public bool CanEdit<T>(IAssetInfo asset)
             {
                 return asset.AssetNameEquals("Data\\Events\\Hospital");
@@ -257,13 +261,17 @@ namespace CustomDeathPenaltyPlus
             // Edit asset
             public void Edit<T>(IAssetData asset)
             {
-               var eventedits = asset.AsDictionary<string, string>().Data;
+                var eventedits = asset.AsDictionary<string, string>().Data;
 
-                eventedits["PlayerKilled"] = $"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                IDictionary<string, string> events = modHelper.Content.Load<Dictionary<string, string>>("assets\\Events.json", ContentSource.ModFolder);
+
+                eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledHospital"], Game1.player.Name, ResponseBuilder("Someone", "and battered"));
+                //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 if (ModEntry.location != null && ModEntry.location.StartsWith("UndergroundMine") && config.OtherPenalties.MoreRealisticWarps == true)
                 {
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer 3 5 2 MrQi 4 4 2/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 3 5 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid... I hope you weren't doing something stupid.$1#$b#Just be more careful in the caverns next time, okay. There's still lots of potential in you, kid!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledSkullCave"], Game1.player.Name);
+                    //$"none/-100 -100/farmer 3 5 2 MrQi 4 4 2/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 3 5 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid... I hope you weren't doing something stupid.$1#$b#Just be more careful in the caverns next time, okay. There's still lots of potential in you, kid!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 }
                 else if ((ModEntry.location != null && ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
@@ -286,7 +294,8 @@ namespace CustomDeathPenaltyPlus
                             break;
                     }
 
-                    eventedits["PlayerKilled"] = $"none/-100 -100/farmer {tileX} {tileY} 2/changeLocation {cabin}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...What just happened?\"/viewport {tileX} {tileY} true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad must have happened to me... I have no idea how I got here...\"/pause 500/hospitaldeath/end";
+                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledFarm"], tileX, tileY, cabin);
+                    //$"none/-100 -100/farmer {tileX} {tileY} 2/changeLocation {cabin}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...What just happened?\"/viewport {tileX} {tileY} true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad must have happened to me... I have no idea how I got here...\"/pause 500/hospitaldeath/end";
                 }
             }
         }
