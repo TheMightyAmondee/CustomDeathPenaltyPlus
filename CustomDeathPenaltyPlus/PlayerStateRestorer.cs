@@ -1,5 +1,7 @@
 ﻿using StardewValley;
+using System.Collections.Generic;
 using System;
+using Microsoft.Xna.Framework;
 using StardewValley.Locations;
 using StardewModdingAPI.Utilities;
 
@@ -23,15 +25,13 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-        //public static PlayerDataTracker statedeath;
-
         internal static readonly PerScreen<PlayerDataTracker> statedeathps = new PerScreen<PlayerDataTracker>(createNewState: () => null);
-
-        //public static PlayerDataTracker statepassout;
 
         internal static readonly PerScreen<PlayerDataTracker> statepassoutps = new PerScreen<PlayerDataTracker>(createNewState: () => null);
 
         private static ModConfig config;
+
+        private static readonly int[] debuffs = { 12, 14, 17, 25, 26, 27 };
 
         // Change friendship of marriage candidate NPCs
         public static void ApplyFriendshipChange(string name)
@@ -102,23 +102,36 @@ namespace CustomDeathPenaltyPlus
             // Apply debuff if needed
             if (config.OtherPenalties.DebuffonDeath == true)
             {
+                // Remove negative debuffs
+                foreach(int debuff in debuffs)
+                {
+                    if (Game1.player.hasBuff(debuff))
+                    {
+                        Game1.buffsDisplay.removeOtherBuff(debuff);
+                    }
+                }
+
                 if (Game1.currentLocation as IslandLocation != null)
                 {
                     var burntdebuff = new Buff(12)
                     {
                         totalMillisecondsDuration = 60000,
-                        millisecondsDuration = 60000
+                        millisecondsDuration = 60000,
+                        glow = Color.White
                     };
                     Game1.buffsDisplay.addOtherBuff(burntdebuff);
                 }
                 else
                 {
-                    var jinxeddebuff = new Buff(14)
+                    Random random = new Random((int)(Game1.uniqueIDForThisGame / Game1.player.stats.DaysPlayed + Game1.player.stats.timesUnconscious));
+
+                    var applieddebuff = new Buff((int)debuffs.GetValue(random.Next(1, debuffs.Length)))
                     {
                         totalMillisecondsDuration = 60000,
-                        millisecondsDuration = 60000
+                        millisecondsDuration = 60000,
+                        glow = Color.White
                     };
-                    Game1.buffsDisplay.addOtherBuff(jinxeddebuff);
+                    Game1.buffsDisplay.addOtherBuff(applieddebuff);
                 }
             }
 

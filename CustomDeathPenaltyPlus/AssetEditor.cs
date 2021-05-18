@@ -277,7 +277,7 @@ namespace CustomDeathPenaltyPlus
                 else if ((ModEntry.location != null && ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
                 {
                     var cabin = (Context.IsMainPlayer ? "FarmHouse" : Game1.player.homeLocation.Value) ?? "FarmHouse";
-                    // Get tile where player should spawn, same as doorX position
+                    // Get tile where player should spawn, same as (doorX, doorY - 2) position  
                     int tileX = 12;
                     int tileY = 18;
                     switch (Game1.player.houseUpgradeLevel)
