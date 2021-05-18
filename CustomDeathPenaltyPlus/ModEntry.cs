@@ -316,8 +316,6 @@ namespace CustomDeathPenaltyPlus
             if(true
                 // Player death state has been saved
                 && PlayerStateRestorer.statedeathps.Value != null
-                // MoreRealisticWarps is false
-                && this.config.OtherPenalties.MoreRealisticWarps == false
                 // Player isn't warping
                 && Game1.isWarping == false
                 // No events are running
@@ -382,25 +380,6 @@ namespace CustomDeathPenaltyPlus
                     // Reset PlayerStateRestorer class with the statedeath field
                     PlayerStateRestorer.statedeathps.Value = null;
                 }
-            }
-
-            
-            if (true
-                // MoreRealisticWarps is true
-                && this.config.OtherPenalties.MoreRealisticWarps == true
-                // Player death state has been saved
-                && PlayerStateRestorer.statedeathps.Value != null
-                // There is no event running
-                && Game1.CurrentEvent == null
-                // Player can move
-                && Game1.player.canMove == true)
-            {
-               
-                // Restore Player state using DeathPenalty values
-                PlayerStateRestorer.LoadStateDeath();
-
-                // Reset PlayerStateRestorer class with the statedeath field
-                PlayerStateRestorer.statedeathps.Value = null;
             }
 
             // Check if time is 2am or the player has passed out
