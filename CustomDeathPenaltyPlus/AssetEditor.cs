@@ -268,13 +268,19 @@ namespace CustomDeathPenaltyPlus
                 eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledHospital"], Game1.player.Name, ResponseBuilder("Someone", "and battered"));
                 //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
-                if (ModEntry.location != null && ModEntry.location.StartsWith("UndergroundMine") && config.OtherPenalties.MoreRealisticWarps == true)
+                if (ModEntry.location != null 
+                    && ModEntry.location.StartsWith("UndergroundMine") 
+                    && config.OtherPenalties.MoreRealisticWarps == true)
                 {
                     eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledSkullCave"], Game1.player.Name);
                     //$"none/-100 -100/farmer 3 5 2 MrQi 4 4 2/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 3 5 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid... I hope you weren't doing something stupid.$1#$b#Just be more careful in the caverns next time, okay. There's still lots of potential in you, kid!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 }
-                else if ((ModEntry.location != null && ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) && config.OtherPenalties.MoreRealisticWarps == true && !ModEntry.location.StartsWith("IslandFarm"))
+                else if (ModEntry.location != null 
+                    && (ModEntry.location.StartsWith("Farm") 
+                    || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) 
+                    && config.OtherPenalties.MoreRealisticWarps == true 
+                    && !ModEntry.location.StartsWith("IslandFarm"))
                 {
                     var cabin = (Context.IsMainPlayer ? "FarmHouse" : Game1.player.homeLocation.Value) ?? "FarmHouse";
                     // Get tile where player should spawn, same as (doorX, doorY - 2) position  
