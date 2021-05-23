@@ -84,7 +84,12 @@ namespace CustomDeathPenaltyPlus
             {
                 var stringeditor = asset.AsDictionary<string, string>().Data;
 
-                if (config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") == true || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")) == true && ModEntry.location.StartsWith("IslandFarm") == false)
+                if (config.OtherPenalties.MoreRealisticWarps == true 
+                    && (ModEntry.location.StartsWith("Farm") == true 
+                    || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null 
+                    || ModEntry.location.StartsWith("UndergroundMine") == true
+                    || ModEntry.location == "SkullCave") 
+                    && ModEntry.location.StartsWith("IslandFarm") == false)
                 {
                     if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
                     {
@@ -98,6 +103,8 @@ namespace CustomDeathPenaltyPlus
                         stringeditor["Event.cs.1068"] = $"I seem to have lost {(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}g. I wonder how that happened... ";
                         stringeditor["Event.cs.1058"] = stringeditor["Event.cs.1058"].Replace("{0}", $"{(int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost)}");
                     }
+
+                    stringeditor["Event.cs.1070"] = "Fortunately, I have no money to lose. That could have been bad.";
                 }
                 else
                 {
@@ -269,7 +276,8 @@ namespace CustomDeathPenaltyPlus
                 //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 if (ModEntry.location != null 
-                    && ModEntry.location.StartsWith("UndergroundMine") == true
+                    && (ModEntry.location.StartsWith("UndergroundMine") == true 
+                    || ModEntry.location == "SkullCave")
                     && config.OtherPenalties.MoreRealisticWarps == true)
                 {
                     eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledSkullCave"], Game1.player.Name);

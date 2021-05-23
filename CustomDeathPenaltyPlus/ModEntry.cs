@@ -202,7 +202,7 @@ namespace CustomDeathPenaltyPlus
             {
                 if (true
                     // Has player died?
-                    && Game1.killScreen
+                    && Game1.killScreen == true
                     // Has the players death state been saved?
                     && PlayerStateRestorer.statedeathps.Value == null)
                 {
@@ -280,7 +280,9 @@ namespace CustomDeathPenaltyPlus
                         && this.config.OtherPenalties.MoreRealisticWarps == true  
                         && location != null)
                     {
-                        if (location.StartsWith("UndergroundMine") || location == "SkullCave")
+                        if (location == "SkullCave" 
+                            || (location.StartsWith("UndergroundMine") == true 
+                            && Game1.currentLocation.NameOrUniqueName != "Mine"))
                         {
                             Game1.CurrentEvent.setExitLocation("SkullCave", 3, 5);
                         }
@@ -405,7 +407,10 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Load state earlier if it is multiplayer and it isn't 2AM or later
-            if (Game1.timeOfDay < 2600 && Game1.player.canMove == true && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
+            if (Game1.timeOfDay < 2600 
+                && Game1.player.canMove == true 
+                && Context.IsMultiplayer == true 
+                && PlayerStateRestorer.statepassoutps.Value != null)
             {
                 // Load state and fix stamina
                 PlayerStateRestorer.LoadStatePassout();
@@ -463,7 +468,10 @@ namespace CustomDeathPenaltyPlus
         private void Saving(object sender, SavingEventArgs e)
         {
             // Has player not passed out but DidPlayerPassOutYesterday property is true?
-            if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true" && (Game1.player.isInBed.Value == true || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true") && togglesperscreen.Value.shouldtogglepassoutdata == true)
+            if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true" 
+                && (Game1.player.isInBed.Value == true 
+                || Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true") 
+                && togglesperscreen.Value.shouldtogglepassoutdata == true)
             {
                 // Yes, fix this so the new day will load correctly
 
@@ -572,12 +580,11 @@ namespace CustomDeathPenaltyPlus
                         $"\nMoneytoRestorePercentage: {config.PassOutPenalty.MoneytoRestorePercentage}" +
                         $"\nEnergytoRestorePercentage: {config.PassOutPenalty.EnergytoRestorePercentage}" +
                         $"\n\nOtherPenalties" +
-                        $"\n\n\nWakeupNextDayinClinic: { config.OtherPenalties.WakeupNextDayinClinic.ToString().ToLower()}" +
+                        $"\n\nWakeupNextDayinClinic: { config.OtherPenalties.WakeupNextDayinClinic.ToString().ToLower()}" +
                         $"\nHarveyFriendshipChange: {config.OtherPenalties.HarveyFriendshipChange}" +
                         $"\nMaruFriendshipChange: {config.OtherPenalties.MaruFriendshipChange}" +
-                        $"\n\nMoreRealisticWarps: {config.OtherPenalties.MoreRealisticWarps.ToString().ToLower()}" +
-                        $"\n\nDebuffonDeath: {config.OtherPenalties.DebuffonDeath.ToString().ToLower()}",
-
+                        $"\nMoreRealisticWarps: {config.OtherPenalties.MoreRealisticWarps.ToString().ToLower()}" +
+                        $"\nDebuffonDeath: {config.OtherPenalties.DebuffonDeath.ToString().ToLower()}",
                         LogLevel.Info);
             }
             catch (IndexOutOfRangeException)
