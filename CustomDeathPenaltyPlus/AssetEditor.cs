@@ -84,7 +84,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var stringeditor = asset.AsDictionary<string, string>().Data;
 
-                if (config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")) && !ModEntry.location.StartsWith("IslandFarm"))
+                if (config.OtherPenalties.MoreRealisticWarps == true && (ModEntry.location.StartsWith("Farm") == true || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null || ModEntry.location.StartsWith("UndergroundMine")) == true && ModEntry.location.StartsWith("IslandFarm") == false)
                 {
                     if (config.DeathPenalty.MoneyLossCap == 0 || config.DeathPenalty.MoneytoRestorePercentage == 1)
                     {
@@ -269,7 +269,7 @@ namespace CustomDeathPenaltyPlus
                 //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 if (ModEntry.location != null 
-                    && ModEntry.location.StartsWith("UndergroundMine") 
+                    && ModEntry.location.StartsWith("UndergroundMine") == true
                     && config.OtherPenalties.MoreRealisticWarps == true)
                 {
                     eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledSkullCave"], Game1.player.Name);
@@ -280,7 +280,7 @@ namespace CustomDeathPenaltyPlus
                     && (ModEntry.location.StartsWith("Farm") 
                     || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) 
                     && config.OtherPenalties.MoreRealisticWarps == true 
-                    && !ModEntry.location.StartsWith("IslandFarm"))
+                    && ModEntry.location.StartsWith("IslandFarm") == false)
                 {
                     var cabin = (Context.IsMainPlayer ? "FarmHouse" : Game1.player.homeLocation.Value) ?? "FarmHouse";
                     // Get tile where player should spawn, same as (doorX, doorY - 2) position  

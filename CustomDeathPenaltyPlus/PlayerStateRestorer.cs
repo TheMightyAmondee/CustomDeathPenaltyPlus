@@ -44,7 +44,7 @@ namespace CustomDeathPenaltyPlus
             }
 
 
-            if (Game1.player.friendshipData.ContainsKey(name) && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.OtherPenalties.WakeupNextDayinClinic == true))
+            if (Game1.player.friendshipData.ContainsKey(name) == true && (Game1.currentLocation.NameOrUniqueName == "Hospital" || config.OtherPenalties.WakeupNextDayinClinic == true))
             {
                 //Yes, change friendship level
                 if (configvalue < 0)

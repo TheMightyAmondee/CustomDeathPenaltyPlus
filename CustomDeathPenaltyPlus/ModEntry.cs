@@ -287,9 +287,9 @@ namespace CustomDeathPenaltyPlus
 
                         else if (true 
                             && (false 
-                            || ModEntry.location.StartsWith("Farm") 
+                            || ModEntry.location.StartsWith("Farm") == true 
                             || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) 
-                            && !location.StartsWith("IslandFarm"))
+                            && location.StartsWith("IslandFarm") == false)
                         {
                             int tileX = 12;
                             int tileY = 18;
@@ -366,7 +366,7 @@ namespace CustomDeathPenaltyPlus
                         PlayerStateRestorer.statedeathps.Value = null;
 
                         // Add player to list of ready farmers if needed
-                        if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player)) return;
+                        if (Game1.player.team.announcedSleepingFarmers.Contains(Game1.player) == true) return;
                         Game1.player.team.announcedSleepingFarmers.Add(Game1.player);
                     }
                 }
@@ -405,7 +405,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Load state earlier if it is multiplayer and it isn't 2AM or later
-            if (Game1.timeOfDay < 2600 && Game1.player.canMove && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
+            if (Game1.timeOfDay < 2600 && Game1.player.canMove == true && Context.IsMultiplayer == true && PlayerStateRestorer.statepassoutps.Value != null)
             {
                 // Load state and fix stamina
                 PlayerStateRestorer.LoadStatePassout();
