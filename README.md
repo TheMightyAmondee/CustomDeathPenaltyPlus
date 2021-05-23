@@ -16,8 +16,8 @@ Current options allow configuration for:
 **Other Penalties**
 - A more realistic option for dying, disabled by default
 - A friendship change with Harvey and/or Maru
-- More realistic spawn locations after death, includes new events, disabled by default
-- Apply a debuff after death, jinxed normally or burnt on Ginger Island, disabled by default
+- More realistic spawn locations after death, includes new events, disabled by default (this will NOT work in split-screen)
+- Apply a debuff after death, chosen randomly normally or burnt on Ginger Island, disabled by default
 
 ### Installation:
 1. Install the latest version of SMAPI
