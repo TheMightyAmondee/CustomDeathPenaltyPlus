@@ -502,7 +502,22 @@ namespace CustomDeathPenaltyPlus
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
         private void DayStarted(object sender, DayStartedEventArgs e)
-        {            
+        {
+            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"))
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday", "false");
+            }
+
+            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"))
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut", "0");
+            }
+
+            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"))
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
+            }
+
             // Did player pass out yesterday?
             if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
             {
@@ -565,7 +580,6 @@ namespace CustomDeathPenaltyPlus
             {
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
             }
-
         }
 
         // Define console command
