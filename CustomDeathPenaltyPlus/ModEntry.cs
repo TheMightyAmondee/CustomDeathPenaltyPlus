@@ -172,7 +172,11 @@ namespace CustomDeathPenaltyPlus
             this.Helper.Content.AssetEditors.Add(new AssetEditor.StringsFromCSFilesFixes(Helper));
             
             // Edit mail
-            this.Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
+            if(Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == true)
+            {
+                this.Helper.Content.AssetEditors.Add(new AssetEditor.MailDataFixes(Helper));
+            }
+            
         }
 
         /// <summary>Raised after the game state is updated</summary>
