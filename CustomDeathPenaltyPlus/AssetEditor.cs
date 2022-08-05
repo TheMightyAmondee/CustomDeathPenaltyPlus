@@ -146,7 +146,7 @@ namespace CustomDeathPenaltyPlus
                 var data = Game1.player.modData;
 
                 // Has player not lost any money?
-                if (data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] == "0")
+                if (data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] != null && data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] == "0")
                 {
                     // Yes, edit strings to show this special case
                     maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("You've been billed {0}g for this service", "Be thankful you haven't been billed for this service");
