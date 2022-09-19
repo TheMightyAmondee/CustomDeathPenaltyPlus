@@ -99,6 +99,11 @@ namespace CustomDeathPenaltyPlus
         internal bool loadstate = false;
 
         internal bool shouldtogglepassoutdata = true;
+
+        // Save check booleans
+
+        internal bool moneylostdata = false;
+
     }
 
     /// <summary>The mod entry point.</summary>
@@ -538,7 +543,6 @@ namespace CustomDeathPenaltyPlus
         /// <param name="e">The event data.</param>
         private void DayStarted(object sender, DayStartedEventArgs e)
         {
-
             if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday") == false)
             {
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday", "false");
@@ -550,6 +554,7 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut", "0");
                 this.Monitor.Log("Adding money save data...");
             }
+            togglesperscreen.Value.moneylostdata = true;
 
             if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic") == false)
             {
@@ -566,7 +571,7 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.stamina = (int)(Game1.player.MaxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
 
                 // Invalidate cached mail data, this allows it to reload with correct values
-                if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == false)
+                if (togglesperscreen.Value.moneylostdata == false || Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == false || Game1.player.modData[$"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"] == null)
                 {
                     this.Monitor.Log("Unable to find save data...Mail could not be edited to reflect true value, substituted with placeholders.", LogLevel.Warn);                   
                 }
@@ -574,7 +579,7 @@ namespace CustomDeathPenaltyPlus
             }
 
             // Did player wake up in clinic?
-            if(Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true")
+            if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"] == "true")
             {
                 // Yes, fix player state
 
