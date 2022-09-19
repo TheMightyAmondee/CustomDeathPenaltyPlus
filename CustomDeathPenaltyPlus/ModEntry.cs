@@ -119,7 +119,6 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.SaveLoaded += this.SaveLoaded;
-            helper.Events.GameLoop.SaveCreated += this.SaveCreated;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
             helper.Events.GameLoop.DayEnding += this.DayEnding;
             helper.Events.Multiplayer.ModMessageReceived += this.MessageReceived;
@@ -555,16 +554,6 @@ namespace CustomDeathPenaltyPlus
           
             // Set shouldtogglepassoutdata if needed so DidPlayerPassOutYesterday will toggle normally again
             togglesperscreen.Value.shouldtogglepassoutdata = true;
-        }
-
-        /// <summary>
-        /// Raised after the game creates the save file (after the new-game intro). The save won't be written until all mods have finished handling this event.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event data.</param>
-        private void SaveCreated(object sender, SaveCreatedEventArgs e)
-        {
-            AddSaveData();
         }
 
         /// <summary>
