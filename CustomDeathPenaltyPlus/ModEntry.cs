@@ -118,6 +118,8 @@ namespace CustomDeathPenaltyPlus
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
+            helper.Events.GameLoop.SaveLoaded += this.SaveLoaded;
+            helper.Events.GameLoop.SaveCreated += this.SaveCreated;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
             helper.Events.GameLoop.DayEnding += this.DayEnding;
             helper.Events.Multiplayer.ModMessageReceived += this.MessageReceived;
@@ -132,6 +134,28 @@ namespace CustomDeathPenaltyPlus
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config, this.ModManifest);
+        }
+
+        private void AddSaveData()
+        {
+            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday") == false)
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday", "false");
+                this.Monitor.Log("Adding pass out save data...");
+            }
+
+            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == false)
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut", "0");
+                this.Monitor.Log("Adding money save data...");
+            }
+
+            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic") == false)
+            {
+                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
+                this.Monitor.Log("Adding death save data...");
+            }
+
         }
 
         private void AssetRequested(object sender, AssetRequestedEventArgs e)
@@ -533,29 +557,32 @@ namespace CustomDeathPenaltyPlus
             togglesperscreen.Value.shouldtogglepassoutdata = true;
         }
 
+        /// <summary>
+        /// Raised after the game creates the save file (after the new-game intro). The save won't be written until all mods have finished handling this event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void SaveCreated(object sender, SaveCreatedEventArgs e)
+        {
+            AddSaveData();
+        }
+
+        /// <summary>
+        /// Raised after loading a save (including the first day after creating a new save), or connecting to a multiplayer world. This happens right before DayStarted; at this point the save file is read and Context.IsWorldReady is true.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void SaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            AddSaveData();
+        }
+
         /// <summary>Raised after the game begins a new day</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
         private void DayStarted(object sender, DayStartedEventArgs e)
         {
-            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday") == false)
-            {
-                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday", "false");
-                this.Monitor.Log("Adding pass out save data...");
-            }
-
-            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == false)
-            {
-                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut", "0");
-                this.Monitor.Log("Adding money save data...");
-            }
-
-            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic") == false)
-            {
-                Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
-                this.Monitor.Log("Adding death save data...");
-            }
-
+           
             // Did player pass out yesterday?
             if (Game1.player.modData[$"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"] == "true")
             {
