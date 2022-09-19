@@ -163,9 +163,9 @@ namespace CustomDeathPenaltyPlus
                 }
                 else
                 {
-                    maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("You've been billed some amount for this service", "Be thankful you haven't been billed for this service");
-                    maileditor["passedOut1_Billed_Female"] = maileditor["passedOut1_Billed_Female"].Replace("You've been billed some amount for this service", "Be thankful you haven't been billed for this service");
-                    maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("I've billed you some amount to cover your medical expenses.", "I haven't billed you for your medical expenses this time.");
+                    maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("{0}", "some amount");
+                    maileditor["passedOut1_Billed_Female"] = maileditor["passedOut1_Billed_Female"].Replace("{0}", "some amount"); ;
+                    maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("{0}", "some amount");
                 }
             }
         }
