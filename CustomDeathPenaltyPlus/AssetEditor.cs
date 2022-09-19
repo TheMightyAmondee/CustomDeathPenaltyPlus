@@ -154,12 +154,18 @@ namespace CustomDeathPenaltyPlus
                     maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("I've billed you {0}g to cover your medical expenses.", "I haven't billed you for your medical expenses this time.");
                 }
 
-                else
+                else if(data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] != null && data[$"{manifest.UniqueID}.MoneyLostLastPassOut"] != "0")
                 {
                     // No, edit strings to show amount lost
                     maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("{0}", $"{data[$"{manifest.UniqueID}.MoneyLostLastPassOut"]}");
                     maileditor["passedOut1_Billed_Female"] = maileditor["passedOut1_Billed_Female"].Replace("{0}", $"{data[$"{manifest.UniqueID}.MoneyLostLastPassOut"]}"); ;
                     maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("{0}", $"{data[$"{manifest.UniqueID}.MoneyLostLastPassOut"]}");
+                }
+                else
+                {
+                    maileditor["passedOut1_Billed_Male"] = maileditor["passedOut1_Billed_Male"].Replace("You've been billed some amount for this service", "Be thankful you haven't been billed for this service");
+                    maileditor["passedOut1_Billed_Female"] = maileditor["passedOut1_Billed_Female"].Replace("You've been billed some amount for this service", "Be thankful you haven't been billed for this service");
+                    maileditor["passedOut3_Billed"] = maileditor["passedOut3_Billed"].Replace("I've billed you some amount to cover your medical expenses.", "I haven't billed you for your medical expenses this time.");
                 }
             }
         }

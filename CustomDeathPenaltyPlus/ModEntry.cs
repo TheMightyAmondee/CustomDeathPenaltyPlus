@@ -239,6 +239,7 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Save playerstate using DeathPenalty values
                     PlayerStateRestorer.SaveStateDeath();
+                    this.Monitor.Log("Saving death state...");
 
                     // Reload asset upon death to reflect amount lost
                     this.Helper.GameContent.InvalidateCache("Strings\\StringsFromCSFiles");
@@ -284,6 +285,7 @@ namespace CustomDeathPenaltyPlus
                     {
                         // Restore playerstate using DeathPenalty values
                         PlayerStateRestorer.LoadStateDeath();
+                        this.Monitor.Log("Restoring death state...");
 
                         // Clear state if WakeupNextDayinClinic is false, other stuff needs to be done if it's true
                         if (this.config.OtherPenalties.WakeupNextDayinClinic == false)
@@ -409,6 +411,7 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Restore Player state using DeathPenalty values
                     PlayerStateRestorer.LoadStateDeath();
+                    this.Monitor.Log("Restoring death state...");
 
                     // Reset PlayerStateRestorer class with the statedeath field
                     PlayerStateRestorer.statedeathps.Value = null;
@@ -432,6 +435,7 @@ namespace CustomDeathPenaltyPlus
                 {
                     // Save playerstate using PassOutPenalty values
                     PlayerStateRestorer.SaveStatePassout();
+                    this.Monitor.Log("Saving pass out state...");
                     // Save amount lost to data model
                     Game1.player.modData[$"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"] = $"{(int)Math.Round(PlayerStateRestorer.statepassoutps.Value.moneylost)}";
                 }
@@ -445,6 +449,7 @@ namespace CustomDeathPenaltyPlus
             {
                 // Load state and fix stamina
                 PlayerStateRestorer.LoadStatePassout();
+                this.Monitor.Log("Restoring pass out state...");
                 Game1.player.stamina = (int)(Game1.player.MaxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
 
                 // Reset state
@@ -475,6 +480,7 @@ namespace CustomDeathPenaltyPlus
 
                 // Restore playerstate using PassOutPenalty values
                 PlayerStateRestorer.LoadStatePassout();
+                this.Monitor.Log("Restoring pass out state...");
 
                 // Reset PlayerStateRestorer class with the statepassout field
                 PlayerStateRestorer.statepassoutps.Value = null;
@@ -533,19 +539,22 @@ namespace CustomDeathPenaltyPlus
         private void DayStarted(object sender, DayStartedEventArgs e)
         {
 
-            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday"))
+            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday") == false)
             {
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerPassOutYesterday", "false");
+                this.Monitor.Log("Adding pass out save data...");
             }
 
-            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut"))
+            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == false)
             {
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut", "0");
+                this.Monitor.Log("Adding money save data...");
             }
 
-            if (!Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic"))
+            if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic") == false)
             {
                 Game1.player.modData.Add($"{this.ModManifest.UniqueID}.DidPlayerWakeupinClinic", "false");
+                this.Monitor.Log("Adding death save data...");
             }
 
             // Did player pass out yesterday?
@@ -557,6 +566,10 @@ namespace CustomDeathPenaltyPlus
                 Game1.player.stamina = (int)(Game1.player.MaxStamina * this.config.PassOutPenalty.EnergytoRestorePercentage);
 
                 // Invalidate cached mail data, this allows it to reload with correct values
+                if (Game1.player.modData.ContainsKey($"{this.ModManifest.UniqueID}.MoneyLostLastPassOut") == false)
+                {
+                    this.Monitor.Log("Unable to find save data...Mail could not be edited to reflect true value, substituted with placeholders.", LogLevel.Warn);                   
+                }
                 this.Helper.GameContent.InvalidateCache("Data\\mail");
             }
 
