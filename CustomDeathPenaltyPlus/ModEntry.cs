@@ -249,7 +249,7 @@ namespace CustomDeathPenaltyPlus
                 // Save location of death
                 location = Game1.currentLocation.NameOrUniqueName;
                 // Reload events
-                this.Helper.GameContent.InvalidateCache("Data\\Events\\Hospital");
+                this.Helper.GameContent.InvalidateCache(asset => asset.NameWithoutLocale.IsEquivalentTo("Data\\Events\\Hospital") && Helper.GameContent.CurrentLocale.Equals(asset.Locale));
             }
 
             // Check if player died each half second
@@ -266,7 +266,7 @@ namespace CustomDeathPenaltyPlus
                     this.Monitor.Log("Saving death state...");
 
                     // Reload asset upon death to reflect amount lost
-                    this.Helper.GameContent.InvalidateCache("Strings\\StringsFromCSFiles");
+                    this.Helper.GameContent.InvalidateCache(asset => asset.NameWithoutLocale.IsEquivalentTo("Strings\\StringsFromCSFiles") && Helper.GameContent.CurrentLocale.Equals(asset.Locale));
 
                     // Will a new day be loaded in multiplayer after death?
                     if (true
@@ -586,7 +586,7 @@ namespace CustomDeathPenaltyPlus
                 {
                     this.Monitor.Log("Unable to find save data...Mail could not be edited to reflect true value, substituted with placeholders.", LogLevel.Warn);                   
                 }
-                this.Helper.GameContent.InvalidateCache("Data\\mail");
+                this.Helper.GameContent.InvalidateCache(asset => asset.NameWithoutLocale.IsEquivalentTo("Data\\mail") && Helper.GameContent.CurrentLocale.Equals(asset.Locale));
             }
 
             // Did player wake up in clinic?
