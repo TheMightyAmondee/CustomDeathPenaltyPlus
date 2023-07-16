@@ -190,7 +190,7 @@ namespace CustomDeathPenaltyPlus
                 // Is WakeupNextDayinClinic true?
                 if (config.OtherPenalties.WakeupNextDayinClinic == true)
                 {
-                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledMine"], Game1.player.Name, ResponseBuilder("{0}", i18n.string_responseappendix2()));
+                    eventedits["PlayerKilled"] = string.Format(i18n.event_PlayerKilledMine(), Game1.player.Name, ResponseBuilder("{0}", i18n.string_responseappendix2()));
                     //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}", "in the mine")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 }
@@ -218,7 +218,7 @@ namespace CustomDeathPenaltyPlus
                 // Is WakeupNextDayinClinic true?
                 if (config.OtherPenalties.WakeupNextDayinClinic == true)
                 {
-                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledIsland"], Game1.player.Name, ResponseBuilder("{0}", i18n.string_responseappendix3()));
+                    eventedits["PlayerKilled"] = string.Format(i18n.event_PlayerKilledIsland(), Game1.player.Name, ResponseBuilder("{0}", i18n.string_responseappendix3()));
                     //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("{0}", "on the island shore")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
                 }
             }
@@ -242,7 +242,7 @@ namespace CustomDeathPenaltyPlus
 
                 IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
 
-                eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledHospital"], Game1.player.Name, ResponseBuilder(i18n.string_responseperson(), i18n.string_responseappendix1()));
+                eventedits["PlayerKilled"] = string.Format(i18n.event_PlayerKilledHospital(), Game1.player.Name, ResponseBuilder(i18n.string_responseperson(), i18n.string_responseappendix1()));
                 //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 if (ModEntry.location != null
@@ -250,7 +250,7 @@ namespace CustomDeathPenaltyPlus
                     || ModEntry.location == "SkullCave")
                     && config.OtherPenalties.MoreRealisticWarps == true)
                 {
-                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledSkullCave"], Game1.player.Name);
+                    eventedits["PlayerKilled"] = string.Format(i18n.event_PlayerKilledSkullCave(), Game1.player.Name);
                     //$"none/-100 -100/farmer 3 5 2 MrQi 4 4 2/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Hey, kid! You okay?\"/viewport 3 5 true/pause 1000/speak MrQi \"I found you battered and unconscious down there, kid... I hope you weren't doing something stupid.$1#$b#Just be more careful in the caverns next time, okay. There's still lots of potential in you, kid!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
 
                 }
@@ -278,7 +278,7 @@ namespace CustomDeathPenaltyPlus
                             break;
                     }
 
-                    eventedits["PlayerKilled"] = string.Format(events["CDPP.PlayerKilledFarm"], tileX, tileY, cabin);
+                    eventedits["PlayerKilled"] = string.Format(i18n.event_PlayerKilledFarm(), tileX, tileY, cabin);
                     //$"none/-100 -100/farmer {tileX} {tileY} 2/changeLocation {cabin}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...What just happened?\"/viewport {tileX} {tileY} true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Something bad must have happened to me... I have no idea how I got here...\"/pause 500/hospitaldeath/end";
                 }
             }

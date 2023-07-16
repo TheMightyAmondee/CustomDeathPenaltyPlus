@@ -105,6 +105,30 @@ namespace CustomDeathPenaltyPlus
             return i18n.GetTranslation("TheMightyAmondee.Shoplifter/mailnochargeharvey");
         }
 
+        // Event translations
+
+        public static string event_PlayerKilledMine()
+        {
+            return i18n.GetTranslation("CDPP.PlayerKilledMine");
+        }
+        public static string event_PlayerKilledIsland()
+        {
+            return i18n.GetTranslation("CDPP.PlayerKilledIsland");
+        }
+        public static string event_PlayerKilledHospital()
+        {
+            return i18n.GetTranslation("CDPP.PlayerKilledHospital");
+        }
+        public static string event_PlayerKilledSkullCave()
+        {
+            return i18n.GetTranslation("CDPP.PlayerKilledSkullCave");
+        }
+
+        public static string event_PlayerKilledFarm()
+        {
+            return i18n.GetTranslation("CDPP.PlayerKilledFarm");
+        }
+
         /*
         public static string string_Caught_NoMoney(string shopkeeper)
         {
