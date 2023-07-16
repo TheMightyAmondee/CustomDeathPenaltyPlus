@@ -133,6 +133,7 @@ namespace CustomDeathPenaltyPlus
             // Allow other classes to use the ModConfig
             PlayerStateRestorer.SetConfig(this.config);
             AssetEditor.SetConfig(this.config, this.ModManifest);
+            i18n.gethelpers(this.Helper.Translation, this.config);
         }
 
         private void AddSaveData()
