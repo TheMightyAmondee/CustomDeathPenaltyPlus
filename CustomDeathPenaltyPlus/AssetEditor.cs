@@ -53,7 +53,7 @@ namespace CustomDeathPenaltyPlus
                 // Yes, build string accordingly
                 finalresponse.Append(i18n.string_bereallycareful());
             }
-            else if(config.OtherPenalties.HarveyFriendshipChange > 0)
+            else if (config.OtherPenalties.HarveyFriendshipChange > 0)
             {
                 finalresponse.Append(i18n.string_nicetoseeyou());
             }
@@ -191,7 +191,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
-                IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
+                //IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
                 // Is WakeupNextDayinClinic true?
                 if (config.OtherPenalties.WakeupNextDayinClinic == true)
                 {
@@ -218,7 +218,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
-                IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
+                //IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
 
                 // Is WakeupNextDayinClinic true?
                 if (config.OtherPenalties.WakeupNextDayinClinic == true)
@@ -245,7 +245,7 @@ namespace CustomDeathPenaltyPlus
             {
                 var eventedits = asset.AsDictionary<string, string>().Data;
 
-                IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
+                //IDictionary<string, string> events = modHelper.ModContent.Load<Dictionary<string, string>>("assets\\Events.json");
 
                 eventedits["PlayerKilled"] = string.Format(i18n.event_PlayerKilledHospital(), Game1.player.Name, ResponseBuilder(i18n.string_responseperson(), i18n.string_responseappendix1()));
                 //$"none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{Game1.player.Name}?\"/pause 1000/message \"Easy, now... take it slow.\"/viewport 20 12 true/pause 1000/{ResponseBuilder("Someone", "and battered")}/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end";
