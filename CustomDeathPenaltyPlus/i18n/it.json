@@ -7,6 +7,7 @@
   "TheMightyAmondee.CDPP/finallyawake": "È una buona cosa che tua finalmente sveglia. ",
 
   // Event fragments
+  "TheMightyAmondee.CDPP/wakeplayer": " ...{0}?",
   "TheMightyAmondee.CDPP/nomoneylost": "Sembra che io abbia ancora tutti i miei soldi. ",
   "TheMightyAmondee.CDPP/nomoneylostmine": "Fortunatamente, ho ancora tutti i miei soldi",
   "TheMightyAmondee.CDPP/nocharge": "Il Dottor Harvey non mi ha fatto pagare nulla per la visita in ospedale, che gentile. ",
@@ -14,30 +15,19 @@
   "TheMightyAmondee.CDPP/becareful": "Sii più prudente la prossima volta, ok?$s",
   "TheMightyAmondee.CDPP/nicetoseeyou": "Mentre è bello vedere, odio doverti ricucire...#$b#Per favore, sii più prudente la prossima volta, ok?$s",
   "TheMightyAmondee.CDPP/bereallycareful": "Devi essere veramente più prudente, non mi piace doverti rappezzare dopo che fai qualcosa di pericoloso.$s",
-  "TheMightyAmondee.CDPP/easynow": "Ecco qui... fai piano.",
-  "TheMightyAmondee.CDPP/qi": "Ti ho trovato/a malconcio/a laggiù ragazzino/a.. spero che non stessi facendo qualcosa di stupido.$1#$b#Sii più prudente nelle caverne la prossima volta, ok. C'è ancora molto potenziale in te, ragazzino/a!",
-  "TheMightyAmondee.CDPP/whathappened": "...Che cosa è successo?",
-  "TheMightyAmondee.CDPP/somethingbad": "Qualcosa di brutto deve essermi accaduto... non ho la più pallida idea di come io sia qui...",
+  "TheMightyAmondee.CDPP/easynow1": "Con calma, adesso... fai piano.",
+  "TheMightyAmondee.CDPP/easynow2": "Ehi, ragazzinə! Stai bene?",
+  "TheMightyAmondee.CDPP/qi":"Ti ho trovatə malconciə e incosciente laggiù, ragazzinə... Spero non stessi facendo qualcosa di stupido.$1#$b#Sii più prudente la prossima volta nelle carverne, okay. C'è ancora molto potenziale in te, ragazzinə!",
+  "TheMightyAmondee.CDPP/whathappened": "...Che cosa è appena successo?",
+  "TheMightyAmondee.CDPP/somethingbad": "Qualcosa di brutto deve essermi accaduto... non ho la minima idea di come sono arrivatə qui...",
   "TheMightyAmondee.CDPP/moneylost": "Ho perso {moneylost}o. Mi domando come sia successo... ",
 
-  // Mail frgments
+  // Mail fragments
   "TheMightyAmondee.CDPP/mailnocharge": "Sii contento di non esser stato addebitato per questo servizio",
-  "TheMightyAmondee.Shoplifter/mailnochargeharvey": "Non ti ho addebitato nulla per le spese mediche questa volta.",
+  "TheMightyAmondee.Shoplifter/mailnochargeharvey": "Non ti ho addebitato nulla per le spese mediche questa volta",
 
    // Replacments
    "TheMightyAmondee.CDPP/replacementdialogue":"{0} ti ha trovato senza sensi {1} ... Ho dovuto sottoporti a un'operazione d'emergenza!#$b#",
-
-   // Events
-   /*
-        These entries are the edited events shown to the player after death, depending on the config settings. Feel free to edit them to suit your preferences, just note a few things:       
-        {0} for the first four entries is replaced with the player name
-        {1} in the first three entries is a response said by Harvey depending on config settings
-        DO NOT remove any characters enclosed in {} in the last entry or change when they appear in the script, they contain coordinates and the event location from CDPP
-        hospitaldeath should always be included before ending the event, it tells the game to apply the death penalties (which CDPP will then change)
-    */
-  "CDPP.PlayerKilledMine": "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{0}?\"/pause 1000/message \"Con calma, adesso... fai piano.\"/viewport 20 12 true/pause 1000/speak Harvey \"{1}\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
-  "CDPP.PlayerKilledIsland": "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{0}?\"/pause 1000/message \"Con calma, adesso... fai piano.\"/viewport 20 12 true/pause 1000/speak Harvey \"{1}\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
-  "CDPP.PlayerKilledHospital": "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \" ...{0}?\"/pause 1000/message \"Con calma, adesso... fai piano.\"/viewport 20 12 true/pause 1000/speak Harvey \"{1}\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
-  "CDPP.PlayerKilledSkullCave": "none/-100 -100/farmer 3 5 2 MrQi 4 4 2/changeLocation SkullCave/pause 1500/showFrame 5/message \" ...{0}?\"/pause 1000/message \"Ehi, ragazzinə! Stai bene?\"/viewport 3 5 true/pause 1000/speak MrQi \"Ti ho trovatə malconciə e incosciente laggiù, ragazzinə... Spero non stessi facendo qualcosa di stupido.$1#$b#Sii più prudente la prossima volta nelle carverne, okay. C'è ancora molto potenziale in te, ragazzinə!\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
-  "CDPP.PlayerKilledFarm": "none/-100 -100/farmer {0} {1} 2/changeLocation {2}/pause 1500/showFrame 5/message \"...\"/pause 1000/message \"...Che cosa è appena successo?\"/viewport {0} {1} true/pause 1000/showFrame 0/pause 1000/emote farmer 28/message \"Qualcosa di brutto deve essermi accaduto... non ho la minima idea di come sono arrivatə qui...\"/pause 500/hospitaldeath/end"
+   "TheMightyAmondee.CDPP/replacementmail1":"Le sono stati addebitati {0} oro per questo servizio",
+   "TheMightyAmondee.CDPP/replacementmail2":"Ti ho fatturato {0} oro per coprire le spese mediche"
 }

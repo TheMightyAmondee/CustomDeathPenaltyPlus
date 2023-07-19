@@ -72,9 +72,17 @@ namespace CustomDeathPenaltyPlus
         {
             return i18n.GetTranslation("TheMightyAmondee.CDPP/nicetoseeyou");
         }
-        public static string string_easynow()
+        public static string string_wakeplayer()
         {
-            return i18n.GetTranslation("TheMightyAmondee.CDPP/easynow");
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/wakeplayer");
+        }
+        public static string string_easynow1()
+        {
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/easynow1");
+        }
+        public static string string_easynow2()
+        {
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/easynow2");
         }
         public static string string_qi()
         {
@@ -93,9 +101,19 @@ namespace CustomDeathPenaltyPlus
             var lost = (int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost);
             return i18n.GetTranslation("TheMightyAmondee.CDPP/moneylost", new { moneylost = lost });
         }
+
+        // Translations for replacements
         public static string string_replacementdialogue()
         {
             return i18n.GetTranslation("TheMightyAmondee.CDPP/replacementdialogue");
+        }
+        public static string string_replacementmail1()
+        {
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/replacementmail1");
+        }
+        public static string string_replacementmail2()
+        {
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/replacementmail1");
         }
 
         // Translations for mail fragments
@@ -111,58 +129,26 @@ namespace CustomDeathPenaltyPlus
 
         // Event translations
 
-        public static string event_PlayerKilledMine()
-        {
-            return i18n.GetTranslation("CDPP.PlayerKilledMine");
-        }
-        public static string event_PlayerKilledIsland()
-        {
-            return i18n.GetTranslation("CDPP.PlayerKilledIsland");
-        }
-        public static string event_PlayerKilledHospital()
-        {
-            return i18n.GetTranslation("CDPP.PlayerKilledHospital");
-        }
-        public static string event_PlayerKilledSkullCave()
-        {
-            return i18n.GetTranslation("CDPP.PlayerKilledSkullCave");
-        }
-        public static string event_PlayerKilledFarm()
-        {
-            return i18n.GetTranslation("CDPP.PlayerKilledFarm");
-        }
-
-        /*
-        public static string string_Caught_NoMoney(string shopkeeper)
-        {
-            return i18n.GetTranslation($"TheMightyAmondee.Shoplifter/Caught{shopkeeper}_NoMoney");
-        }
-
-        public static string string_BanFromShop()
-        {
-            return i18n.GetTranslation("TheMightyAmondee.Shoplifter/BanFromShop", new { daysbanned = config.DaysBannedFor });
-        }
-
-        public static string string_BanFromShop_Single()
-        {
-            return i18n.GetTranslation("TheMightyAmondee.Shoplifter/BanFromShop_Single");
-        }
-
-        public static string string_AlreadyShoplifted()
-        {
-            return i18n.GetTranslation("TheMightyAmondee.Shoplifter/AlreadyShoplifted", new { shopliftingamount = config.MaxShopliftsPerDay });
-        }
-
-        public static string string_AlreadyShoplifted_Single()
-        {
-            return i18n.GetTranslation("TheMightyAmondee.Shoplifter/AlreadyShoplifted_Single");
-        }
-
-        public static string string_AlreadyShopliftedSameShop()
-        {
-            return i18n.GetTranslation("TheMightyAmondee.Shoplifter/AlreadyShopliftedSameShop");
-        }
-        */
+        //public static string event_PlayerKilledMine()
+        //{
+        //    return i18n.GetTranslation("CDPP.PlayerKilledMine");
+        //}
+        //public static string event_PlayerKilledIsland()
+        //{
+        //    return i18n.GetTranslation("CDPP.PlayerKilledIsland");
+        //}
+        //public static string event_PlayerKilledHospital()
+        //{
+        //    return i18n.GetTranslation("CDPP.PlayerKilledHospital");
+        //}
+        //public static string event_PlayerKilledSkullCave()
+        //{
+        //    return i18n.GetTranslation("CDPP.PlayerKilledSkullCave");
+        //}
+        //public static string event_PlayerKilledFarm()
+        //{
+        //    return i18n.GetTranslation("CDPP.PlayerKilledFarm");
+        //}
 
         /// <summary>
         /// Gets the correct translation
