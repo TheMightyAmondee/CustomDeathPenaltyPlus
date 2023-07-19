@@ -93,6 +93,10 @@ namespace CustomDeathPenaltyPlus
             var lost = (int)Math.Round(PlayerStateRestorer.statedeathps.Value.moneylost);
             return i18n.GetTranslation("TheMightyAmondee.CDPP/moneylost", new { moneylost = lost });
         }
+        public static string string_replacementdialogue()
+        {
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/replacementdialogue");
+        }
 
         // Translations for mail fragments
         public static string string_mailnocharge()
@@ -123,7 +127,6 @@ namespace CustomDeathPenaltyPlus
         {
             return i18n.GetTranslation("CDPP.PlayerKilledSkullCave");
         }
-
         public static string event_PlayerKilledFarm()
         {
             return i18n.GetTranslation("CDPP.PlayerKilledFarm");

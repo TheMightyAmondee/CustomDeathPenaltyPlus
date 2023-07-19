@@ -5,6 +5,7 @@ using StardewValley.Locations;
 using StardewValley;
 using System;
 using System.Text;
+using System.Linq;
 
 
 
@@ -35,30 +36,34 @@ namespace CustomDeathPenaltyPlus
         static string ResponseBuilder(string person, string location)
         {
             // Create new string to build on
-            StringBuilder response = new StringBuilder($"speak Harvey \"{person} found you unconscious {location}... I had to perform an emergency surgery on you!#$b#Be a little more careful next time, okay?$s\"");
+            string basestring = string.Format(i18n.string_replacementdialogue(), person, location);
+            StringBuilder finalresponse = new StringBuilder(basestring);
 
             // Is WakeupNextDayinClinic true?
             if (config.OtherPenalties.WakeupNextDayinClinic == true)
             {
                 // Yes, build string accordingly
 
-                response.Insert(14, i18n.string_finallyawake());
+                finalresponse.Insert(0,i18n.string_finallyawake());
             }
 
             // Is FriendshipPenalty greater than 0?
             if (config.OtherPenalties.HarveyFriendshipChange < 0)
             {
                 // Yes, build string accordingly
-
-                response.Replace("Be a little more careful next time, okay?", i18n.string_bereallycareful());
+                finalresponse.Append(i18n.string_bereallycareful());
             }
             else if(config.OtherPenalties.HarveyFriendshipChange > 0)
             {
-                response.Replace("Be a little more careful next time, okay?$s", $"{i18n.string_nicetoseeyou()}$s");
+                finalresponse.Append(i18n.string_nicetoseeyou());
+            }
+            else
+            {
+                finalresponse.Append(i18n.string_becareful());
             }
 
             // Return the built string
-            return response.ToString();
+            return finalresponse.ToString();
         }
 
         /// <summary>
