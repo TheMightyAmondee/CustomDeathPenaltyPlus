@@ -26,7 +26,7 @@
     "TheMightyAmondee.CDPP/mailnocharge": "Be thankful you haven't been billed for this service",
     "TheMightyAmondee.Shoplifter/mailnochargeharvey": "I haven't billed you for your medical expenses this time",
 
-    // Replacments
+    // Replacements
     "TheMightyAmondee.CDPP/replacementdialogue":"{0} found you unconscious {1}... I had to perform an emergency surgery on you!#$b#",
     "TheMightyAmondee.CDPP/replacementmail1":"You've been billed {0}g for this service",
     "TheMightyAmondee.CDPP/replacementmail2":"I've billed you {0}g to cover your medical expenses"

@@ -26,7 +26,7 @@
   "TheMightyAmondee.CDPP/mailnocharge": "Sii contento di non esser stato addebitato per questo servizio",
   "TheMightyAmondee.Shoplifter/mailnochargeharvey": "Non ti ho addebitato nulla per le spese mediche questa volta",
 
-   // Replacments
+   // Replacements
    "TheMightyAmondee.CDPP/replacementdialogue":"{0} ti ha trovato senza sensi {1} ... Ho dovuto sottoporti a un'operazione d'emergenza!#$b#",
    "TheMightyAmondee.CDPP/replacementmail1":"Le sono stati addebitati {0} oro per questo servizio",
    "TheMightyAmondee.CDPP/replacementmail2":"Ti ho fatturato {0} oro per coprire le spese mediche"

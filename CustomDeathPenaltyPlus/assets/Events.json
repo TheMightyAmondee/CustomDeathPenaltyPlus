@@ -1,11 +1,4 @@
 {
-    /*
-        These entries are the edited events shown to the player after death, depending on the config settings. Feel free to edit them to suit your preferences, just note a few things:       
-        {0} for the first four entries is replaced with the player name
-        {1} in the first three entries is a response said by Harvey depending on config settings
-        DO NOT remove any characters enclosed in {} in the last entry or change when they appear in the script, they contain coordinates and the event location from CDPP
-        hospitaldeath should always be included before ending the event, it tells the game to apply the death penalties (which CDPP will then change)
-    */
     "CDPP.PlayerKilledMine": "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \"{0}\"/pause 1000/message \"{1}\"/viewport 20 12 true/pause 1000/speak Harvey \"{2}\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
     "CDPP.PlayerKilledIsland": "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/changeLocation Hospital/pause 500/showFrame 5/message \" ...{0}\"/pause 1000/message \"{1}\"/viewport 20 12 true/pause 1000/speak Harvey \"{2}\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
     "CDPP.PlayerKilledHospital": "none/-100 -100/farmer 20 12 2 Harvey 21 12 3/pause 1500/showFrame 5/message \"{0}\"/pause 1000/message \"{1}\"/viewport 20 12 true/pause 1000/speak Harvey \"{2}\"/showFrame 0/pause 1000/emote farmer 28/hospitaldeath/end",
