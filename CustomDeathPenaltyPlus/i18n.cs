@@ -124,7 +124,7 @@ namespace CustomDeathPenaltyPlus
 
         public static string string_mailnochargeharvey()
         {
-            return i18n.GetTranslation("TheMightyAmondee.Shoplifter/mailnochargeharvey");
+            return i18n.GetTranslation("TheMightyAmondee.CDPP/mailnochargeharvey");
         }
 
         // Event translations

@@ -24,7 +24,7 @@
 
   // Mail fragments
   "TheMightyAmondee.CDPP/mailnocharge": "Sii contento di non esser stato addebitato per questo servizio",
-  "TheMightyAmondee.Shoplifter/mailnochargeharvey": "Non ti ho addebitato nulla per le spese mediche questa volta",
+  "TheMightyAmondee.CDPP/mailnochargeharvey": "Non ti ho addebitato nulla per le spese mediche questa volta",
 
    // Replacements
    "TheMightyAmondee.CDPP/replacementdialogue":"{0} ti ha trovato senza sensi {1} ... Ho dovuto sottoporti a un'operazione d'emergenza!#$b#",
