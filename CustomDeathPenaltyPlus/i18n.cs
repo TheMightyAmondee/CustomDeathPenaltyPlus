@@ -127,28 +127,61 @@ namespace CustomDeathPenaltyPlus
             return i18n.GetTranslation("TheMightyAmondee.CDPP/mailnochargeharvey");
         }
 
-        // Event translations
+        // GMCM translations
 
-        //public static string event_PlayerKilledMine()
-        //{
-        //    return i18n.GetTranslation("CDPP.PlayerKilledMine");
-        //}
-        //public static string event_PlayerKilledIsland()
-        //{
-        //    return i18n.GetTranslation("CDPP.PlayerKilledIsland");
-        //}
-        //public static string event_PlayerKilledHospital()
-        //{
-        //    return i18n.GetTranslation("CDPP.PlayerKilledHospital");
-        //}
-        //public static string event_PlayerKilledSkullCave()
-        //{
-        //    return i18n.GetTranslation("CDPP.PlayerKilledSkullCave");
-        //}
-        //public static string event_PlayerKilledFarm()
-        //{
-        //    return i18n.GetTranslation("CDPP.PlayerKilledFarm");
-        //}
+        public static string GMCM_DeathPenalty()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_DeathPenalty");
+        }
+        public static string GMCM_PassOutPenalty()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_PassOutPenalty");
+        }
+        public static string GMCM_OtherPenalty()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_OtherPenalties");
+        }
+        public static string GMCM_RestoreItems()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_RestoreItems");
+        }
+        public static string GMCM_MoneyLossCap()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_MoneyLossCap");
+        }
+        public static string GMCM_MoneytoRestorePercentage()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_MoneytoRestorePercentage");
+        }
+        public static string GMCM_EnergytoRestorePercentage()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_EnergytoRestorePercentage");
+        }
+        public static string GMCM_HealthtoRestorePercentage()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_HealthtoRestorePercentage");
+        }
+        public static string GMCM_WakeupNextDayinClinic()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_WakeupNextDayinClinic");
+        }
+        public static string GMCM_HarveyFriendshipChange()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_HarveyFriendshipChange");
+        }
+        public static string GMCM_MaruFriendshipChange()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_MaruFriendshipChange");
+        }
+        public static string GMCM_MoreRealisticWarps()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_MoreRealisticWarps");
+        }
+        public static string GMCM_DebuffonDeath()
+        {
+            return i18n.GetTranslation("CDPP.GMCM_DebuffonDeath");
+        }
+
 
         /// <summary>
         /// Gets the correct translation
