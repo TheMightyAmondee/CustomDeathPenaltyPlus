@@ -58,6 +58,6 @@ Current options allow configuration for:
 
 1.4.1 - Updated for new content api in SMAPI 3.14.0
 
-1.5.0 - Added translation support, added italian translation thanks to AlixNauts on Nexus!
+1.5.0 - Added translation support, added italian, spanish and french translations thanks to AlixNauts on Nexus!
 
 

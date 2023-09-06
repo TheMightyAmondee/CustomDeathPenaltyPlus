@@ -16,10 +16,10 @@
   "TheMightyAmondee.CDPP/nicetoseeyou": "Mentre è bello vedere, odio doverti ricucire...#$b#Per favore, sii più prudente la prossima volta, ok?$s",
   "TheMightyAmondee.CDPP/bereallycareful": "Devi essere veramente più prudente, non mi piace doverti rappezzare dopo che fai qualcosa di pericoloso.$s",
   "TheMightyAmondee.CDPP/easynow1": "Con calma, adesso... fai piano.",
-  "TheMightyAmondee.CDPP/easynow2": "Ehi, ragazzinə! Stai bene?",
-  "TheMightyAmondee.CDPP/qi":"Ti ho trovatə malconciə e incosciente laggiù, ragazzinə... Spero non stessi facendo qualcosa di stupido.$1#$b#Sii più prudente la prossima volta nelle carverne, okay. C'è ancora molto potenziale in te, ragazzinə!",
+  "TheMightyAmondee.CDPP/easynow2": "Ehi, ragazzino! Stai bene?^Ehi, ragazzina! Stai bene?",
+  "TheMightyAmondee.CDPP/qi":"Ti ho trovato\\a malconcio\\a e incosciente laggiù, ragazzino\\a... Spero non stessi facendo qualcosa di stupido.$1#$b#Sii più prudente la prossima volta nelle carverne, okay. C'è ancora molto potenziale in te, ragazzino\\a!",
   "TheMightyAmondee.CDPP/whathappened": "...Che cosa è appena successo?",
-  "TheMightyAmondee.CDPP/somethingbad": "Qualcosa di brutto deve essermi accaduto... non ho la minima idea di come sono arrivatə qui...",
+  "TheMightyAmondee.CDPP/somethingbad": "Qualcosa di brutto deve essermi accaduto... non ho la minima idea di come sono arrivato\\a qui...",
   "TheMightyAmondee.CDPP/moneylost": "Ho perso {moneylost}o. Mi domando come sia successo... ",
 
   // Mail fragments
