@@ -268,6 +268,7 @@ namespace CustomDeathPenaltyPlus
                 tooltip: () => null,
                 min: 0f,
                 max: 1.0f,
+                interval: 0.025f,
                 getValue: () => config.DeathPenalty.MoneytoRestorePercentage,
                 setValue: value => config.DeathPenalty.MoneytoRestorePercentage = value
             );
@@ -277,6 +278,7 @@ namespace CustomDeathPenaltyPlus
                 tooltip: () => null,
                 min: 0f,
                 max: 1.0f,
+                interval: 0.025f,
                 getValue: () => config.DeathPenalty.EnergytoRestorePercentage,
                 setValue: value => config.DeathPenalty.EnergytoRestorePercentage = value
             );
@@ -286,6 +288,7 @@ namespace CustomDeathPenaltyPlus
                 tooltip: () => null,
                 min: 0f,
                 max: 1.0f,
+                interval: 0.025f,
                 getValue: () => config.DeathPenalty.HealthtoRestorePercentage,
                 setValue: value => config.DeathPenalty.HealthtoRestorePercentage = value
             );
@@ -310,6 +313,7 @@ namespace CustomDeathPenaltyPlus
                 tooltip: () => null,
                 min: 0f,
                 max: 1.0f,
+                interval: 0.025f,
                 getValue: () => config.PassOutPenalty.MoneytoRestorePercentage,
                 setValue: value => config.PassOutPenalty.MoneytoRestorePercentage = value
             );
@@ -319,6 +323,7 @@ namespace CustomDeathPenaltyPlus
                 tooltip: () => null,
                 min: 0f,
                 max: 1.0f,
+                interval: 0.025f,
                 getValue: () => config.PassOutPenalty.EnergytoRestorePercentage,
                 setValue: value => config.PassOutPenalty.EnergytoRestorePercentage = value
             );
