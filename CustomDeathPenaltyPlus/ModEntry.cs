@@ -12,6 +12,7 @@ using System.Linq;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using GenericModConfigMenu;
+//using GenericModConfigMenu;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -117,7 +118,7 @@ namespace CustomDeathPenaltyPlus
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
-            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+            helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.Saving += this.Saving;
             helper.Events.GameLoop.SaveLoaded += this.SaveLoaded;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
@@ -216,22 +217,27 @@ namespace CustomDeathPenaltyPlus
             }
         }
 
-        /// <summary>Raised after the game is launched, right before the first game tick</summary>
-        /// <inheritdoc cref="IGameLoopEvents.GameLaunched"/>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event data.</param>
-        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        private void BuildConfigMenu()
         {
+            void ValidateConfig()
+            {
+                if (this.config.OtherPenalties.WakeupNextDayinClinic == true && this.config.OtherPenalties.MoreRealisticWarps == true)
+                {
+                    this.config.OtherPenalties.MoreRealisticWarps = false;
+                    this.Monitor.Log("WakeupNextDayinClinic and MoreRealisticWarps cannot both be true as they can conflict.\nSetting MoreRealisticWarps to false...", LogLevel.Warn);
+                }
+                Helper.WriteConfig(config);
+            }
             // get Generic Mod Config Menu's API (if it's installed)
-			var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-			if (configMenu is null) return;
+            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null) return;
 
-			// register mod
-			configMenu.Register(
-				ModManifest,
-				() => config = new ModConfig(),
-				() => Helper.WriteConfig(config)
-			);
+            // register mod
+            configMenu.Register(
+                ModManifest,
+                () => config = new ModConfig(),
+                () => ValidateConfig()
+            );
 
             // add some config options
 
@@ -252,6 +258,7 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.death.losscap"),
                 tooltip: () => null,
+                min: 0,
                 getValue: () => config.DeathPenalty.MoneyLossCap,
                 setValue: value => config.DeathPenalty.MoneyLossCap = value
             );
@@ -259,6 +266,8 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.death.moneytorestorepercentage"),
                 tooltip: () => null,
+                min: 0f,
+                max: 1.0f,
                 getValue: () => config.DeathPenalty.MoneytoRestorePercentage,
                 setValue: value => config.DeathPenalty.MoneytoRestorePercentage = value
             );
@@ -266,6 +275,8 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.death.energytorestorepercentage"),
                 tooltip: () => null,
+                min: 0f,
+                max: 1.0f,
                 getValue: () => config.DeathPenalty.EnergytoRestorePercentage,
                 setValue: value => config.DeathPenalty.EnergytoRestorePercentage = value
             );
@@ -273,6 +284,8 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.death.healthtorestorepercentage"),
                 tooltip: () => null,
+                min: 0f,
+                max: 1.0f,
                 getValue: () => config.DeathPenalty.HealthtoRestorePercentage,
                 setValue: value => config.DeathPenalty.HealthtoRestorePercentage = value
             );
@@ -287,6 +300,7 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.passout.losscap"),
                 tooltip: () => null,
+                min: 0,
                 getValue: () => config.PassOutPenalty.MoneyLossCap,
                 setValue: value => config.PassOutPenalty.MoneyLossCap = value
             );
@@ -294,6 +308,8 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.passout.moneytorestorepercentage"),
                 tooltip: () => null,
+                min: 0f,
+                max: 1.0f,
                 getValue: () => config.PassOutPenalty.MoneytoRestorePercentage,
                 setValue: value => config.PassOutPenalty.MoneytoRestorePercentage = value
             );
@@ -301,6 +317,8 @@ namespace CustomDeathPenaltyPlus
                 ModManifest,
                 name: () => this.Helper.Translation.Get("config.option.passout.energytorestorepercentage"),
                 tooltip: () => null,
+                min: 0f,
+                max: 1.0f,
                 getValue: () => config.PassOutPenalty.EnergytoRestorePercentage,
                 setValue: value => config.PassOutPenalty.EnergytoRestorePercentage = value
             );
@@ -347,18 +365,24 @@ namespace CustomDeathPenaltyPlus
                 setValue: value => config.OtherPenalties.DebuffonDeath = value
             );
 
+        }
 
-
-
-            // Reconcile config values
-            this.config.PassOutPenalty.Reconcile(this.Monitor);
-            this.config.DeathPenalty.Reconcile(this.Monitor);
-
+        /// <summary>Raised after the game is launched, right before the first game tick</summary>
+        /// <inheritdoc cref="IGameLoopEvents.GameLaunched"/>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void GameLaunched(object sender, GameLaunchedEventArgs e)
+        {
             if (this.config.OtherPenalties.WakeupNextDayinClinic == true && this.config.OtherPenalties.MoreRealisticWarps == true)
             {
                 this.config.OtherPenalties.MoreRealisticWarps = false;
                 this.Monitor.Log("WakeupNextDayinClinic and MoreRealisticWarps cannot both be true as they can conflict.\nSetting MoreRealisticWarps to false...", LogLevel.Warn);
             }
+            // Reconcile config values
+            this.config.PassOutPenalty.Reconcile(this.Monitor);
+            this.config.DeathPenalty.Reconcile(this.Monitor);           
+
+            this.BuildConfigMenu();
         }
 
         /// <summary>Raised after the game state is updated</summary>
