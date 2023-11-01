@@ -63,6 +63,6 @@ Current options allow configuration for:
 
 1.5.0 - Added translation support, added italian, spanish and french translations thanks to AlixNauts on Nexus!
 
-1.5.1 - Added GMCM support thanks to alayfishey on Github!
+1.5.1 - Added GMCM support thanks to ayalfishey!
 
 
