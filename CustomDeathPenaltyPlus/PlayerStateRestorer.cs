@@ -31,7 +31,7 @@ namespace CustomDeathPenaltyPlus
 
         private static ModConfig config;
 
-        private static readonly int[] debuffs = { 12, 14, 17, 25, 26, 27 };
+        private static readonly string[] debuffs = { "12", "14", "17", "25", "26", "27" };
 
         // Change friendship of marriage candidate NPCs
         public static void ApplyFriendshipChange(string name)
@@ -103,7 +103,7 @@ namespace CustomDeathPenaltyPlus
             if (config.OtherPenalties.DebuffonDeath == true)
             {
                 // Remove negative debuffs
-                foreach(int debuff in debuffs)
+                foreach(string debuff in debuffs)
                 {
                     if (Game1.player.hasBuff(debuff))
                     {
@@ -113,7 +113,7 @@ namespace CustomDeathPenaltyPlus
 
                 if (Game1.currentLocation as IslandLocation != null)
                 {
-                    var burntdebuff = new Buff(12)
+                    var burntdebuff = new Buff("12")
                     {
                         totalMillisecondsDuration = 60000,
                         millisecondsDuration = 60000,
