@@ -3,7 +3,7 @@ Custom Death Penalty Plus allows the death penalty (and pass out penalty as of 1
 
 Now with translation support as of version 1.5.0. Feel free to translate the mod and send me the files for addition (best place to reach me is on the mod page). Full credit given, obviously!
 
-Generic Mod Config Menu support added in 1.5.1 thanks to alayfishey!
+Generic Mod Config Menu support added in 1.5.1 thanks to ayalfishey!
 
 Current options allow configuration for:
 
@@ -70,6 +70,6 @@ Available in:
 
 1.5.0 - Added translation support, added italian, spanish and french translations thanks to AlixNauts on Nexus!
 
-1.5.1 - Added GMCM support thanks to alayfishey on Github!
+1.5.1 - Added GMCM support thanks to ayalfishey!
 
 
