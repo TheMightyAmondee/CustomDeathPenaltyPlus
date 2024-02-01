@@ -11,8 +11,6 @@ using StardewValley;
 using System.Linq;
 using StardewValley.Locations;
 using StardewValley.Menus;
-using GenericModConfigMenu;
-//using GenericModConfigMenu;
 
 namespace CustomDeathPenaltyPlus
 {
@@ -563,8 +561,7 @@ namespace CustomDeathPenaltyPlus
                     else
                     {
                         // Yes, inform other players you're ready for a new day
-
-                        Game1.player.team.SetLocalReady("sleep", true);
+                        //Game1.player.team.SetLocalReady("sleep", true);
 
                         // Ensures new day will load, will become false after new day is loaded
                         Game1.player.passedOut = true;
@@ -779,7 +776,7 @@ namespace CustomDeathPenaltyPlus
                 // Read data from message into a new class instance of Multiplayer
                 Multiplayer multiplayer = e.ReadAs<Multiplayer>();
                 // Display a new HUD message to say that the dead player needs a new day to be started
-                Game1.addHUDMessage(new HUDMessage($"{multiplayer.PlayerWhoDied} will need the rest of the day to recover.", null));
+                Game1.addHUDMessage(new HUDMessage($"{multiplayer.PlayerWhoDied} will need the rest of the day to recover."));
             }
         }
 
