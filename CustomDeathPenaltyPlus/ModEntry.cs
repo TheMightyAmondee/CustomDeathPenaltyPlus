@@ -508,21 +508,13 @@ namespace CustomDeathPenaltyPlus
                             || Game1.getLocationFromName(ModEntry.location) as FarmHouse != null) 
                             && location.StartsWith("IslandFarm") == false)
                         {
-                            int tileX = 12;
-                            int tileY = 18;
-                            switch (Game1.player.HouseUpgradeLevel)
+                            int tileX = 27;
+                            int tileY = 28;
+                            if (Game1.player.HouseUpgradeLevel == 0)
                             {
-                                case 0:
-                                    tileX = 3;
-                                    tileY = 9;
-                                    break;
-                                case 1:
-                                    tileX = 9;
-                                    tileY = 8;
-                                    break;
-                                default:
-                                    break;
-                            }
+                                tileX = 3;
+                                tileY = 9;
+                            }                           
                             Game1.CurrentEvent.setExitLocation(Game1.player.homeLocation.Value, tileX, tileY);
                         }
                         location = null;
